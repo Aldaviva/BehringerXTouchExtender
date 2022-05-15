@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
+        <IncludeSource>true</IncludeSource>
+        <IncludeSymbols>true</IncludeSymbols>   
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Deterministic>true</Deterministic>
+
+        <Version>0.0.0</Version>
+        <Authors>Ben Hutchison</Authors>
+        <Company>Ben Hutchison</Company>
+        <PackageId>BehringerXTouchExtender</PackageId>
+        <Product>BehringerXTouchExtender</Product>
+        <Description>Send and receive events with a Behringer X-Touch Extender DAW MIDI control surface over USB.</Description>
+        <Copyright>© 2022 Ben Hutchison</Copyright>
+        <PackageProjectUrl>https://github.com/Aldaviva/BehringerXTouchExtender</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Aldaviva/BehringerXTouchExtender.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageTags>midi daw behringer x-touch xtouch controller control-surface</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="KoKo" Version="2.1.0" />
+      <PackageReference Include="Melanchall.DryWetMidi" Version="6.0.1" />
+    </ItemGroup>
+
+</Project>
