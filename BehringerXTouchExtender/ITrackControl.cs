@@ -40,14 +40,24 @@ public interface IRotaryEncoder: IPressableButton {
 
 }
 
-public interface IRotaryEncoder<T>: IRotaryEncoder {
+public interface IRelativeRotaryEncoder: IRotaryEncoder {
 
-    Property<T> RotationPosition { get; }
+    delegate void RotaryEncoderRelativeRotationHandler(object sender, RotaryEncoderRelativeRotationArgs args);
+    event RotaryEncoderRelativeRotationHandler Rotated;
+
+    record RotaryEncoderRelativeRotationArgs(bool IsClockwise) {
+
+        public bool IsClockwise { get; } = IsClockwise;
+
+    }
 
 }
 
-public interface IRelativeRotaryEncoder: IRotaryEncoder<int> { }
-public interface IAbsoluteRotaryEncoder: IRotaryEncoder<double> { }
+public interface IAbsoluteRotaryEncoder: IRotaryEncoder {
+
+    Property<double> RotationPosition { get; }
+
+}
 
 public interface IVuMeter: ITrackControl {
 

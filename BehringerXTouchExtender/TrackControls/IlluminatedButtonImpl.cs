@@ -1,4 +1,4 @@
-﻿using KoKo.Events;
+﻿using System.ComponentModel;
 using KoKo.Property;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
@@ -19,11 +19,11 @@ internal class IlluminatedButtonImpl: PressableButton, IIlluminatedButton {
         TrackId     = trackId;
         ButtonType  = buttonType;
 
-        IlluminationState.PropertyChanged += OnIlluminationStateChanged;
+        IlluminationState.PropertyChanged += WriteStateToDevice;
     }
 
-    private void OnIlluminationStateChanged(object sender, KoKoPropertyChangedEventArgs<IlluminatedButtonState> args) {
-        SevenBitNumber noteId = (SevenBitNumber) (TrackId - 1 + ButtonType switch {
+    internal override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
+        SevenBitNumber noteId = (SevenBitNumber) (TrackId + ButtonType switch {
             IlluminatedButtonType.Record => 8,
             IlluminatedButtonType.Solo   => 16,
             IlluminatedButtonType.Mute   => 24,
@@ -31,7 +31,7 @@ internal class IlluminatedButtonImpl: PressableButton, IIlluminatedButton {
             _                            => throw new ArgumentOutOfRangeException(nameof(ButtonType), ButtonType, null)
         });
 
-        SevenBitNumber velocity = (SevenBitNumber) (args.NewValue switch {
+        SevenBitNumber velocity = (SevenBitNumber) (IlluminationState.Value switch {
             IlluminatedButtonState.Off      => SevenBitNumber.MinValue,
             IlluminatedButtonState.On       => SevenBitNumber.MaxValue,
             IlluminatedButtonState.Blinking => 64,

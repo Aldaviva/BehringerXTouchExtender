@@ -2,7 +2,7 @@
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal abstract class PressableButton: IPressableButton {
+internal abstract class PressableButton: WritableControl, IPressableButton {
 
     public abstract int TrackId { get; }
 

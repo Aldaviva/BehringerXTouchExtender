@@ -5,7 +5,7 @@ using Melanchall.DryWetMidi.Core;
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal class ScribbleStrip: IScribbleStrip {
+internal class ScribbleStrip: WritableControl, IScribbleStrip {
 
     private readonly MidiClient _midiClient;
 
@@ -21,14 +21,14 @@ internal class ScribbleStrip: IScribbleStrip {
         _midiClient = midiClient;
         TrackId     = trackId;
 
-        TopText.PropertyChanged         += SendTextToDevice;
-        BottomText.PropertyChanged      += SendTextToDevice;
-        TopTextColor.PropertyChanged    += SendTextToDevice;
-        BottomTextColor.PropertyChanged += SendTextToDevice;
-        BackgroundColor.PropertyChanged += SendTextToDevice;
+        TopText.PropertyChanged         += WriteStateToDevice;
+        BottomText.PropertyChanged      += WriteStateToDevice;
+        TopTextColor.PropertyChanged    += WriteStateToDevice;
+        BottomTextColor.PropertyChanged += WriteStateToDevice;
+        BackgroundColor.PropertyChanged += WriteStateToDevice;
     }
 
-    private void SendTextToDevice(object sender, PropertyChangedEventArgs e) {
+    internal override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         byte[] payload = new byte[22];
         // leading 0xF0 is automatically prepended by NormalSysExEvent, so don't add it again here
         payload[0] = 0;
@@ -36,7 +36,7 @@ internal class ScribbleStrip: IScribbleStrip {
         payload[2] = 0x32;
         payload[3] = BehringerXTouchExtenderControlSurface.DeviceId;
         payload[4] = 0x4C;
-        payload[5] = (byte) (TrackId - 1);
+        payload[5] = (byte) TrackId;
         payload[6] = (byte) ((int) BackgroundColor.Value | ((int) TopTextColor.Value << 4) | ((int) BottomTextColor.Value << 5));
 
         byte[] topTextBytes    = Enumerable.Repeat((byte) ' ', TextColumnCount).ToArray();

@@ -1,11 +1,11 @@
-﻿using KoKo.Events;
+﻿using System.ComponentModel;
 using KoKo.Property;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal class VuMeter: IVuMeter {
+internal class VuMeter: WritableControl, IVuMeter {
 
     private readonly MidiClient _midiClient;
 
@@ -18,13 +18,13 @@ internal class VuMeter: IVuMeter {
         _midiClient = midiClient;
         TrackId     = trackId;
 
-        LightPosition.PropertyChanged += OnLightPositionChanged;
+        LightPosition.PropertyChanged += WriteStateToDevice;
     }
 
-    private void OnLightPositionChanged(object sender, KoKoPropertyChangedEventArgs<int> args) {
-        int newValue = Math.Max(Math.Min(args.NewValue, LightCount), 0);
+    internal override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
+        int newValue = Math.Max(Math.Min(LightPosition.Value, LightCount), 0);
 
-        SevenBitNumber controlId      = (SevenBitNumber) (90 + TrackId - 1);
+        SevenBitNumber controlId      = (SevenBitNumber) (90 + TrackId);
         double         incrementWidth = (double) SevenBitNumber.MaxValue / (LightCount + 1);
         SevenBitNumber controlValue   = (SevenBitNumber) Math.Round((0.5 + newValue) * incrementWidth);
 

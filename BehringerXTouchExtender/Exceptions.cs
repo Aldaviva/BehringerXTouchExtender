@@ -15,6 +15,7 @@ public class LifecycleException: ControlSurfaceException {
 public class DeviceNotFoundException: ControlSurfaceException {
 
     public DeviceNotFoundException(string message): base(message) { }
+    public DeviceNotFoundException(string message, Exception cause): base(message, cause) { }
 
 }
 
