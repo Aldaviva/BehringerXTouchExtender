@@ -2,10 +2,6 @@
 
 public static class Enums {
 
-    public static IEnumerable<T> GetValues<T>() where T: Enum {
-        return Enum.GetValues(typeof(T)).Cast<T>();
-    }
-
     public static IlluminatedButtonType? ToIlluminatedButtonType(this PressableButtonType buttonType) {
         return buttonType switch {
             PressableButtonType.Record => IlluminatedButtonType.Record,
@@ -30,6 +26,10 @@ public static class Enums {
 
 public enum ScribbleStripBackgroundColor {
 
+    /// <summary>
+    /// Text is completely illegible when background is set to <c>Black</c>, and it looks like the LCD is off or broken. It is strongly recommended to use a <c>White</c> background and <c>Light</c> text color
+    /// to achieve the apperance of white text on a black background. <c>Black</c> is really only useful if you don't want to show any text and instead want to make it look like the LCD is off.
+    /// </summary>
     Black,
     Red,
     Green,

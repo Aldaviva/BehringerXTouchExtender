@@ -11,21 +11,25 @@ controller.Open();
 Console.WriteLine("Connected.");
 
 for (int trackId = 1; trackId <= controller.TrackCount; trackId++) {
-    controller.GetRotaryEncoder(trackId).LightPosition.Value    = trackId;
-    controller.GetVuMeter(trackId).LightPosition.Value          = trackId;
-    controller.GetMuteButton(trackId).IlluminationState.Value   = IlluminatedButtonState.Blinking;
-    controller.GetRecordButton(trackId).IlluminationState.Value = IlluminatedButtonState.Blinking;
-    controller.GetSoloButton(trackId).IlluminationState.Value   = IlluminatedButtonState.Blinking;
-    controller.GetSelectButton(trackId).IlluminationState.Value = IlluminatedButtonState.Blinking;
+    IRelativeRotaryEncoder rotaryEncoder = controller.GetRotaryEncoder(trackId);
+    rotaryEncoder.LightPosition.Connect(trackId - 1);
+    rotaryEncoder.RotationPosition
+
+
+    controller.GetVuMeter(trackId).LightPosition.Connect(trackId);
+    controller.GetMuteButton(trackId).IlluminationState.Connect(IlluminatedButtonState.Blinking);
+    controller.GetRecordButton(trackId).IlluminationState.Connect(IlluminatedButtonState.Blinking);
+    controller.GetSoloButton(trackId).IlluminationState.Connect(IlluminatedButtonState.Blinking);
+    controller.GetSelectButton(trackId).IlluminationState.Connect(IlluminatedButtonState.Blinking);
 
     double controlValue = (trackId - 1.0) / (controller.TrackCount - 1.0);
-    controller.GetFader(trackId).Position.Value = controlValue;
+    controller.GetFader(trackId).DesiredPosition.Connect(controlValue);
 
-    controller.GetScribbleStrip(trackId).TopText.Value         = $"Track {trackId}";
-    controller.GetScribbleStrip(trackId).BottomText.Value      = new string('.', trackId - 1);
-    controller.GetScribbleStrip(trackId).TopTextColor.Value    = ScribbleStripTextColor.Dark;
-    controller.GetScribbleStrip(trackId).BottomTextColor.Value = ScribbleStripTextColor.Light;
-    controller.GetScribbleStrip(trackId).BackgroundColor.Value = (ScribbleStripBackgroundColor) (trackId - 1);
+    controller.GetScribbleStrip(trackId).TopText.Connect($"Track {trackId}");
+    controller.GetScribbleStrip(trackId).BottomText.Connect(new string('.', trackId - 1));
+    controller.GetScribbleStrip(trackId).TopTextColor.Connect(ScribbleStripTextColor.Dark);
+    controller.GetScribbleStrip(trackId).BottomTextColor.Connect(ScribbleStripTextColor.Light);
+    controller.GetScribbleStrip(trackId).BackgroundColor.Connect((ScribbleStripBackgroundColor) (trackId - 1));
 }
 
 // controller.MidiEventFromDevice += (sender, midiEvent) => {
@@ -70,10 +74,6 @@ for (int trackId = 1; trackId <= controller.TrackCount; trackId++) {
 //             break;
 //     }
 // };
-
-Console.WriteLine("Connecting to Behringer X-Touch Extender...");
-controller.Open();
-Console.WriteLine("Connected.");
 
 // for (int trackId = 1; trackId < 8; trackId++) {
 //     controller.RotateKnob(trackId, 0);

@@ -12,7 +12,7 @@ internal class MidiClient: IDisposable {
     /// <exception cref="LifecycleException"></exception>
     public void AssertOpen() {
         if (!IsOpen) {
-            throw new LifecycleException("IMidiControlSurface class instance has not been opened. Call IMidiControlSurface.Open() before calling this method.");
+            throw new LifecycleException("IBehringerXTouchExtenderControlSurface instance has not been opened. Call Open() before calling this method.");
         }
     }
 
