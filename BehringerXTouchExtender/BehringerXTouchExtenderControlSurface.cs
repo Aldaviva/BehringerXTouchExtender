@@ -219,23 +219,23 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
                 break;
             case >= 0x08 and < 0x08 + trackCount:
                 trackId = noteId - 0x08;
-                _recordButtons[trackId - 1].OnButtonEvent(isPressed);
+                _recordButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x10 and < 0x10 + trackCount:
                 trackId = noteId - 0x10;
-                _soloButtons[trackId - 1].OnButtonEvent(isPressed);
+                _soloButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x18 and < 0x18 + trackCount:
                 trackId = noteId - 0x18;
-                _muteButtons[trackId - 1].OnButtonEvent(isPressed);
+                _muteButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x20 and < 0x20 + trackCount:
                 trackId = noteId - 0x20;
-                _selectButtons[trackId - 1].OnButtonEvent(isPressed);
+                _selectButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x6E and < 0x6E + trackCount:
                 trackId = noteId - 0x6E;
-                _faders[trackId - 1].OnButtonEvent(isPressed);
+                _faders[trackId].OnButtonEvent(isPressed);
                 break;
             default:
                 break;
