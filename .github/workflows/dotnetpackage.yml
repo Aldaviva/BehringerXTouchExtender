@@ -14,6 +14,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Set up Testspace
+      uses: testspace-com/setup-testspace@v1
+      with:
+        domain: ${{github.repository_owner}}
+
     - name: Clone
       uses: actions/checkout@v3
         
@@ -25,7 +30,7 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --settings Tests/coverlet.runsettings
+        dotnet test --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --settings Tests/coverlet.runsettings --logger "trx;LogFileName=TestResults.xml"
         mv Tests/TestResults/*/coverage.info Tests/TestResults
 
     - name: Pack
@@ -36,6 +41,9 @@ jobs:
       with:
         name: ${{ env.ProjectName }}.nupkg
         path: ${{ env.ProjectName }}/bin/Release/*.*nupkg
+
+    - name: Upload test report
+      run: testspace Tests/TestResults/TestResults.xml
 
     - name: Upload coverage
       uses: coverallsapp/github-action@master
