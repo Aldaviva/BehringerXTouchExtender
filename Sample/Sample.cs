@@ -53,7 +53,7 @@ for (int i = 0; i < device.TrackCount; i++) {
     };
 
     IIlluminatedButton recordButton = device.GetRecordButton(trackId);
-    recordButton.IlluminationState.Connect(DerivedProperty<IlluminatedButtonState>.Create(recordButton.IsPressed, isPressed => isPressed ? IlluminatedButtonState.On : IlluminatedButtonState.Off));
+    recordButton.IlluminationState.Connect(IlluminatedButtonState.Blinking);
 
     IIlluminatedButton                     soloButton      = device.GetSoloButton(trackId);
     StoredProperty<IlluminatedButtonState> soloButtonState = new();

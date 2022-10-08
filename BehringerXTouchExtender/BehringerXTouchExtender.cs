@@ -179,9 +179,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
             case >= 70 and < 70 + TRACK_COUNT:
                 trackId = controlNumber - 70;
                 double newValue = (double) incomingEvent.ControlValue / SevenBitNumber.MaxValue;
-                // _faders[trackId - 1]..Value = newValue;
                 _faders[trackId].OnFaderMoved(newValue);
-                // Console.WriteLine($"Detected that fader {trackId} on device moved to position {newValue:N3}");
                 break;
             default:
                 break;
