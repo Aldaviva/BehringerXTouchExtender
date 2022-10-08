@@ -3,7 +3,7 @@ using CSCore.CoreAudioAPI;
 using KoKo.Property;
 using Timer = System.Timers.Timer;
 
-using IBehringerXTouchExtenderControlSurface<IRelativeRotaryEncoder> device = BehringerXTouchExtenderControlSurface.CreateWithRelativeMode();
+using IBehringerXTouchExtender<IRelativeRotaryEncoder> device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
 
 Console.WriteLine("Connecting to Behringer X-Touch Extender...");
 device.Open();

@@ -5,73 +5,7 @@ using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
-public class BehringerXTouchExtenderControlSurface {
-
-    /// <summary>
-    /// Device ID is not 0x42 as documented.
-    /// Thanks https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306
-    /// </summary>
-    protected internal const byte DeviceId = 0x15;
-
-    protected const string DeviceName = "X-Touch-Ext";
-
-    /// <summary>
-    /// <para>Create a client for a Behringer X-Touch Extender in Relative mode, which is where the rotary encoder knobs report rotation in terms of which direction they were turned.</para>
-    /// 
-    /// <para>For example, turning the knob clockwise will send one or more MIDI events to your computer indicating that the knob was turned 1 detent clockwise, and turning it farther will send more
-    /// such events.</para>
-    /// 
-    /// <para>Ensure that the X-Touch Extender's hardware control mode is set to <c>CtrlRel</c> when using this method.</para>
-    /// 
-    /// <para>To set the hardware control mode of an X-Touch Extender:</para>
-    /// 
-    /// <list type="number">
-    /// <item><description>Turn off the device.</description></item>
-    /// <item><description>Press and hold the Select button on Track 1.</description></item>
-    /// <item><description>Turn on the device.</description></item>
-    /// <item><description>Release the Select button on Track 1.</description></item>
-    /// <item><description>The LCD screen on Track 1 will show the current control mode. <c>MC</c> (Mackie Control) and <c>HUI</c> (Mackie Human User Interface) modes are used by Digital Audio
-    /// Workstations and are not supported by this library. <c>Ctrl</c> is the MIDI Controller mode used by <see cref="CreateWithAbsoluteMode"/>. <c>CtrlRel</c> is the Relative MIDI Controller mode
-    /// used by <see cref="CreateWithRelativeMode"/>.</description></item>
-    /// <item><description>Set the control mode by turning the rotary encoder knob on Track 1 until the desired mode is shown on the LCD screen on Track 1.</description></item>
-    /// <item><description>To save your changes and begin using the device, press the Select button on Track 1.</description></item>
-    /// </list>
-    /// </summary>
-    /// <returns></returns>
-    public static IBehringerXTouchExtenderControlSurface<IRelativeRotaryEncoder> CreateWithRelativeMode() {
-        return new RelativeBehringerXTouchExtender();
-    }
-
-    /// <summary>
-    /// <para>Create a client for a Behringer X-Touch Extender in Absolute mode, which is where the rotary encoder knobs report rotation in terms of how far it has cumulatively been turned from a
-    /// fixed starting point.</para>
-    /// 
-    /// <para>For example, turning the knob clockwise will send one or more MIDI events to your computer indicating that the knob was turned to a certain distance in the range [0,1], where 0 is the starting point and the farthest possible counterclockwise value.</para>
-    ///
-    /// <para>Ensure that the X-Touch Extender's hardware control mode is set to <c>Ctrl</c> when using this method.</para>
-    /// 
-    /// <para>To set the control mode of an X-Touch Extender:</para>
-    /// 
-    /// <list type="number">
-    /// <item><description>Turn off the device.</description></item>
-    /// <item><description>Press and hold the Select button on Track 1.</description></item>
-    /// <item><description>Turn on the device.</description></item>
-    /// <item><description>Release the Select button on Track 1.</description></item>
-    /// <item><description>The LCD screen on Track 1 will show the current control mode. <c>MC</c> (Mackie Control) and <c>HUI</c> (Mackie Human User Interface) modes are used by Digital Audio
-    /// Workstations and are not supported by this library. <c>Ctrl</c> is the MIDI Controller mode used by <see cref="CreateWithAbsoluteMode"/>. <c>CtrlRel</c> is the Relative MIDI Controller mode
-    /// used by <see cref="CreateWithRelativeMode"/>.</description></item>
-    /// <item><description>Set the control mode by turning the rotary encoder knob on Track 1 until the desired mode is shown on the LCD screen on Track 1.</description></item>
-    /// <item><description>To save your changes and begin using the device, press the Select button on Track 1.</description></item>
-    /// </list>
-    /// </summary>
-    /// <returns></returns>
-    public static IBehringerXTouchExtenderControlSurface<IAbsoluteRotaryEncoder> CreateWithAbsoluteMode() {
-        return new AbsoluteBehringerXTouchExtender();
-    }
-
-}
-
-public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: BehringerXTouchExtenderControlSurface, IBehringerXTouchExtenderControlSurface<TRotaryEncoder>
+public abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouchExtender<TRotaryEncoder>
     where TRotaryEncoder: IRotaryEncoder {
 
     protected const int trackCount = 8;
@@ -87,7 +21,7 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
     private readonly Fader[]                 _faders         = new Fader[trackCount];
     private readonly ScribbleStrip[]         _scribbleStrips = new ScribbleStrip[trackCount];
 
-    protected BehringerXTouchExtenderControlSurface() {
+    protected BehringerXTouchExtender() {
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         Console.CancelKeyPress              += OnProcessExit;
 
@@ -158,7 +92,7 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
         //     }
         // }
 
-        MidiClient.FromDevice = InputDevice.GetByName(DeviceName) ??
+        MidiClient.FromDevice = InputDevice.GetByName(Constants.DeviceName) ??
             throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to receive MIDI messages from.");
 
         // ICollection<OutputDevice> outputDevices = OutputDevice.GetAll();
@@ -170,7 +104,7 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
         //     }
         // }
 
-        MidiClient.ToDevice = OutputDevice.GetByName(DeviceName) ??
+        MidiClient.ToDevice = OutputDevice.GetByName(Constants.DeviceName) ??
             throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to send MIDI messages to.");
 
         MidiClient.FromDevice.EventReceived += OnEventReceivedFromDevice;
@@ -219,23 +153,23 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
                 break;
             case >= 0x08 and < 0x08 + trackCount:
                 trackId = noteId - 0x08;
-                _recordButtons[trackId - 1].OnButtonEvent(isPressed);
+                _recordButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x10 and < 0x10 + trackCount:
                 trackId = noteId - 0x10;
-                _soloButtons[trackId - 1].OnButtonEvent(isPressed);
+                _soloButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x18 and < 0x18 + trackCount:
                 trackId = noteId - 0x18;
-                _muteButtons[trackId - 1].OnButtonEvent(isPressed);
+                _muteButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x20 and < 0x20 + trackCount:
                 trackId = noteId - 0x20;
-                _selectButtons[trackId - 1].OnButtonEvent(isPressed);
+                _selectButtons[trackId].OnButtonEvent(isPressed);
                 break;
             case >= 0x6E and < 0x6E + trackCount:
                 trackId = noteId - 0x6E;
-                _faders[trackId - 1].OnButtonEvent(isPressed);
+                _faders[trackId].OnButtonEvent(isPressed);
                 break;
             default:
                 break;
@@ -383,66 +317,6 @@ public abstract class BehringerXTouchExtenderControlSurface<TRotaryEncoder>: Beh
 
     private void OnProcessExit(object sender, EventArgs e) {
         Dispose();
-    }
-
-}
-
-internal class RelativeBehringerXTouchExtender: BehringerXTouchExtenderControlSurface<IRelativeRotaryEncoder> {
-
-    private readonly RelativeRotaryEncoder[] _rotaryEncoders = new RelativeRotaryEncoder[trackCount];
-
-    public RelativeBehringerXTouchExtender() {
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId] = new RelativeRotaryEncoder(MidiClient, trackId);
-        }
-    }
-
-    public override void Open() {
-        base.Open();
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId].WriteStateToDevice();
-        }
-    }
-
-    public override IRelativeRotaryEncoder GetRotaryEncoder(int trackId) {
-        ValidateTrackId(trackId);
-        return _rotaryEncoders[trackId];
-    }
-
-    protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
-        if ((int) incomingEventControlValue is 1 or 65) {
-            bool isClockwise = incomingEventControlValue == 65;
-            _rotaryEncoders[trackId].OnRotated(isClockwise);
-        }
-    }
-
-}
-
-internal class AbsoluteBehringerXTouchExtender: BehringerXTouchExtenderControlSurface<IAbsoluteRotaryEncoder> {
-
-    private readonly AbsoluteRotaryEncoder[] _rotaryEncoders = new AbsoluteRotaryEncoder[trackCount];
-
-    public AbsoluteBehringerXTouchExtender() {
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId] = new AbsoluteRotaryEncoder(MidiClient, trackId);
-        }
-    }
-
-    public override void Open() {
-        base.Open();
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId].WriteStateToDevice();
-        }
-    }
-
-    public override IAbsoluteRotaryEncoder GetRotaryEncoder(int trackId) {
-        ValidateTrackId(trackId);
-        return _rotaryEncoders[trackId];
-    }
-
-    protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
-        double newValue = (double) incomingEventControlValue / SevenBitNumber.MaxValue;
-        _rotaryEncoders[trackId].AbsoluteRotationPosition.Value = newValue;
     }
 
 }
