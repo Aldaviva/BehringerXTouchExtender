@@ -27,13 +27,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Melanchall.DryWetMidi" Version="6.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="KoKo">
-        <HintPath>..\..\KoKo\KoKo\bin\Debug\netstandard2.0\KoKo.dll</HintPath>
-      </Reference>
+      <PackageReference Include="KoKo" Version="2.2.0" />
+      <PackageReference Include="Melanchall.DryWetMidi" Version="6.1.2" />
     </ItemGroup>
 
 </Project>

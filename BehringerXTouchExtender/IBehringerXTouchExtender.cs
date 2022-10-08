@@ -1,6 +1,6 @@
 ﻿namespace BehringerXTouchExtender;
 
-public interface IBehringerXTouchExtenderControlSurface<out TRotaryEncoder>: IDisposable where TRotaryEncoder: IRotaryEncoder {
+public interface IBehringerXTouchExtender<out TRotaryEncoder>: IDisposable where TRotaryEncoder: IRotaryEncoder {
 
     int TrackCount { get; }
     bool IsOpen { get; }
@@ -19,3 +19,6 @@ public interface IBehringerXTouchExtenderControlSurface<out TRotaryEncoder>: IDi
     IScribbleStrip GetScribbleStrip(int    trackId);
 
 }
+
+public interface IRelativeBehringerXTouchExtender: IBehringerXTouchExtender<IRelativeRotaryEncoder> { }
+public interface IAbsoluteBehringerXTouchExtender: IBehringerXTouchExtender<IAbsoluteRotaryEncoder> { }

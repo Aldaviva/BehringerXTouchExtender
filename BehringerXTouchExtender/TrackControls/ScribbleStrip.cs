@@ -34,7 +34,7 @@ internal class ScribbleStrip: WritableControl, IScribbleStrip {
         payload[0] = 0;
         payload[1] = 0x20;
         payload[2] = 0x32;
-        payload[3] = BehringerXTouchExtenderControlSurface.DeviceId;
+        payload[3] = Constants.DeviceId;
         payload[4] = 0x4C;
         payload[5] = (byte) TrackId;
         payload[6] = (byte) ((int) BackgroundColor.Value | ((int) TopTextColor.Value << 4) | ((int) BottomTextColor.Value << 5));
