@@ -1,17 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <!-- <GenerateDocumentationFile>True</GenerateDocumentationFile> -->
-        <IncludeSource>true</IncludeSource>
-        <IncludeSymbols>true</IncludeSymbols>   
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Deterministic>true</Deterministic>
-
         <Version>0.0.0</Version>
         <Authors>Ben Hutchison</Authors>
         <Company>Ben Hutchison</Company>
@@ -21,14 +10,35 @@
         <Copyright>© 2022 Ben Hutchison</Copyright>
         <PackageProjectUrl>https://github.com/Aldaviva/BehringerXTouchExtender</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Aldaviva/BehringerXTouchExtender.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageTags>midi daw behringer x-touch xtouch controller control-surface</PackageTags>
+        <PackageIcon>icon.jpg</PackageIcon>
+
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IncludeSource>true</IncludeSource>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="KoKo" Version="2.2.0" />
-      <PackageReference Include="Melanchall.DryWetMidi" Version="6.1.2" />
+        <PackageReference Include="KoKo" Version="2.2.0" />
+        <PackageReference Include="Melanchall.DryWetMidi" Version="6.1.2" />
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="icon.jpg" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
 </Project>
