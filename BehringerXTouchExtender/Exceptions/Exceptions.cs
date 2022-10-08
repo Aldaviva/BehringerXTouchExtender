@@ -1,4 +1,4 @@
-﻿namespace BehringerXTouchExtender;
+﻿namespace BehringerXTouchExtender.Exceptions;
 
 public abstract class ControlSurfaceException: Exception {
 
@@ -16,11 +16,5 @@ public class DeviceNotFoundException: ControlSurfaceException {
 
     public DeviceNotFoundException(string message): base(message) { }
     public DeviceNotFoundException(string message, Exception cause): base(message, cause) { }
-
-}
-
-public class CommunicationException: ControlSurfaceException {
-
-    public CommunicationException(string message, Exception cause): base(message, cause) { }
 
 }

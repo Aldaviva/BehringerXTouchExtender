@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
+using BehringerXTouchExtender.Enums;
 using KoKo.Property;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal class IlluminatedButtonImpl: PressableButton, IIlluminatedButton {
+internal class IlluminatedButton: PressableButton, IIlluminatedButton {
 
     private readonly MidiClient _midiClient;
 
@@ -14,7 +15,7 @@ internal class IlluminatedButtonImpl: PressableButton, IIlluminatedButton {
 
     public ConnectableProperty<IlluminatedButtonState> IlluminationState { get; } = new();
 
-    public IlluminatedButtonImpl(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType) {
+    public IlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType) {
         _midiClient = midiClient;
         TrackId     = trackId;
         ButtonType  = buttonType;

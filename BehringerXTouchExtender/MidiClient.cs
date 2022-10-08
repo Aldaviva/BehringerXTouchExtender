@@ -1,4 +1,5 @@
-﻿using Melanchall.DryWetMidi.Multimedia;
+﻿using BehringerXTouchExtender.Exceptions;
+using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
@@ -17,10 +18,10 @@ internal class MidiClient: IDisposable {
     }
 
     public void Dispose() {
-        (ToDevice as IDisposable)?.Dispose();
+        ToDevice?.Dispose();
         ToDevice = null;
 
-        (FromDevice as IDisposable)?.Dispose();
+        FromDevice?.Dispose();
         FromDevice = null;
     }
 

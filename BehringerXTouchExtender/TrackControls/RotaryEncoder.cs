@@ -28,7 +28,6 @@ internal abstract class RotaryEncoder: PressableButton {
         double         incrementWidth = (double) SevenBitNumber.MaxValue / (LightCount - 1);
         SevenBitNumber controlValue   = (SevenBitNumber) Math.Round(newValue * incrementWidth);
 
-        // Console.WriteLine($"Setting rotary encoder {TrackId} light position to {controlValue}");
         _midiClient.AssertOpen();
         _midiClient.ToDevice?.SendEvent(new ControlChangeEvent(controlId, controlValue));
     }

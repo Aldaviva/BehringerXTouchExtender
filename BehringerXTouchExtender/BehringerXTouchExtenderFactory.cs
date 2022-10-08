@@ -1,7 +1,4 @@
-﻿using BehringerXTouchExtender.TrackControls;
-using Melanchall.DryWetMidi.Common;
-
-namespace BehringerXTouchExtender;
+﻿namespace BehringerXTouchExtender;
 
 public class BehringerXTouchExtenderFactory {
 
@@ -57,66 +54,6 @@ public class BehringerXTouchExtenderFactory {
     /// <returns></returns>
     public static IAbsoluteBehringerXTouchExtender CreateWithAbsoluteMode() {
         return new AbsoluteBehringerXTouchExtender();
-    }
-
-}
-
-internal class RelativeBehringerXTouchExtender: BehringerXTouchExtender<IRelativeRotaryEncoder>, IRelativeBehringerXTouchExtender {
-
-    private readonly RelativeRotaryEncoder[] _rotaryEncoders = new RelativeRotaryEncoder[trackCount];
-
-    public RelativeBehringerXTouchExtender() {
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId] = new RelativeRotaryEncoder(MidiClient, trackId);
-        }
-    }
-
-    public override void Open() {
-        base.Open();
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId].WriteStateToDevice();
-        }
-    }
-
-    public override IRelativeRotaryEncoder GetRotaryEncoder(int trackId) {
-        ValidateTrackId(trackId);
-        return _rotaryEncoders[trackId];
-    }
-
-    protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
-        if ((int) incomingEventControlValue is 1 or 65) {
-            bool isClockwise = incomingEventControlValue == 65;
-            _rotaryEncoders[trackId].OnRotated(isClockwise);
-        }
-    }
-
-}
-
-internal class AbsoluteBehringerXTouchExtender: BehringerXTouchExtender<IAbsoluteRotaryEncoder>, IAbsoluteBehringerXTouchExtender {
-
-    private readonly AbsoluteRotaryEncoder[] _rotaryEncoders = new AbsoluteRotaryEncoder[trackCount];
-
-    public AbsoluteBehringerXTouchExtender() {
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId] = new AbsoluteRotaryEncoder(MidiClient, trackId);
-        }
-    }
-
-    public override void Open() {
-        base.Open();
-        for (int trackId = 0; trackId < trackCount; trackId++) {
-            _rotaryEncoders[trackId].WriteStateToDevice();
-        }
-    }
-
-    public override IAbsoluteRotaryEncoder GetRotaryEncoder(int trackId) {
-        ValidateTrackId(trackId);
-        return _rotaryEncoders[trackId];
-    }
-
-    protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
-        double newValue = (double) incomingEventControlValue / SevenBitNumber.MaxValue;
-        _rotaryEncoders[trackId].AbsoluteRotationPosition.Value = newValue;
     }
 
 }

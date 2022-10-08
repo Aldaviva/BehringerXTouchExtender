@@ -1,4 +1,6 @@
 ﻿using BehringerXTouchExtender;
+using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.TrackControls;
 using CSCore.CoreAudioAPI;
 using KoKo.Property;
 using Timer = System.Timers.Timer;

@@ -1,8 +1,12 @@
-﻿namespace BehringerXTouchExtender;
+﻿using BehringerXTouchExtender.Exceptions;
+using BehringerXTouchExtender.TrackControls;
+
+namespace BehringerXTouchExtender;
 
 public interface IBehringerXTouchExtender<out TRotaryEncoder>: IDisposable where TRotaryEncoder: IRotaryEncoder {
 
     int TrackCount { get; }
+
     bool IsOpen { get; }
 
     /// <exception cref="LifecycleException">if <c>Open()</c> has already been called on this instance</exception>

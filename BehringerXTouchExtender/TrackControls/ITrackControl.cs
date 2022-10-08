@@ -1,6 +1,7 @@
-﻿using KoKo.Property;
+﻿using BehringerXTouchExtender.Enums;
+using KoKo.Property;
 
-namespace BehringerXTouchExtender;
+namespace BehringerXTouchExtender.TrackControls;
 
 public interface ITrackControl {
 
