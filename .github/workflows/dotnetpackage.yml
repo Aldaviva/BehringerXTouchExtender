@@ -14,14 +14,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Clone
+      uses: actions/checkout@v3
+        
     - name: Set up Testspace
       uses: testspace-com/setup-testspace@v1
       with:
         domain: ${{github.repository_owner}}
 
-    - name: Clone
-      uses: actions/checkout@v3
-        
     - name: Restore
       run: dotnet restore
 
