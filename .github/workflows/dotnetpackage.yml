@@ -30,11 +30,12 @@ jobs:
 
     - name: Test
       run: |
+        dir env:
         dotnet test --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --settings Tests/Tests.runsettings --logger "trx;LogFileName=TestResults.xml"
         mv Tests/TestResults/*/coverage.info Tests/TestResults
       env:
-        CORECLR_PROFILER_PATH_32: $env:GITHUB_WORKSPACE\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll
-        CORECLR_PROFILER_PATH_64: $env:GITHUB_WORKSPACE\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll
+        CORECLR_PROFILER_PATH_32: ${{ env.GITHUB_WORKSPACE }}\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll
+        CORECLR_PROFILER_PATH_64: ${{ env.GITHUB_WORKSPACE }}\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll
 
     - name: Pack
       run: dotnet pack ${{ env.ProjectName }} --no-build --configuration Release --verbosity normal
