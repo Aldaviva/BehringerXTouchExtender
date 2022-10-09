@@ -1,6 +1,6 @@
 ﻿using Melanchall.DryWetMidi.Core;
 
-namespace Tests;
+namespace Tests.Utilities;
 
 /*
  * Sadly, MidiEvent classes in DryWetMidi don't override object.Equals(object), so comparing instances with the same property values always returns false.
@@ -13,8 +13,8 @@ internal class NoteEventComparer: IEqualityComparer<NoteEvent> {
 
     public bool Equals(NoteEvent? x, NoteEvent? y) {
         if (ReferenceEquals(x, y)) return true;
-        if (ReferenceEquals(x, null)) return false;
-        if (ReferenceEquals(y, null)) return false;
+        if (x is null) return false;
+        if (y is null) return false;
         if (x.GetType() != y.GetType()) return false;
         return x.NoteNumber.Equals(y.NoteNumber) && x.Velocity.Equals(y.Velocity) && x.EventType.Equals(y.EventType);
     }
@@ -31,8 +31,8 @@ internal class ControlChangeEventComparer: IEqualityComparer<ControlChangeEvent>
 
     public bool Equals(ControlChangeEvent? x, ControlChangeEvent? y) {
         if (ReferenceEquals(x, y)) return true;
-        if (ReferenceEquals(x, null)) return false;
-        if (ReferenceEquals(y, null)) return false;
+        if (x is null) return false;
+        if (y is null) return false;
         if (x.GetType() != y.GetType()) return false;
         return x.ControlNumber.Equals(y.ControlNumber) && x.ControlValue.Equals(y.ControlValue);
     }
@@ -49,8 +49,8 @@ internal class SysExEventComparer: IEqualityComparer<SysExEvent> {
 
     public bool Equals(SysExEvent? x, SysExEvent? y) {
         if (ReferenceEquals(x, y)) return true;
-        if (ReferenceEquals(x, null)) return false;
-        if (ReferenceEquals(y, null)) return false;
+        if (x is null) return false;
+        if (y is null) return false;
         if (x.GetType() != y.GetType()) return false;
         return x.Data.SequenceEqual(y.Data) && x.EventType.Equals(y.EventType);
     }

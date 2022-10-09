@@ -18,7 +18,7 @@ BehringerXTouchExtender
 1. [Usage](#usage)
     - [Rotary encoders](#rotary-encoders)
     - [Scribble strips](#scribble-strips)
-    - [VU meter](#vu-meter)
+    - [VU meters](#vu-meters)
     - [Record, solo, mute, and select buttons](#record-solo-mute-and-select-buttons)
     - [Faders](#faders)
 
@@ -56,7 +56,7 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 dotnet run
 ```
 
-<p align="center"><img src="https://user-images.githubusercontent.com/1417794/187792080-c9c61b89-df7a-4eed-bdf5-0542fa5494d5.jpeg" height="480px" alt="Behringer X-Touch Extender" style="display: block; margin: auto;" /></p>
+![Hello World](https://user-images.githubusercontent.com/1417794/187792080-c9c61b89-df7a-4eed-bdf5-0542fa5494d5.jpeg)
 
 <a id="prerequisites"></a>
 ## Prerequisites
@@ -67,9 +67,9 @@ dotnet run
         1. Turn on the device while holding the track 1 select button
         1. Turn the track 1 rotary encoder knob until the track 1 LCD shows `Ctrl` (absolute MIDI control mode) or `CtrlRel` (relative MIDI control mode)
         1. Press the track 1 select button
-    - *AMD Zen2 (Ryzen 3000) and later:* install [firmware 1.21 or later](https://www.behringer.com/product.html?modelCode=P0CCR) to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495)
+    - *AMD Zen2 (Ryzen 3000) and later only:* install [firmware 1.21 or later](https://www.behringer.com/product.html?modelCode=P0CCR) to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495)
         1. Turn on the device while holding the track 8 record button
-        1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device with USB
+        1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device over USB
         1. Highlight the `X-Touch-Ext` entries in Options › MIDI Devices
         1. Select the downloaded `.syx` file using Actions › Send › SysEx File
         1. Wait for the upgrade to finish
@@ -269,8 +269,8 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 
 For low-level protocol details of this control, see the [Scribble strip RAW MIDI usage](https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips#raw-midi-usage).
 
-<a id="vu-meter"></a>
-### VU meter
+<a id="vu-meters"></a>
+### VU meters
 
 There are eight lights on each VU meter, *at most one* of which can be illuminated at any time. They can also all be turned off.
 

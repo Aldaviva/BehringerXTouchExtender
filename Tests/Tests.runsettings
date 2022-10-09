@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <!-- Documentation: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/VSTestIntegration.md#coverlet-options-supported-by-vstest-integration -->
+    <DataCollectionRunSettings>
+        <DataCollectors>
+            <DataCollector friendlyName="XPlat code coverage">
+                <Configuration>
+                    <Format>lcov</Format>
+
+                    <!-- Exclusion rules are not synchronized with dotCover, which are controlled by BehringerXTouchExtender.sln.DotSettings -->
+                    <!-- Syntax: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#filters -->
+                    <!--<Exclude>[*]*.Facades?.*,[*]*.Façades?.*</Exclude>--> <!-- All types in a Facade, Facades, Façade, or Façades namespace folder -->
+                </Configuration>
+            </DataCollector>
+        </DataCollectors>
+    </DataCollectionRunSettings>
+
+    <!-- Documentation: https://docs.telerik.com/devtools/justmock/integration/general#installation-free-integration-through-the-environment -->
+    <RunConfiguration>
+        <EnvironmentVariables>
+            <JUSTMOCK_INSTANCE>1</JUSTMOCK_INSTANCE>
+            <CORECLR_ENABLE_PROFILING>1</CORECLR_ENABLE_PROFILING>
+            <CORECLR_PROFILER>{B7ABE522-A68F-44F2-925B-81E7488E9EC0}</CORECLR_PROFILER>
+            <CORECLR_PROFILER_PATH_32>%GITHUB_WORKSPACE%\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll</CORECLR_PROFILER_PATH_32>
+            <CORECLR_PROFILER_PATH_64>%GITHUB_WORKSPACE%\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll</CORECLR_PROFILER_PATH_64>
+        </EnvironmentVariables>
+    </RunConfiguration>
+</RunSettings>

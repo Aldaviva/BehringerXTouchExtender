@@ -1,30 +1,49 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="7.3.1" />
-    <PackageReference Include="FluentAssertions" Version="6.7.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FakeItEasy" Version="7.3.1" />
+        <PackageReference Include="FluentAssertions" Version="6.7.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <!-- System.Security.Permissions is required by JustMock -->
+        <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+        <PackageReference Include="xunit" Version="2.4.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.2">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BehringerXTouchExtender\BehringerXTouchExtender.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\BehringerXTouchExtender\BehringerXTouchExtender.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Vendor\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--
+            If you get a TypeLoadException during test execution, it probably indicates a mismatch between the .NET Framework and .NET Core builds of Telerik.JustMock.dll.
+            .NET Framework: <installation-directory>\Libraries\Telerik.JustMock.dll
+            .NET Core:      <installation-directory>\Libraries\netcoreapp2.0\Telerik.JustMock.dll
+            Error message:  System.TypeLoadException : Could not load type 'System.Runtime.Remoting.Proxies.RealProxy' from assembly 'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.
+            Solution:       https://www.telerik.com/forums/error-when-trying-to-mock-sealed-class-servicepartitionresolver
+        -->
+        <Reference Include="Telerik.JustMock">
+            <HintPath>Vendor\JustMock\Telerik.JustMock.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
 </Project>

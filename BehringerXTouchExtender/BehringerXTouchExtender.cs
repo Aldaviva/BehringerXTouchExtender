@@ -1,7 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using BehringerXTouchExtender.Enums;
+﻿using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.Exceptions;
-using BehringerXTouchExtender.Façades;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
@@ -16,8 +14,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
     protected const int TRACK_COUNT = 8;
     public int TrackCount => TRACK_COUNT;
 
-    internal DryWetMidiFaçade MidiFaçade { get; set; } = new();
-
     internal readonly MidiClient MidiClient = new();
 
     private readonly IlluminatedButton[] _recordButtons  = new IlluminatedButton[TRACK_COUNT];
@@ -29,9 +25,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
     private readonly ScribbleStrip[]     _scribbleStrips = new ScribbleStrip[TRACK_COUNT];
 
     protected BehringerXTouchExtender() {
-        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-        Console.CancelKeyPress              += OnProcessExit;
-
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
             _recordButtons[trackId]  = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Record);
             _soloButtons[trackId]    = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Solo);
@@ -92,19 +85,25 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
 
         MidiClient.Dispose();
 
-        MidiClient.FromDevice = MidiFaçade.GetInputDeviceByName(DeviceName) ??
-            throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to receive MIDI messages from.");
-
-        MidiClient.ToDevice = MidiFaçade.GetOutputDeviceByName(DeviceName) ??
-            throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to send MIDI messages to.");
-
-        MidiClient.FromDevice.EventReceived += OnEventReceivedFromDevice;
-
         try {
+            try {
+                MidiClient.FromDevice = InputDevice.GetByName(DeviceName);
+            } catch (ArgumentException e) {
+                throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to receive MIDI messages from.", e);
+            }
+
+            try {
+                MidiClient.ToDevice = OutputDevice.GetByName(DeviceName);
+            } catch (ArgumentException e) {
+                throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to send MIDI messages to.", e);
+            }
+
+            SubscribeToEventsFromDevice();
+
             MidiClient.ToDevice.PrepareForEventsSending();
             MidiClient.FromDevice.StartEventsListening();
         } catch (MidiDeviceException e) {
-            throw new DeviceNotFoundException("Found a MIDI device, but could not connect to it, possibly because it is already in use by another process on this computer.", e);
+            throw new DeviceNotFoundException("Found a Behringer X-Touch Extender, but could not connect to it, possibly because it is already in use by another process on this computer.", e);
         }
 
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
@@ -115,6 +114,15 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
             _vuMeters[trackId].WriteStateToDevice();
             _faders[trackId].WriteStateToDevice();
             _scribbleStrips[trackId].WriteStateToDevice();
+        }
+    }
+
+    /// <summary>
+    /// This is a separate method from <see cref="Open"/> to facilitate unit testing. We want callbacks to work without all the initialization logic running for each track control.
+    /// </summary>
+    internal void SubscribeToEventsFromDevice() {
+        if (MidiClient.FromDevice != null) {
+            MidiClient.FromDevice.EventReceived += OnEventReceivedFromDevice;
         }
     }
 
@@ -202,11 +210,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         }
 
         MidiClient.Dispose();
-    }
-
-    [ExcludeFromCodeCoverage]
-    private void OnProcessExit(object sender, EventArgs e) {
-        Dispose();
     }
 
 }

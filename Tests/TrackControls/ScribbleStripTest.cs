@@ -33,7 +33,7 @@ public class ScribbleStripTest: AbstractTrackControlTest {
         A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.Matches(sysex => sysex.Data[6].Equals(expected)))).MustHaveHappened();
     }
 
-    public static IEnumerable<object[]> EncodeColorData = new[] {
+    public static readonly IEnumerable<object[]> EncodeColorData = new[] {
         new object[] { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Black, (byte) 0x00 },
         new object[] { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Red, (byte) 0x01 },
         new object[] { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Green, (byte) 0x02 },

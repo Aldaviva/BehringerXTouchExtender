@@ -14,6 +14,7 @@ public class FaderTest: AbstractTrackControlTest {
         fader.DesiredPosition.Connect(1); //fader is initialized to 0 when opening the client, so temporarily set a different value to cause the disabling event to be sent below
 
         fader.DesiredPosition.Connect(inputPosition);
+        fader.ActualPosition.Value.Should().Be(inputPosition);
 
         A.CallTo(() => ToDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) (70 + trackId), (SevenBitNumber) expectedPositionToDevice),
             ControlChangeEventComparer.Instance))).MustHaveHappenedOnceExactly();
@@ -31,7 +32,7 @@ public class FaderTest: AbstractTrackControlTest {
 
     [Theory]
     [MemberData(nameof(TrackIdData))]
-    public void HandleRecordButtonPress(int trackId) {
+    public void HandleButtonPress(int trackId) {
         IFader fader = XTouch.GetFader(trackId);
         fader.IsPressed.Value.Should().BeFalse();
         FromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new NoteOnEvent((SevenBitNumber) (110 + trackId), (SevenBitNumber) 127)));

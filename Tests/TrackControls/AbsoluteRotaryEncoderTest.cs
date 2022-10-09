@@ -1,5 +1,4 @@
-﻿using BehringerXTouchExtender.Façades;
-using BehringerXTouchExtender.TrackControls;
+﻿using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
@@ -8,29 +7,25 @@ namespace Tests.TrackControls;
 
 public class AbsoluteRotaryEncoderTest {
 
-    internal readonly IInputDevice                    FromDevice = A.Fake<IInputDevice>();
-    internal readonly IOutputDevice                   ToDevice   = A.Fake<IOutputDevice>();
-    internal readonly DryWetMidiFaçade                MidiFaçade = A.Fake<DryWetMidiFaçade>();
-    internal readonly AbsoluteBehringerXTouchExtender XTouch     = new();
+    private readonly IInputDevice                    _fromDevice = A.Fake<IInputDevice>();
+    private readonly IOutputDevice                   _toDevice   = A.Fake<IOutputDevice>();
+    private readonly AbsoluteBehringerXTouchExtender _xTouch     = new();
 
     public AbsoluteRotaryEncoderTest() {
-        XTouch.MidiFaçade = MidiFaçade;
+        _xTouch.MidiClient.FromDevice = _fromDevice;
+        _xTouch.MidiClient.ToDevice   = _toDevice;
 
-        A.CallTo(() => MidiFaçade.GetInputDeviceByName(A<string>._)).Returns(FromDevice);
-        A.CallTo(() => MidiFaçade.GetOutputDeviceByName(A<string>._)).Returns(ToDevice);
-        A.CallTo(() => FromDevice.IsListeningForEvents).Returns(true);
+        _xTouch.SubscribeToEventsFromDevice();
 
-        XTouch.Open();
-
-        Fake.ClearRecordedCalls(ToDevice);
+        A.CallTo(() => _fromDevice.IsListeningForEvents).Returns(true);
     }
 
     [Theory]
     [MemberData(nameof(RelativeRotaryEncoderRotationData))]
     public void HandleRotaryEncoderRotation(int trackId, int controlValue, double expectedPosition) {
-        IAbsoluteRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
+        IAbsoluteRotaryEncoder rotaryEncoder = _xTouch.GetRotaryEncoder(trackId);
 
-        FromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) (80 + trackId), (SevenBitNumber) controlValue)));
+        _fromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) (80 + trackId), (SevenBitNumber) controlValue)));
 
         rotaryEncoder.RotationPosition.Value.Should().BeApproximately(expectedPosition, 0.01);
     }
