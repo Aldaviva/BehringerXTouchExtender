@@ -36,7 +36,7 @@ internal abstract class RotaryEncoder: PressableButton {
 
 internal class RelativeRotaryEncoder: RotaryEncoder, IRelativeRotaryEncoder {
 
-    public event IRelativeRotaryEncoder.RotaryEncoderRelativeRotationHandler? Rotated;
+    public event EventHandler<IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs>? Rotated;
 
     public RelativeRotaryEncoder(MidiClient midiClient, int trackId): base(midiClient, trackId) { }
 

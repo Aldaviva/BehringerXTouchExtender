@@ -10,15 +10,12 @@ jobs:
   build:
     env:
       ProjectName: BehringerXTouchExtender
+      CORECLR_PROFILER_PATH_32: ${{ github.workspace }}\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll
+      CORECLR_PROFILER_PATH_64: ${{ github.workspace }}\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll
 
     runs-on: windows-latest
 
     steps:
-    - name: Define environment variables
-      run: |
-        write-output "CORECLR_PROFILER_PATH_32=$env:GITHUB_WORKSPACE\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll" >> $env:GITHUB_ENV
-        write-output "CORECLR_PROFILER_PATH_64=$env:GITHUB_WORKSPACE\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll" >> $env:GITHUB_ENV
-
     - name: Clone
       uses: actions/checkout@v3
 
@@ -35,7 +32,6 @@ jobs:
 
     - name: Test
       run: |
-        dir env:
         dotnet test --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --settings Tests/Tests.runsettings --logger "trx;LogFileName=TestResults.xml"
         mv Tests/TestResults/*/coverage.info Tests/TestResults
 

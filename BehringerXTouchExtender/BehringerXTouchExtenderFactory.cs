@@ -1,6 +1,12 @@
 ﻿namespace BehringerXTouchExtender;
 
-public class BehringerXTouchExtenderFactory {
+/// <summary>
+/// <para>Primary entry point into the <c>BehringerXTouchExtender</c> library.</para>
+/// <para>Creates instances of <see cref="IBehringerXTouchExtender{TRotaryEncoder}"/> that let you communicate with a Behringer X-Touch Extender MIDI device over USB.</para>
+/// <para>The method that you should call depends on the device's configured operation mode, either <c>Ctrl</c> or <c>CtrlRel</c>.</para>
+/// <para>See <see cref="CreateWithAbsoluteMode"/> and <see cref="CreateWithRelativeMode"/> for descriptions of these two modes.</para>
+/// </summary>
+public static class BehringerXTouchExtenderFactory {
 
     /// <summary>
     /// <para>Create a client for a Behringer X-Touch Extender in Relative mode, which is where the rotary encoder knobs report rotation in terms of which direction they were turned.</para>

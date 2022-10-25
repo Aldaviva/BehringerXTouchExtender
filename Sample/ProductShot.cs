@@ -17,7 +17,7 @@ public static class ProductShot {
         int[]    rotaryEncoderLightPositions = { 2, 2, 0, 0, 6, 10, 12, 12 };
         string[] scribbleStripBottomText     = { "-32", "-32", "-64", "-64", "C", "+32", "+64", "+64" };
         ScribbleStripTextColor[] scribbleStripTextColors = {
-            ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light,
+            ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light,
             ScribbleStripTextColor.Light, ScribbleStripTextColor.Light
         };
         ScribbleStripBackgroundColor[] scribbleStripBackgroundColors = {

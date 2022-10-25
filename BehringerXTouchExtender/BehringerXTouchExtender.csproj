@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.1-SNAPSHOT1</Version>
+        <Version>0.0.1-SNAPSHOT2</Version>
         <Authors>Ben Hutchison</Authors>
         <Company>Ben Hutchison</Company>
         <PackageId>BehringerXTouchExtender</PackageId>
@@ -21,7 +21,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <!-- <GenerateDocumentationFile>true</GenerateDocumentationFile> -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IncludeSource>true</IncludeSource>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
