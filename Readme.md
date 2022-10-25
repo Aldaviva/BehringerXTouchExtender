@@ -34,7 +34,7 @@ BehringerXTouchExtender
 
 ```bat
 dotnet new console
-dotnet install package BehringerXTouchExtender
+dotnet add package BehringerXTouchExtender
 ```
 
 ```cs

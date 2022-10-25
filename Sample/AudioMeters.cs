@@ -5,9 +5,9 @@ using CSCore.CoreAudioAPI;
 using KoKo.Property;
 using Timer = System.Timers.Timer;
 
-namespace Sample; 
+namespace Sample;
 
-public class AudioMeters {
+public static class AudioMeters {
 
     public static void Main() {
         using IBehringerXTouchExtender<IRelativeRotaryEncoder> device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
