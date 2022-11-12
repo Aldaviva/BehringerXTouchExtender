@@ -21,13 +21,16 @@ BehringerXTouchExtender
     - [VU meters](#vu-meters)
     - [Record, solo, mute, and select buttons](#record-solo-mute-and-select-buttons)
     - [Faders](#faders)
+    - [Disposal](#disposal)
+1. [References](#references)
+1. [Acknowledgements](#acknowledgements)
 
 <!-- /MarkdownTOC -->
 
 </details>
 </p>
 
-<p align="center"><img src="https://mediadl.musictribe.com/media/PLM/data/images/products/P0CCR/2000Wx2000H/Image_BE_P0CCR_X-TOUCH-EXTENDER_Top_XL.png" height="480px" alt="Behringer X-Touch Extender" style="display: block; margin: auto;" /></p>
+<p align="center"><img src=".github/images/xtouch-extender.webp" height="480px" alt="Behringer X-Touch Extender" style="display: block; margin: auto;" /></p>
 
 <a id="quick-start"></a>
 ## Quick Start
@@ -56,7 +59,7 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 dotnet run
 ```
 
-![Hello World](https://user-images.githubusercontent.com/1417794/187792080-c9c61b89-df7a-4eed-bdf5-0542fa5494d5.jpeg)
+![Hello World](.github/images/helloworld.jpg)
 
 <a id="prerequisites"></a>
 ## Prerequisites
@@ -67,7 +70,7 @@ dotnet run
         1. Turn on the device while holding the track 1 select button
         1. Turn the track 1 rotary encoder knob until the track 1 LCD shows `Ctrl` (absolute MIDI control mode) or `CtrlRel` (relative MIDI control mode)
         1. Press the track 1 select button
-    - *AMD Zen2 (Ryzen 3000) and later only:* install [firmware 1.21 or later](https://www.behringer.com/product.html?modelCode=P0CCR) to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495)
+    - *AMD Zen2 (Ryzen 3000) and later only:* install [firmware 1.21 or later](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip) to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495)
         1. Turn on the device while holding the track 8 record button
         1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device over USB
         1. Highlight the `X-Touch-Ext` entries in Options › MIDI Devices
@@ -368,3 +371,45 @@ This property will change in response to both manual (finger) and automatic (mot
 fader.ActualPosition.PropertyChanged += (sender, args) =>
         Console.WriteLine($"Fader moved to {args.NewValue:P0}");
 ```
+
+<a id="disposal"></a>
+### Disposal
+
+When you're done using an `IBehringerXTouchExtender<>` instance, you should [dispose](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/using-objects) of it to cleanly close the MIDI connection to the device. You can do this explicitly by calling `IBehringerXTouchExtender.Dispose()`, implicitly with a [`using` statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement) or [declaration](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement), or implicitly with a dependency injection framework that manages the lifecycle of your components.
+
+```cs
+public void ExplicitlyDispose() {
+    var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
+    // use device
+    device.Dispose();
+}
+```
+
+```cs
+public void ImplicitlyDisposeWithUsingDeclaration() {
+    using var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
+    // use device
+    // when control exits the Main method, device will be disposed
+}
+```
+
+```cs
+public void ImplicitlyDisposeWithUsingStatement() {
+    using (var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode()) {
+        // use device
+        // when control exits the using block, device will be disposed
+    }
+}
+```
+
+<a id="references"></a>
+## References
+- [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=P0CCR)
+- [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/X-TOUCH%20EXTENDER_QSG_WW.pdf)
+- [Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
+
+<a id="acknowledgements"></a>
+## Acknowledgements
+
+- [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library to control MIDI devices in .NET
+- The person on the now-deleted MusicTribe forums who correctly [answered a question](https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306) about the 5th byte of the scribble strip SysEx message, the value of which must be the message length `0x15` instead of the incorrectly documented device ID `0x42`.
