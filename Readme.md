@@ -11,6 +11,8 @@ BehringerXTouchExtender
 
 1. [Quick Start](#quick-start)
 1. [Prerequisites](#prerequisites)
+    - [MIDI control mode](#midi-control-mode)
+    - [Firmware upgrade](#firmware-upgrade)
 1. [Installation](#installation)
 1. [Connection](#connection)
 1. [Track identifiers](#track-identifiers)
@@ -65,22 +67,34 @@ dotnet run
 ## Prerequisites
 
 - A [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=P0CCR)
-    - Connect over USB, not Ethernet
-    - Set to absolute or relative MIDI control mode (persistent)
-        1. Turn on the device while holding the track 1 select button
-        1. Turn the track 1 rotary encoder knob until the track 1 LCD shows `Ctrl` (absolute MIDI control mode) or `CtrlRel` (relative MIDI control mode)
-        1. Press the track 1 select button
-    - *AMD Zen2 (Ryzen 3000) and later only:* install [firmware 1.21 or later](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip) to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495)
-        1. Turn on the device while holding the track 8 record button
-        1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device over USB
-        1. Highlight the `X-Touch-Ext` entries in Options › MIDI Devices
-        1. Select the downloaded `.syx` file using Actions › Send › SysEx File
-        1. Wait for the upgrade to finish
-        1. Reboot the device using the power button
-- Any Microsoft .NET runtime that supports [.NET Standard 2.0 or later](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#net-standard-versions)
+- A Microsoft .NET runtime that supports [.NET Standard 2.0 or later](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#net-standard-versions):
     - [.NET 5.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
     - [.NET Core 2.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
     - [.NET Framework 4.6.1 or later](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
+
+<a id="midi-control-mode"></a>
+### MIDI control mode
+
+You must manually set the device to absolute or relative MIDI control mode. The other two modes, HUI and MC, are not supported by this library.
+
+1. Turn on the device while holding the track 1 select button
+1. Turn the track 1 rotary encoder knob until the track 1 LCD shows `Ctrl` (absolute MIDI control mode) or `CtrlRel` (relative MIDI control mode)
+1. Press the track 1 select button
+1. Remember which mode you chose when you [connect](#connection) to the device
+
+<a id="firmware-upgrade"></a>
+### Firmware upgrade
+
+If your computer has an AMD Zen2 (Ryzen 3000) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
+
+1. [Download the firmware](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
+1. Extract the `.syx` file from the `.zip` file
+1. Turn on the device while holding the track 8 record button
+1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device over USB
+1. Highlight the `X-Touch-Ext` entries in Options › MIDI Devices
+1. Select the downloaded `.syx` file using Actions › Send › SysEx File
+1. Wait for the upgrade to finish
+1. Reboot the device using the power button
 
 <a id="installation"></a>
 ## Installation
@@ -188,11 +202,11 @@ IRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 <a id="illuminating-lights"></a>
 #### Illuminating lights
 
-There are thirteen orange lights on each rotary encoder. *Exactly one* of them is illuminated at any given time. Set the **`LightPosition`** property to change which light is illuminated.
+There are thirteen orange lights on each rotary encoder. *Exactly one* of them is illuminated at any given time. You can't turn them all off at the same time. Set the **`LightPosition`** property to change which light is illuminated.
 
 They are numbered from `0` (most counter-clockwise) to `12` (most clockwise). Values outside this range are clipped to stay within `[0, 12]`.
 
-The maximum value `13` is available programmatically in the `IRotaryEncoder.LightCount` property.
+The number of lights `13` is available programmatically in the `IRotaryEncoder.LightCount` property.
 
 ```cs
 rotaryEncoder.LightPosition.Connect(0);
@@ -216,11 +230,11 @@ rotaryEncoder.IsPressed.PropertyChanged += (sender, args) =>
 
 The available Properties and their values for a rotary encoder depend on whether you created your `IBehringerXTouchExtender` instance using either `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()` or `.CreateWithRelativeMode()`.
 
-This control mode must match the [configured mode on the physical X-Touch Extender](#prerequisites) (`Ctrl` or `CtrlRel`, respectively).
+This control mode must match the [configured mode on the physical X-Touch Extender](#midi-control-mode) (`Ctrl` or `CtrlRel`, respectively).
 
 ##### Absolute control mode
 
-Available when you [set the X-Touch Extender's control mode](#prerequisites) to `Ctrl` and called `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()`.
+Available when you [set the X-Touch Extender's control mode](#midi-control-mode) to `Ctrl` and called `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()`.
 
 When the knob is rotated, the rotary encoder will update its **`RotationPosition`** Property with the new position of the knob, from `0.0` (most counter-clockwise) to `1.0` (most clockwise).
 
@@ -237,7 +251,7 @@ rotaryEncoder.RotationPosition.PropertyChanged += (sender, args) =>
 
 ##### Relative control mode
 
-Available when you [set the X-Touch Extender's control mode](#prerequisites) to `CtrlRel` and called `BehringerXTouchExtenderFactory.CreateWithRelativeMode()`.
+Available when you [set the X-Touch Extender's control mode](#midi-control-mode) to `CtrlRel` and called `BehringerXTouchExtenderFactory.CreateWithRelativeMode()`.
 
 When the knob is rotated, the rotary encoder will emit a **`Rotated`** event that tells you in which direction it was rotated. It does not tell you how far it was rotated, instead, it sends more `Rotated` events as you continue to turn the knob.
 
@@ -380,7 +394,8 @@ When you're done using an `IBehringerXTouchExtender<>` instance, you should [dis
 ```cs
 public void ExplicitlyDispose() {
     var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
-    // use device
+    device.Open();
+    // use device here
     device.Dispose();
 }
 ```
@@ -388,7 +403,8 @@ public void ExplicitlyDispose() {
 ```cs
 public void ImplicitlyDisposeWithUsingDeclaration() {
     using var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
-    // use device
+    device.Open();
+    // use device here
     // when control exits the Main method, device will be disposed
 }
 ```
@@ -396,7 +412,8 @@ public void ImplicitlyDisposeWithUsingDeclaration() {
 ```cs
 public void ImplicitlyDisposeWithUsingStatement() {
     using (var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode()) {
-        // use device
+        device.Open();
+        // use device here
         // when control exits the using block, device will be disposed
     }
 }
@@ -411,5 +428,5 @@ public void ImplicitlyDisposeWithUsingStatement() {
 <a id="acknowledgements"></a>
 ## Acknowledgements
 
-- [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library to control MIDI devices in .NET
-- The person on the now-deleted MusicTribe forums who correctly [answered a question](https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306) about the 5th byte of the scribble strip SysEx message, the value of which must be the message length `0x15` instead of the incorrectly documented device ID `0x42`.
+- [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library that controls MIDI devices from .NET
+- The person on the now-deleted MusicTribe forums who correctly [answered a question](https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306) about the 5th byte of the scribble strip SysEx message, the value of which must be the message length `0x15` instead of the incorrectly documented device ID `0x42`
