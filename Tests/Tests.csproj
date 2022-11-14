@@ -11,7 +11,7 @@
     <ItemGroup>
         <PackageReference Include="FakeItEasy" Version="7.3.1" />
         <PackageReference Include="FluentAssertions" Version="6.8.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
         <!-- System.Security.Permissions is required by JustMock -->
         <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
         <PackageReference Include="xunit" Version="2.4.2" />
