@@ -199,7 +199,6 @@ scribbleStrip.BottomText.Connect("World");
 IRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 ```
 
-<a id="illuminating-lights"></a>
 #### Illuminating lights
 
 There are thirteen orange lights on each rotary encoder. *Exactly one* of them is illuminated at any given time. You can't turn them all off at the same time. Set the **`LightPosition`** property to change which light is illuminated.
@@ -213,7 +212,6 @@ rotaryEncoder.LightPosition.Connect(0);
 // Most counter-clockwise light illuminates
 ```
 
-<a id="detecting-presses"></a>
 #### Detecting presses
 
 You can click in on the knob and the rotary encoder's **`IsPressed`** Property will change to `true` (pressed) or `false` (not pressed).
@@ -225,7 +223,6 @@ rotaryEncoder.IsPressed.PropertyChanged += (sender, args) =>
         Console.WriteLine($"Rotary encoder was {(args.NewValue ? "pressed" : "released")}");
 ```
 
-<a id="detecting-rotation"></a>
 #### Detecting rotation
 
 The available Properties and their values for a rotary encoder depend on whether you created your `IBehringerXTouchExtender` instance using either `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()` or `.CreateWithRelativeMode()`.
@@ -313,7 +310,6 @@ IIlluminatedButton muteButton   = device.GetMuteButton(0);
 IIlluminatedButton selectButton = device.GetSelectButton(0);
 ```
 
-<a id="illuminating-lights-1"></a>
 #### Illuminating lights
 
 The buttons lights up different colors depending on what kind of button it is when you set their **`IlluminationState`** Properties to `On`. You can also use the `Blinking` value to make them blink with a pattern of 0.5 seconds on, 0.5 seconds off. The `Off` value turns off the lights.
@@ -330,7 +326,6 @@ button.IlluminationState.Connect(DerivedProperty<IlluminatedButtonState>.Create(
         isPressed ? IlluminatedButtonState.On : IlluminatedButtonState.Off));
 ```
 
-<a id="detecting-presses-1"></a>
 #### Detecting presses
 
 You can press the buttons and their **`IsPressed`** Properties will change to `true` (pressed) or `false` (not pressed).
@@ -346,7 +341,6 @@ The finger rest knobs have capacitive touch sensors, so the device can sense whe
 IFader fader = device.GetFader(0);
 ```
 
-<a id="detecting-presses-2"></a>
 #### Detecting presses
 
 You can touch the fader knob and its **`IsPressed`** Property will change to `true` (touching) or `false` (not touching).
@@ -356,7 +350,6 @@ fader.IsPressed.PropertyChanged += (sender, args) =>
         Console.WriteLine($"{(args.NewValue ? "Touching" : "Not touching")} fader");
 ```
 
-<a id="requesting-movement"></a>
 #### Requesting movement
 
 The range of motion for each fader is from `0.0` at the bottom to `1.0` at the top. If you try to move the fader to a value outside this range, it will be clipped to stay within the range `[0.0, 1.0]`.
@@ -374,7 +367,6 @@ fader.DesiredPosition.Connect(1.0);
 
 If the fader is being pressed when you change the `DesiredPosition` value, the change will be automatically ignored so that the knob moving doesn't surprise or hurt the user.
 
-<a id="detecting-movement"></a>
 #### Detecting movement
 
 There is a separate **`ActualPosition`** Property that shows where the fader is currently located, which is different from the `DesiredPosition` Property that you use to actuate the motor. These are two separate Properties instead of one in order to prevent infinite event loops, and to make it possible to subscribe to only the changes events that you want.
