@@ -7,7 +7,7 @@
         <PackageId>BehringerXTouchExtender</PackageId>
         <Product>BehringerXTouchExtender</Product>
         <Description>Send and receive events with a Behringer X-Touch Extender DAW MIDI control surface over USB.</Description>
-        <Copyright>© 2022 Ben Hutchison</Copyright>
+        <Copyright>© 2023 Ben Hutchison</Copyright>
         <PackageProjectUrl>https://github.com/Aldaviva/BehringerXTouchExtender</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Aldaviva/BehringerXTouchExtender.git</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
