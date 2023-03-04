@@ -75,26 +75,28 @@ dotnet run
 <a id="midi-control-mode"></a>
 ### MIDI control mode
 
-You must manually set the device to absolute or relative MIDI control mode. The other two modes, HUI and MC, are not supported by this library.
+You must manually set the X-Touch Extender to use absolute or relative MIDI control mode. The other two modes, HUI and MC, are not supported by this library.
 
-1. Turn on the device while holding the track 1 select button
-1. Turn the track 1 rotary encoder knob until the track 1 LCD shows `Ctrl` (absolute MIDI control mode) or `CtrlRel` (relative MIDI control mode)
-1. Press the track 1 select button
+1. Turn on the X-Touch Extender while holding the leftmost Select button
+1. Turn the leftmost rotary encoder knob until the LCD shows `Ctrl` (**absolute** MIDI control mode) or `CtrlRel` (**relative** MIDI control mode)
+1. Press the leftmost Select button
 1. Remember which mode you chose when you [connect](#connection) to the device
+
+Once configured, the X-Touch Extender will persist this control mode setting until you change it again, even after being turned off or unplugged. You don't have to set it every time you turn the device on.
 
 <a id="firmware-upgrade"></a>
 ### Firmware upgrade
 
-If your computer has an AMD Zen2 (Ryzen 3000) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
+If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
 
 1. [Download the firmware](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
 1. Extract the `.syx` file from the `.zip` file
-1. Turn on the device while holding the track 8 record button
-1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the device over USB
-1. Highlight the `X-Touch-Ext` entries in Options › MIDI Devices
-1. Select the downloaded `.syx` file using Actions › Send › SysEx File
+1. Turn on the X-Touch Extender while holding the rightmost Record button
+1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the X-Touch Extender over USB
+1. Select Options › MIDI Devices and highlight the `X-Touch-Ext` entries
+1. Select Actions › Send › SysEx File and choose the `.syx` file from step 2
 1. Wait for the upgrade to finish
-1. Reboot the device using the power button
+1. Reboot the X-Touch Extender using its power switch
 
 <a id="installation"></a>
 ## Installation
@@ -107,7 +109,7 @@ You can install this library into your project from [NuGet Gallery](https://www.
 <a id="connection"></a>
 ## Connection
 
-1. Use `BehringerXTouchExtenderFactory` to create a device instance you can use.
+1. Use `BehringerXTouchExtenderFactory` to create a device instance you can use. The choice of which factory method to call depends on the device's [configured MIDI control mode](#midi-control-mode).
     - If you set your X-Touch Extender to `Ctrl` mode:
         ```cs
         using BehringerXTouchExtender;
@@ -397,7 +399,7 @@ public void ImplicitlyDisposeWithUsingDeclaration() {
     using var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
     device.Open();
     // use device here
-    // when control exits the Main method, device will be disposed
+    // when control exits the ImplicitlyDisposeWithUsingDeclaration method, device will be disposed
 }
 ```
 
