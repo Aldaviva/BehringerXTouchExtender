@@ -314,9 +314,9 @@ IIlluminatedButton selectButton = device.GetSelectButton(0);
 
 #### Illuminating lights
 
-The buttons lights up different colors depending on what kind of button it is when you set their **`IlluminationState`** Properties to `On`. You can also use the `Blinking` value to make them blink with a pattern of 0.5 seconds on, 0.5 seconds off. The `Off` value turns off the lights.
+When you set a button's **`IlluminationState`** Property to `On`, the button lights up with a color that depends on the kind of button it is. The record and mute buttons light up red, the solo buttons light up yellow, and the select buttons light up green.
 
-The record and mute buttons light up red, the solo buttons light up yellow, and the select buttons light up green. When they are off, the buttons are all gray.
+You can also use the `Blinking` value to make a button blink with a repeating pattern of 0.5 seconds on, 0.5 seconds off. The `Off` value turns off the light. When they are off, all of the buttons are gray.
 
 ```cs
 button.IlluminationState.Connect(IlluminatedButtonState.On);
