@@ -197,7 +197,7 @@ scribbleStrip.BottomText.Connect("World");
 <a id="rotary-encoders"></a>
 ### Rotary encoders
 
-```
+```cs
 IRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 ```
 
