@@ -3,7 +3,7 @@ BehringerXTouchExtender
 
 [![Nuget](https://img.shields.io/nuget/v/BehringerXTouchExtender?logo=nuget)](https://www.nuget.org/packages/BehringerXTouchExtender/) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Aldaviva/BehringerXTouchExtender/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/BehringerXTouchExtender/actions/workflows/dotnetpackage.yml) [![Testspace](https://img.shields.io/testspace/tests/Aldaviva/Aldaviva:BehringerXTouchExtender/master?passed_label=passing&failed_label=failing&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NTkgODYxIj48cGF0aCBkPSJtNTk4IDUxMy05NCA5NCAyOCAyNyA5NC05NC0yOC0yN3pNMzA2IDIyNmwtOTQgOTQgMjggMjggOTQtOTQtMjgtMjh6bS00NiAyODctMjcgMjcgOTQgOTQgMjctMjctOTQtOTR6bTI5My0yODctMjcgMjggOTQgOTQgMjctMjgtOTQtOTR6TTQzMiA4NjFjNDEuMzMgMCA3Ni44My0xNC42NyAxMDYuNS00NFM1ODMgNzUyIDU4MyA3MTBjMC00MS4zMy0xNC44My03Ni44My00NC41LTEwNi41UzQ3My4zMyA1NTkgNDMyIDU1OWMtNDIgMC03Ny42NyAxNC44My0xMDcgNDQuNXMtNDQgNjUuMTctNDQgMTA2LjVjMCA0MiAxNC42NyA3Ny42NyA0NCAxMDdzNjUgNDQgMTA3IDQ0em0wLTU1OWM0MS4zMyAwIDc2LjgzLTE0LjgzIDEwNi41LTQ0LjVTNTgzIDE5Mi4zMyA1ODMgMTUxYzAtNDItMTQuODMtNzcuNjctNDQuNS0xMDdTNDczLjMzIDAgNDMyIDBjLTQyIDAtNzcuNjcgMTQuNjctMTA3IDQ0cy00NCA2NS00NCAxMDdjMCA0MS4zMyAxNC42NyA3Ni44MyA0NCAxMDYuNVMzOTAgMzAyIDQzMiAzMDJ6bTI3NiAyODJjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjY3IDE0LjY3LTEwNiA0NHMtNDQgNjUtNDQgMTA3YzAgNDEuMzMgMTQuNjcgNzYuODMgNDQgMTA2LjVTNjY2LjY3IDU4NCA3MDggNTg0em0tNTU3IDBjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjgzIDE0LjY3LTEwNi41IDQ0UzAgMzkxIDAgNDMzYzAgNDEuMzMgMTQuODMgNzYuODMgNDQuNSAxMDYuNVMxMDkuNjcgNTg0IDE1MSA1ODR6IiBmaWxsPSIjZmZmIi8%2BPC9zdmc%2B)](https://aldaviva.testspace.com/spaces/191394) [![Coveralls](https://img.shields.io/coveralls/github/Aldaviva/BehringerXTouchExtender?logo=coveralls)](https://coveralls.io/github/Aldaviva/BehringerXTouchExtender?branch=master)
 
-*Send and receive events with a [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=P0CCR) DAW MIDI control surface over USB.*
+*Send and receive events with a [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH) DAW MIDI control surface over USB.*
 
 <p><details><summary><strong>Table of Contents</strong></summary>
 
@@ -66,7 +66,7 @@ dotnet run
 <a id="prerequisites"></a>
 ## Prerequisites
 
-- A [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=P0CCR)
+- A [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
 - A Microsoft .NET runtime that supports [.NET Standard 2.0 or later](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#net-standard-versions):
     - [.NET 5.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
     - [.NET Core 2.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
@@ -415,8 +415,8 @@ public void ImplicitlyDisposeWithUsingStatement() {
 
 <a id="references"></a>
 ## References
-- [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=P0CCR)
-- [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/X-TOUCH%20EXTENDER_QSG_WW.pdf)
+- [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
+- [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
 - [Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
 
 <a id="acknowledgements"></a>

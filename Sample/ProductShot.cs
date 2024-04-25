@@ -7,9 +7,11 @@ namespace Sample;
 public static class ProductShot {
 
     /// <summary>
-    /// <para>Recreates the control state shown in the official product photograph on https://www.behringer.com/product.html?modelCode=P0CCR</para>
+    /// <para>Recreates the control state shown in the official product photograph on https://www.behringer.com/product.html?modelCode=0808-AAH</para>
     /// <para>Photo: https://mediadl.musictribe.com/media/PLM/data/images/products/P0CCR/2000Wx2000H/Image_BE_P0CCR_X-TOUCH-EXTENDER_Top_XL.png</para>
     /// </summary>
+    /// <exception cref="BehringerXTouchExtender.Exceptions.LifecycleException"></exception>
+    /// <exception cref="BehringerXTouchExtender.Exceptions.DeviceNotFoundException"></exception>
     public static void Main() {
         using IRelativeBehringerXTouchExtender device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
         device.Open();
