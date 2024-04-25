@@ -1,13 +1,11 @@
-BehringerXTouchExtender
+🎚️ BehringerXTouchExtender
 ===
 
 [![Nuget](https://img.shields.io/nuget/v/BehringerXTouchExtender?logo=nuget)](https://www.nuget.org/packages/BehringerXTouchExtender/) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Aldaviva/BehringerXTouchExtender/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/BehringerXTouchExtender/actions/workflows/dotnetpackage.yml) [![Testspace](https://img.shields.io/testspace/tests/Aldaviva/Aldaviva:BehringerXTouchExtender/master?passed_label=passing&failed_label=failing&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NTkgODYxIj48cGF0aCBkPSJtNTk4IDUxMy05NCA5NCAyOCAyNyA5NC05NC0yOC0yN3pNMzA2IDIyNmwtOTQgOTQgMjggMjggOTQtOTQtMjgtMjh6bS00NiAyODctMjcgMjcgOTQgOTQgMjctMjctOTQtOTR6bTI5My0yODctMjcgMjggOTQgOTQgMjctMjgtOTQtOTR6TTQzMiA4NjFjNDEuMzMgMCA3Ni44My0xNC42NyAxMDYuNS00NFM1ODMgNzUyIDU4MyA3MTBjMC00MS4zMy0xNC44My03Ni44My00NC41LTEwNi41UzQ3My4zMyA1NTkgNDMyIDU1OWMtNDIgMC03Ny42NyAxNC44My0xMDcgNDQuNXMtNDQgNjUuMTctNDQgMTA2LjVjMCA0MiAxNC42NyA3Ny42NyA0NCAxMDdzNjUgNDQgMTA3IDQ0em0wLTU1OWM0MS4zMyAwIDc2LjgzLTE0LjgzIDEwNi41LTQ0LjVTNTgzIDE5Mi4zMyA1ODMgMTUxYzAtNDItMTQuODMtNzcuNjctNDQuNS0xMDdTNDczLjMzIDAgNDMyIDBjLTQyIDAtNzcuNjcgMTQuNjctMTA3IDQ0cy00NCA2NS00NCAxMDdjMCA0MS4zMyAxNC42NyA3Ni44MyA0NCAxMDYuNVMzOTAgMzAyIDQzMiAzMDJ6bTI3NiAyODJjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjY3IDE0LjY3LTEwNiA0NHMtNDQgNjUtNDQgMTA3YzAgNDEuMzMgMTQuNjcgNzYuODMgNDQgMTA2LjVTNjY2LjY3IDU4NCA3MDggNTg0em0tNTU3IDBjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjgzIDE0LjY3LTEwNi41IDQ0UzAgMzkxIDAgNDMzYzAgNDEuMzMgMTQuODMgNzYuODMgNDQuNSAxMDYuNVMxMDkuNjcgNTg0IDE1MSA1ODR6IiBmaWxsPSIjZmZmIi8%2BPC9zdmc%2B)](https://aldaviva.testspace.com/spaces/191394) [![Coveralls](https://img.shields.io/coveralls/github/Aldaviva/BehringerXTouchExtender?logo=coveralls)](https://coveralls.io/github/Aldaviva/BehringerXTouchExtender?branch=master)
 
 *Send and receive events with a [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH) DAW MIDI control surface over USB.*
 
-<p><details><summary><strong>Table of Contents</strong></summary>
-
-<!-- MarkdownTOC autolink="true" bracket="round" autoanchor="true" levels="1,2,3" bullets="1.,-,-" -->
+<!-- MarkdownTOC autolink="true" bracket="round" autoanchor="false" levels="1,2,3" bullets="1.,-,-" -->
 
 1. [Quick Start](#quick-start)
 1. [Prerequisites](#prerequisites)
@@ -29,12 +27,8 @@ BehringerXTouchExtender
 
 <!-- /MarkdownTOC -->
 
-</details>
-</p>
+![Behringer X-Touch Extender](https://raw.githubusercontent.com/Aldaviva/BehringerXTouchExtender/master/.github/images/xtouch-extender.webp)
 
-<p align="center"><img src=".github/images/xtouch-extender.webp" height="480px" alt="Behringer X-Touch Extender" style="display: block; margin: auto;" /></p>
-
-<a id="quick-start"></a>
 ## Quick Start
 
 ```bat
@@ -61,9 +55,8 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 dotnet run
 ```
 
-![Hello World](.github/images/helloworld.jpg)
+![Hello World](https://raw.githubusercontent.com/Aldaviva/BehringerXTouchExtender/master/.github/images/helloworld.jpg)
 
-<a id="prerequisites"></a>
 ## Prerequisites
 
 - A [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
@@ -72,7 +65,6 @@ dotnet run
     - [.NET Core 2.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
     - [.NET Framework 4.6.1 or later](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
 
-<a id="midi-control-mode"></a>
 ### MIDI control mode
 
 You must manually set the X-Touch Extender to use absolute or relative MIDI control mode. The other two modes, HUI and MC, are not supported by this library.
@@ -84,7 +76,6 @@ You must manually set the X-Touch Extender to use absolute or relative MIDI cont
 
 Once configured, the X-Touch Extender will persist this control mode setting until you change it again, even after being turned off or unplugged. You don't have to set it every time you turn the device on.
 
-<a id="firmware-upgrade"></a>
 ### Firmware upgrade
 
 If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
@@ -98,7 +89,6 @@ If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must
 1. Wait for the upgrade to finish
 1. Reboot the X-Touch Extender using its power switch
 
-<a id="installation"></a>
 ## Installation
 
 You can install this library into your project from [NuGet Gallery](https://www.nuget.org/packages/BehringerXTouchExtender):
@@ -106,7 +96,6 @@ You can install this library into your project from [NuGet Gallery](https://www.
 - `Install-Package BehringerXTouchExtender`
 - Go to Project › Manage NuGet Packages in Visual Studio and search for `BehringerXTouchExtender`
 
-<a id="connection"></a>
 ## Connection
 
 1. Use `BehringerXTouchExtenderFactory` to create a device instance you can use. The choice of which factory method to call depends on the device's [configured MIDI control mode](#midi-control-mode).
@@ -127,7 +116,6 @@ You can install this library into your project from [NuGet Gallery](https://www.
     device.Open();
     ```
 
-<a id="track-identifiers"></a>
 ## Track identifiers
 
 The X-Touch Extender is divided into eight vertical banks of controls, called tracks or channels. In this library, they are numbered from 0 on the left to 7 on the right (**0-indexed**).
@@ -138,7 +126,6 @@ Any time this library takes or provides a track ID, it's 0-indexed.
 
 In most of the code examples below, the `trackId` argument used is `0`.
 
-<a id="reactive-data"></a>
 ## Reactive data
 
 This library handles data using **[KoKo](https://github.com/Aldaviva/KoKo/) `Property` objects**. These encapsulate values that can change, including automatically in response to other Properties, and they automatically fire change events.
@@ -191,10 +178,8 @@ If you don't want to create reactive properties, you can connect the device's pr
 scribbleStrip.BottomText.Connect("World");
 ```
 
-<a id="usage"></a>
 ## Usage
 
-<a id="rotary-encoders"></a>
 ### Rotary encoders
 
 ```cs
@@ -265,7 +250,6 @@ rotaryEncoder.Rotated += (sender, args) =>
         Console.WriteLine($"Knob was turned 15° {(args.IsClockwise ? "clockwise" : "counter-clockwise")}");
 ```
 
-<a id="scribble-strips"></a>
 ### Scribble strips
 
 These are the LCD screens at the top of each track column. They are so named because they are digital replacements for putting a strip of tape on your analog mixer and scribbling the channel name on them with a marker.
@@ -285,7 +269,6 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 
 For low-level protocol details of this control, see the [Scribble strip RAW MIDI usage](https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips#raw-midi-usage).
 
-<a id="vu-meters"></a>
 ### VU meters
 
 There are eight lights on each VU meter, *at most one* of which can be illuminated at any time. They can also all be turned off.
@@ -302,7 +285,6 @@ vuMeter.LightPosition.Connect(vuMeter.LightCount);
 // Top red light illuminates
 ```
 
-<a id="record-solo-mute-and-select-buttons"></a>
 ### Record, solo, mute, and select buttons
 
 ```cs
@@ -332,7 +314,6 @@ button.IlluminationState.Connect(DerivedProperty<IlluminatedButtonState>.Create(
 
 You can press the buttons and their **`IsPressed`** Properties will change to `true` (pressed) or `false` (not pressed).
 
-<a id="faders"></a>
 ### Faders
 
 Faders are the vertical sliders on each track. They are motorized, so you can move them programmatically to any given position. You can also move them manually with your fingers and detect where they went.
@@ -380,7 +361,6 @@ fader.ActualPosition.PropertyChanged += (sender, args) =>
         Console.WriteLine($"Fader moved to {args.NewValue:P0}");
 ```
 
-<a id="disposal"></a>
 ### Disposal
 
 When you're done using an `IBehringerXTouchExtender<>` instance, you should [dispose](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/using-objects) of it to cleanly close the MIDI connection to the device. You can do this explicitly by calling `IBehringerXTouchExtender.Dispose()`, implicitly with a [`using` statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement) or [declaration](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement), or implicitly with a dependency injection framework that manages the lifecycle of your components.
@@ -413,13 +393,11 @@ public void ImplicitlyDisposeWithUsingStatement() {
 }
 ```
 
-<a id="references"></a>
 ## References
 - [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
 - [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
 - [Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
 
-<a id="acknowledgements"></a>
 ## Acknowledgements
 
 - [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library that controls MIDI devices from .NET
