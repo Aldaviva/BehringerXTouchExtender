@@ -31,7 +31,7 @@
 
     <ItemGroup>
         <PackageReference Include="KoKo" Version="2.2.0" />
-        <PackageReference Include="Melanchall.DryWetMidi" Version="7.0.2" />
+        <PackageReference Include="Melanchall.DryWetMidi" Version="7.1.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     </ItemGroup>
 
