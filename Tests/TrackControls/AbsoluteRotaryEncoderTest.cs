@@ -32,11 +32,11 @@ public class AbsoluteRotaryEncoderTest {
 
     public static IEnumerable<object[]> RelativeRotaryEncoderRotationData() {
         for (int trackId = 0; trackId < 8; trackId++) {
-            yield return new object[] { trackId, 0, 0 };
-            yield return new object[] { trackId, 32, 0.25 };
-            yield return new object[] { trackId, 64, 0.50 };
-            yield return new object[] { trackId, 95, 0.75 };
-            yield return new object[] { trackId, 127, 1.00 };
+            yield return [trackId, 0, 0];
+            yield return [trackId, 32, 0.25];
+            yield return [trackId, 64, 0.50];
+            yield return [trackId, 95, 0.75];
+            yield return [trackId, 127, 1.00];
         }
     }
 

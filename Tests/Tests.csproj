@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RollForward>latestMajor</RollForward>
-
+        <LangVersion>latest</LangVersion>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <Configurations>$(Configurations);Debug-Elevated</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FakeItEasy" Version="8.2.0" />
-        <PackageReference Include="FluentAssertions" Version="6.12.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="FakeItEasy" Version="8.3.0" />
+        <PackageReference Include="FluentAssertions" Version="6.12.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
         <!-- System.Security.Permissions is required by JustMock -->
         <PackageReference Include="System.Security.Permissions" Version="8.0.0" />
-        <PackageReference Include="xunit" Version="2.7.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
+        <PackageReference Include="xunit" Version="2.9.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -31,15 +32,13 @@
         <ProjectReference Include="..\BehringerXTouchExtender\BehringerXTouchExtender.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' != 'Debug'">
         <Folder Include="Vendor\" />
-    </ItemGroup>
-
-    <ItemGroup>
+        
         <!--
             If you get a TypeLoadException during test execution, it probably indicates a mismatch between the .NET Framework and .NET Core builds of Telerik.JustMock.dll.
             .NET Framework: <installation-directory>\Libraries\Telerik.JustMock.dll
-            .NET Core:      <installation-directory>\Libraries\netcoreapp2.0\Telerik.JustMock.dll
+            .NET Core:      <installation-directory>\Libraries\netcoreapp2.1\Telerik.JustMock.dll
             Error message:  System.TypeLoadException : Could not load type 'System.Runtime.Remoting.Proxies.RealProxy' from assembly 'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.
             Solution:       https://www.telerik.com/forums/error-when-trying-to-mock-sealed-class-servicepartitionresolver
         -->
@@ -47,5 +46,9 @@
             <HintPath>Vendor\JustMock\Telerik.JustMock.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
+        <DefineConstants>RUN_ELEVATED_TESTS</DefineConstants>
+    </PropertyGroup>
 
 </Project>

@@ -396,6 +396,7 @@ public void ImplicitlyDisposeWithUsingStatement() {
 ## References
 - [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
 - [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
+- [Documentation: MIDI interface specifications](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/Document_BE_X-TOUCH-X-TOUCH-EXTENDER-MIDI-Mode-Implementation.pdf)
 - [Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
 
 ## Acknowledgements

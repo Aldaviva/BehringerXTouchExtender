@@ -2,6 +2,7 @@
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
+using Tests.Helpers;
 
 namespace Tests.TrackControls;
 
@@ -22,11 +23,11 @@ public class FaderTest: AbstractTrackControlTest {
 
     public static IEnumerable<object[]> MoveFaderData() {
         for (int trackId = 0; trackId < 8; trackId++) {
-            yield return new object[] { trackId, 0.00, 0 };
-            yield return new object[] { trackId, 0.25, 32 };
-            yield return new object[] { trackId, 0.50, 64 };
-            yield return new object[] { trackId, 0.75, 95 };
-            yield return new object[] { trackId, 1.00, 127 };
+            yield return [trackId, 0.00, 0];
+            yield return [trackId, 0.25, 32];
+            yield return [trackId, 0.50, 64];
+            yield return [trackId, 0.75, 95];
+            yield return [trackId, 1.00, 127];
         }
     }
 

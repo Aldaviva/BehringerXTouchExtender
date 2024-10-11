@@ -62,4 +62,8 @@ public static class BehringerXTouchExtenderFactory {
         return new AbsoluteBehringerXTouchExtender();
     }
 
+    public static IRelativeBehringerXTouchExtender CreateWithHuiMode() {
+        return new HuiBehringerXTouchExtender();
+    }
+
 }

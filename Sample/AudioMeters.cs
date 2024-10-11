@@ -1,5 +1,4 @@
 ﻿using BehringerXTouchExtender;
-using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 using CSCore.CoreAudioAPI;
 using KoKo.Property;
@@ -10,7 +9,7 @@ namespace Sample;
 public static class AudioMeters {
 
     public static void Main() {
-        using IBehringerXTouchExtender<IRelativeRotaryEncoder> device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
+        using IBehringerXTouchExtender<IRelativeRotaryEncoder> device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
 
         Console.WriteLine("Connecting to Behringer X-Touch Extender...");
         device.Open();
@@ -21,10 +20,14 @@ public static class AudioMeters {
         using AudioMeterInformation audioMeterInformation = AudioMeterInformation.FromDevice(mmDevice);
         int                         audioChannelCount     = audioMeterInformation.MeteringChannelCount;
 
-        int vuMeterLightCount = device.GetVuMeter(1).LightCount;
+        int     vuMeterLightCount   = device.GetVuMeter(1).LightCount;
+        int[][] ledPositionsBlitted = new int[2][];
+        ledPositionsBlitted[0] = new int[vuMeterLightCount];
+        ledPositionsBlitted[1] = new int[vuMeterLightCount];
+        int ledPositionsBlitOffset = 0;
         ManuallyRecalculatedProperty<int[]> audioPeaks = new(() => {
             float[] peaks        = audioMeterInformation.GetChannelsPeakValues(audioChannelCount);
-            int[]   ledPositions = new int[audioChannelCount];
+            int[]   ledPositions = ledPositionsBlitted[ledPositionsBlitOffset ^= 1];
             for (int i = 0; i < peaks.Length; i++) {
                 ledPositions[i] = (int) Math.Round(peaks[i] * vuMeterLightCount);
             }
@@ -35,16 +38,16 @@ public static class AudioMeters {
         for (int i = 0; i < device.TrackCount; i++) {
             int trackId = i; //create closure so it doesn't change between when a callback is defined and executed
 
-            IRelativeRotaryEncoder rotaryEncoder              = device.GetRotaryEncoder(trackId);
+            /*IRelativeRotaryEncoder rotaryEncoder              = device.GetRotaryEncoder(trackId);
             StoredProperty<int>    rotaryEncoderLightPosition = new(trackId);
             rotaryEncoder.LightPosition.Connect(rotaryEncoderLightPosition);
             rotaryEncoder.Rotated += (_, rotationArgs) =>
-                rotaryEncoderLightPosition.Value = Math.Max(Math.Min(rotaryEncoderLightPosition.Value + (rotationArgs.IsClockwise ? 1 : -1), rotaryEncoder.LightCount - 1), 0);
+                rotaryEncoderLightPosition.Value = Math.Max(Math.Min(rotaryEncoderLightPosition.Value + (rotationArgs.IsClockwise ? 1 : -1), rotaryEncoder.LightCount - 1), 0);*/
 
             int audioChannel = trackId * audioChannelCount / device.TrackCount; //integer truncation is desired here
             device.GetVuMeter(trackId).LightPosition.Connect(DerivedProperty<int>.Create(audioPeaks, peaks => peaks[audioChannel]));
 
-            IIlluminatedButton                     muteButton      = device.GetMuteButton(trackId);
+            /*IIlluminatedButton                     muteButton      = device.GetMuteButton(trackId);
             StoredProperty<IlluminatedButtonState> muteButtonState = new();
             muteButton.IlluminationState.Connect(muteButtonState);
             muteButton.IsPressed.PropertyChanged += (_, eventArgs) => {
@@ -80,27 +83,33 @@ public static class AudioMeters {
             IFader fader = device.GetFader(trackId);
             fader.IsPressed.PropertyChanged += (_, eventArgs) => {
                 if (eventArgs.NewValue) {
-                    Console.WriteLine($"User is touching Fader {trackId}");
+                    Console.WriteLine($"User is touching Fader {trackId + 1}");
                 }
             };
-            fader.ActualPosition.PropertyChanged += (_, eventArgs) => Console.WriteLine($"User moved fader {trackId + 1} to position {eventArgs.NewValue:P0}");
             fader.DesiredPosition.Connect(trackId / (device.TrackCount - 1.0));
+            fader.ActualPosition.PropertyChanged += (_, eventArgs) => Console.WriteLine($"Fader {trackId + 1} moved to position {eventArgs.NewValue:P0}");
 
             device.GetScribbleStrip(trackId).TopText.Connect($"Track {trackId + 1}");
             device.GetScribbleStrip(trackId).BottomText.Connect(new string('.', trackId));
             device.GetScribbleStrip(trackId).TopTextColor.Connect(ScribbleStripTextColor.Dark);
             device.GetScribbleStrip(trackId).BottomTextColor.Connect(ScribbleStripTextColor.Light);
             device.GetScribbleStrip(trackId).BackgroundColor
-                .Connect(trackId == 0 ? ScribbleStripBackgroundColor.White : (ScribbleStripBackgroundColor) trackId); //avoid black background because it makes text illegible
+                .Connect(trackId == 0 ? ScribbleStripBackgroundColor.White : (ScribbleStripBackgroundColor) trackId); //avoid black background because it makes text illegible*/
         }
 
-        const int audioPeakFps   = 15;
-        Timer     audioPeakTimer = new(TimeSpan.FromSeconds(1.0 / audioPeakFps).TotalMilliseconds);
+        const int   audioPeakFps   = 30;
+        using Timer audioPeakTimer = new(TimeSpan.FromSeconds(1.0 / audioPeakFps).TotalMilliseconds);
         audioPeakTimer.Elapsed += (_, _) => audioPeaks.Recalculate();
         audioPeakTimer.Start();
 
-        Console.WriteLine("Press any key to exit.");
-        Console.ReadKey();
+        CancellationTokenSource cts = new();
+        Console.CancelKeyPress += (_, args) => {
+            cts.Cancel();
+            args.Cancel = true;
+        };
+
+        Console.WriteLine("Press Ctrl+C to exit.");
+        cts.Token.WaitHandle.WaitOne();
     }
 
 }

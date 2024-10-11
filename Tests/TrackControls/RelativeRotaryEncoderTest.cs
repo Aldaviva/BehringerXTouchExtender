@@ -2,6 +2,7 @@
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
+using Tests.Helpers;
 
 namespace Tests.TrackControls;
 
@@ -24,19 +25,19 @@ public class RelativeRotaryEncoderTest: AbstractTrackControlTest {
 
     public static IEnumerable<object[]> SetLightPositionData() {
         for (int trackId = 0; trackId < 8; trackId++) {
-            yield return new object[] { trackId, 0, 0 };
-            yield return new object[] { trackId, 1, 11 };
-            yield return new object[] { trackId, 2, 21 };
-            yield return new object[] { trackId, 3, 32 };
-            yield return new object[] { trackId, 4, 42 };
-            yield return new object[] { trackId, 5, 53 };
-            yield return new object[] { trackId, 6, 64 };
-            yield return new object[] { trackId, 7, 74 };
-            yield return new object[] { trackId, 8, 85 };
-            yield return new object[] { trackId, 9, 95 };
-            yield return new object[] { trackId, 10, 106 };
-            yield return new object[] { trackId, 11, 116 };
-            yield return new object[] { trackId, 12, 127 };
+            yield return [trackId, 0, 0];
+            yield return [trackId, 1, 11];
+            yield return [trackId, 2, 21];
+            yield return [trackId, 3, 32];
+            yield return [trackId, 4, 42];
+            yield return [trackId, 5, 53];
+            yield return [trackId, 6, 64];
+            yield return [trackId, 7, 74];
+            yield return [trackId, 8, 85];
+            yield return [trackId, 9, 95];
+            yield return [trackId, 10, 106];
+            yield return [trackId, 11, 116];
+            yield return [trackId, 12, 127];
         }
     }
 
@@ -63,8 +64,8 @@ public class RelativeRotaryEncoderTest: AbstractTrackControlTest {
 
     public static IEnumerable<object[]> RelativeRotaryEncoderRotationData() {
         for (int trackId = 0; trackId < 8; trackId++) {
-            yield return new object[] { trackId, 1, false };
-            yield return new object[] { trackId, 65, true };
+            yield return [trackId, 1, false];
+            yield return [trackId, 65, true];
         }
     }
 

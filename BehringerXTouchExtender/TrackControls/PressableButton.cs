@@ -2,7 +2,7 @@
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal abstract class PressableButton: WritableControl, IPressableButton {
+internal abstract class PressableButton: WritableControl, IPressableButtonInternal {
 
     public abstract int TrackId { get; }
 
@@ -13,7 +13,7 @@ internal abstract class PressableButton: WritableControl, IPressableButton {
         IsPressed = _isPressed;
     }
 
-    internal void OnButtonEvent(bool isPressed) {
+    public void OnButtonEvent(bool isPressed) {
         _isPressed.Value = isPressed;
     }
 

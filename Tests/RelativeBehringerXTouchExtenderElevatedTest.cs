@@ -1,26 +1,28 @@
-﻿using BehringerXTouchExtender.Exceptions;
+﻿#if RUN_ELEVATED_TESTS
+using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
+using Tests.Helpers;
 using Xunit.Abstractions;
 
 namespace Tests;
 
 /*
  * In the IDE, these elevated (advanced mocking) tests only run when both of the following conditions are met:
- *   1. JustMock Profiler must be installed and enabled in Visual Studio
- *   2. Tests must be launched with ReSharper/dotCover's "Cover" mode, not "Run" or "Debug"
+ *   1. JustMock Profiler must be installed and enabled in Visual Studio - this seems to have changed, and ReSharper now adds the JustMock profiler if the Test project refers to the JustMock assembly at all, regardless of JustMock's Enabled state.
+ *   2. Tests must be launched with ReSharper/dotCover's "Cover" mode, not "Run" or "Debug" - this seems to be broken with VS 17.11.5, dotCover 2024.2.20241008.92351, and JustMock 2024.3.805.336 Q3: tests run elevated in Run, but in Cover they're not elevated and also 0 coverage is collected.
  * If either of these conditions are not fulfilled, these tests which require elevation will be skipped.
  *
  * In CI, these tests will always run because of Tests.runsettings
  */
 public class BehringerXTouchExtenderElevatedTest {
-
+    
     private readonly ITestOutputHelper               _testOutputHelper;
     private readonly InputDevice                     _fromDevice = Mock.Create<InputDevice>();
-    private readonly OutputDevice                    _toDevice   = Mock.Create<OutputDevice>();
-    private readonly RelativeBehringerXTouchExtender _xtouch     = new();
+    private readonly OutputDevice                    _toDevice = Mock.Create<OutputDevice>();
+    private readonly RelativeBehringerXTouchExtender _xtouch = new();
 
     public BehringerXTouchExtenderElevatedTest(ITestOutputHelper testOutputHelper) {
         _testOutputHelper = testOutputHelper;
@@ -56,10 +58,10 @@ public class BehringerXTouchExtenderElevatedTest {
         thrower.Should().Throw<DeviceNotFoundException>();
     }
 
-    public static readonly IEnumerable<object[]> XtouchData = new[] {
-        new object[] { new RelativeBehringerXTouchExtender() },
-        new object[] { new AbsoluteBehringerXTouchExtender() }
-    };
+    public static readonly IEnumerable<object[]> XtouchData = [
+        [new RelativeBehringerXTouchExtender()],
+        [new AbsoluteBehringerXTouchExtender()]
+    ];
 
     [ElevatedTheory]
     [MemberData(nameof(XtouchData))]
@@ -76,7 +78,7 @@ public class BehringerXTouchExtenderElevatedTest {
          * 6. Because I believe the call to MidiDevice.Dispose() originated from xUnit's assembly/appdomain/whatever and not our Tests assembly, the JustMock instrumentation doesn't intercept the call
          *    to the mocked MidiDevice.Dispose(), allowing the real Dispose() method to be called instead of the mocked method
          * 7. The real MidiDevice.Dispose() method understandably throws an exception because it was never initialized correctly in the first place
-         * 
+         *
          * By calling Dispose early, before the Open() method returns, JustMock instrumentation is still in effect, so MidiClient happily calls the mocked MidiDevice.Dispose() methods instead of the
          * real method, then sets its references to null so future calls to Dispose() will be no-ops.
          */
@@ -119,5 +121,6 @@ public class BehringerXTouchExtenderElevatedTest {
             }
         }
     }
-
 }
+
+#endif

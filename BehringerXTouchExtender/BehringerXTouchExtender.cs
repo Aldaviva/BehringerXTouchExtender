@@ -1,8 +1,6 @@
-﻿using BehringerXTouchExtender.Enums;
-using BehringerXTouchExtender.Exceptions;
+﻿using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
-using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
@@ -11,67 +9,54 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
 
     private const string DeviceName = "X-Touch-Ext";
 
-    protected const int TRACK_COUNT = 8;
+    protected internal const int TRACK_COUNT = 8;
     public int TrackCount => TRACK_COUNT;
 
     internal readonly MidiClient MidiClient = new();
 
-    private readonly IlluminatedButton[] _recordButtons  = new IlluminatedButton[TRACK_COUNT];
-    private readonly IlluminatedButton[] _soloButtons    = new IlluminatedButton[TRACK_COUNT];
-    private readonly IlluminatedButton[] _muteButtons    = new IlluminatedButton[TRACK_COUNT];
-    private readonly IlluminatedButton[] _selectButtons  = new IlluminatedButton[TRACK_COUNT];
-    private readonly VuMeter[]           _vuMeters       = new VuMeter[TRACK_COUNT];
-    private readonly Fader[]             _faders         = new Fader[TRACK_COUNT];
-    private readonly ScribbleStrip[]     _scribbleStrips = new ScribbleStrip[TRACK_COUNT];
-
-    protected BehringerXTouchExtender() {
-        for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
-            _recordButtons[trackId]  = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Record);
-            _soloButtons[trackId]    = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Solo);
-            _muteButtons[trackId]    = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Mute);
-            _selectButtons[trackId]  = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Select);
-            _vuMeters[trackId]       = new VuMeter(MidiClient, trackId);
-            _faders[trackId]         = new Fader(MidiClient, trackId);
-            _scribbleStrips[trackId] = new ScribbleStrip(MidiClient, trackId);
-            //rotary encoders are constructed in concrete subclasses
-        }
-    }
+    protected readonly IIlluminatedButtonInternal[] RecordButtons  = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] SoloButtons    = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] MuteButtons    = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] SelectButtons  = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IVuMeterInternal[]           VuMeters       = new IVuMeterInternal[TRACK_COUNT];
+    protected readonly IFaderInternal[]             Faders         = new IFaderInternal[TRACK_COUNT];
+    protected readonly IScribbleStripInternal[]     ScribbleStrips = new IScribbleStripInternal[TRACK_COUNT];
 
     public IIlluminatedButton GetRecordButton(int trackId) {
         ValidateTrackId(trackId);
-        return _recordButtons[trackId];
+        return RecordButtons[trackId];
     }
 
     public IIlluminatedButton GetMuteButton(int trackId) {
         ValidateTrackId(trackId);
-        return _muteButtons[trackId];
+        return MuteButtons[trackId];
     }
 
     public IIlluminatedButton GetSoloButton(int trackId) {
         ValidateTrackId(trackId);
-        return _soloButtons[trackId];
+        return SoloButtons[trackId];
     }
 
     public IIlluminatedButton GetSelectButton(int trackId) {
         ValidateTrackId(trackId);
-        return _selectButtons[trackId];
+        return SelectButtons[trackId];
     }
 
     public abstract TRotaryEncoder GetRotaryEncoder(int trackId);
 
     public IVuMeter GetVuMeter(int trackId) {
         ValidateTrackId(trackId);
-        return _vuMeters[trackId];
+        return VuMeters[trackId];
     }
 
     public IFader GetFader(int trackId) {
         ValidateTrackId(trackId);
-        return _faders[trackId];
+        return Faders[trackId];
     }
 
     public IScribbleStrip GetScribbleStrip(int trackId) {
         ValidateTrackId(trackId);
-        return _scribbleStrips[trackId];
+        return ScribbleStrips[trackId];
     }
 
     public bool IsOpen => MidiClient.IsOpen;
@@ -107,13 +92,13 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         }
 
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
-            _recordButtons[trackId].WriteStateToDevice();
-            _selectButtons[trackId].WriteStateToDevice();
-            _soloButtons[trackId].WriteStateToDevice();
-            _muteButtons[trackId].WriteStateToDevice();
-            _vuMeters[trackId].WriteStateToDevice();
-            _faders[trackId].WriteStateToDevice();
-            _scribbleStrips[trackId].WriteStateToDevice();
+            RecordButtons[trackId].WriteStateToDevice();
+            SelectButtons[trackId].WriteStateToDevice();
+            SoloButtons[trackId].WriteStateToDevice();
+            MuteButtons[trackId].WriteStateToDevice();
+            VuMeters[trackId].WriteStateToDevice();
+            Faders[trackId].WriteStateToDevice();
+            ScribbleStrips[trackId].WriteStateToDevice();
         }
     }
 
@@ -126,74 +111,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         }
     }
 
-    private void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs e) {
-        switch (e.Event.EventType) {
-            case MidiEventType.NoteOn:
-                OnEventReceivedFromDevice((NoteOnEvent) e.Event);
-                break;
-            case MidiEventType.ControlChange:
-                OnEventReceivedFromDevice((ControlChangeEvent) e.Event);
-                break;
-            default:
-                break;
-        }
-    }
-
-    // ReSharper disable once SuggestBaseTypeForParameter
-    private void OnEventReceivedFromDevice(NoteOnEvent incomingEvent) {
-        int            trackId;
-        SevenBitNumber noteId    = incomingEvent.NoteNumber;
-        bool           isPressed = incomingEvent.Velocity == SevenBitNumber.MaxValue;
-
-        switch (noteId) {
-            case >= 0x00 and < 0x00 + TRACK_COUNT:
-                trackId = noteId - 0x00;
-                ((RotaryEncoder) (object) GetRotaryEncoder(trackId)).OnButtonEvent(isPressed);
-                break;
-            case >= 0x08 and < 0x08 + TRACK_COUNT:
-                trackId = noteId - 0x08;
-                _recordButtons[trackId].OnButtonEvent(isPressed);
-                break;
-            case >= 0x10 and < 0x10 + TRACK_COUNT:
-                trackId = noteId - 0x10;
-                _soloButtons[trackId].OnButtonEvent(isPressed);
-                break;
-            case >= 0x18 and < 0x18 + TRACK_COUNT:
-                trackId = noteId - 0x18;
-                _muteButtons[trackId].OnButtonEvent(isPressed);
-                break;
-            case >= 0x20 and < 0x20 + TRACK_COUNT:
-                trackId = noteId - 0x20;
-                _selectButtons[trackId].OnButtonEvent(isPressed);
-                break;
-            case >= 0x6E and < 0x6E + TRACK_COUNT:
-                trackId = noteId - 0x6E;
-                _faders[trackId].OnButtonEvent(isPressed);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void OnEventReceivedFromDevice(ControlChangeEvent incomingEvent) {
-        int controlNumber = incomingEvent.ControlNumber;
-        int trackId;
-
-        switch (controlNumber) {
-            case >= 80 and < 80 + TRACK_COUNT:
-                trackId = controlNumber - 80;
-                OnRotaryEncoderRotationEventReceivedFromDevice(trackId, incomingEvent.ControlValue);
-                break;
-            case >= 70 and < 70 + TRACK_COUNT:
-                trackId = controlNumber - 70;
-                double newValue = (double) incomingEvent.ControlValue / SevenBitNumber.MaxValue;
-                _faders[trackId].OnFaderMoved(newValue);
-                break;
-            default:
-                break;
-        }
-
-    }
+    protected abstract void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs e);
 
     protected abstract void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue);
 
@@ -204,12 +122,18 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         }
     }
 
-    public void Dispose() {
-        if (MidiClient.FromDevice is not null) {
-            MidiClient.FromDevice.EventReceived -= OnEventReceivedFromDevice;
+    protected virtual void Dispose(bool disposing) {
+        if (disposing) {
+            if (MidiClient.FromDevice is not null) {
+                MidiClient.FromDevice.EventReceived -= OnEventReceivedFromDevice;
+            }
+            MidiClient.Dispose();
         }
+    }
 
-        MidiClient.Dispose();
+    public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
 }

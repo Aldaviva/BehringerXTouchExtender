@@ -1,9 +1,10 @@
 ﻿using BehringerXTouchExtender.TrackControls;
+using BehringerXTouchExtender.TrackControls.Ctrl;
 using Melanchall.DryWetMidi.Common;
 
 namespace BehringerXTouchExtender;
 
-internal class RelativeBehringerXTouchExtender: BehringerXTouchExtender<IRelativeRotaryEncoder>, IRelativeBehringerXTouchExtender {
+internal class RelativeBehringerXTouchExtender: CtrlBehringerXTouchExtender<IRelativeRotaryEncoder>, IRelativeBehringerXTouchExtender {
 
     private readonly RelativeRotaryEncoder[] _rotaryEncoders = new RelativeRotaryEncoder[TRACK_COUNT];
 

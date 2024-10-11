@@ -1,5 +1,6 @@
 ﻿using BehringerXTouchExtender.Enums;
 using KoKo.Property;
+using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls;
 
@@ -207,5 +208,29 @@ public interface IFader: IPressableButton {
     /// <para>To move the fader with the built-in motors, change the <see cref="DesiredPosition"/> value.</para>
     /// </summary>
     Property<double> ActualPosition { get; }
+
+}
+
+internal interface IWritableControl {
+
+    void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null);
+
+}
+
+internal interface IScribbleStripInternal: IScribbleStrip, IWritableControl;
+
+internal interface IFaderInternal: IFader, IPressableButtonInternal, IWritableControl {
+
+    void OnFaderMoved(double newPosition);
+
+}
+
+internal interface IVuMeterInternal: IVuMeter, IWritableControl;
+
+internal interface IIlluminatedButtonInternal: IIlluminatedButton, IPressableButtonInternal, IWritableControl;
+
+internal interface IPressableButtonInternal: IPressableButton {
+
+    void OnButtonEvent(bool isPressed);
 
 }

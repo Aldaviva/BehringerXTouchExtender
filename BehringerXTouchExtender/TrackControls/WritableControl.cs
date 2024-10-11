@@ -2,8 +2,8 @@
 
 namespace BehringerXTouchExtender.TrackControls;
 
-internal abstract class WritableControl {
+internal abstract class WritableControl: IWritableControl {
 
-    internal abstract void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null);
+    public abstract void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null);
 
 }
