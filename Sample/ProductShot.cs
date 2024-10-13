@@ -36,7 +36,7 @@ public static class ProductShot {
         for (int trackId = 0; trackId < device.TrackCount; trackId++) {
             device.GetRotaryEncoder(trackId).LightPosition.Connect(rotaryEncoderLightPositions[trackId]);
 
-            IScribbleStrip scribbleStrip = device.GetScribbleStrip(trackId);
+            ICtrlScribbleStrip scribbleStrip = device.GetScribbleStrip(trackId);
             scribbleStrip.TopText.Connect("PAN");
             scribbleStrip.BottomText.Connect(scribbleStripBottomText[trackId]);
             scribbleStrip.TopTextColor.Connect(scribbleStripTextColors[trackId]);

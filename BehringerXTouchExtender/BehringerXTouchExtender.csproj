@@ -38,6 +38,7 @@
     <ItemGroup>
         <None Include="icon.jpg" Pack="true" PackagePath="\" />
         <None Include="..\Readme.md" Pack="true" PackagePath="\" />
+        <InternalsVisibleTo Include="Tests;DynamicProxyGenAssembly2" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">

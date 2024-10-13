@@ -8,7 +8,7 @@ namespace BehringerXTouchExtender;
 /// <para>Create instances of this interface using the static methods on <see cref="BehringerXTouchExtenderFactory"/>.</para>
 /// </summary>
 /// <typeparam name="TRotaryEncoder">Whether the rotary encoders report relative (<see cref="IRelativeRotaryEncoder"/>) or absolute (<see cref="IAbsoluteRotaryEncoder"/>) rotation events</typeparam>
-public interface IBehringerXTouchExtender<out TRotaryEncoder>: IDisposable where TRotaryEncoder: IRotaryEncoder {
+public interface IBehringerXTouchExtender<out TRotaryEncoder, out TScribbleStrip>: IDisposable where TRotaryEncoder: IRotaryEncoder where TScribbleStrip: IScribbleStrip {
 
     /// <summary>
     /// The number of tracks or channel columns on this device. Always returns <c>8</c>.
@@ -86,7 +86,7 @@ public interface IBehringerXTouchExtender<out TRotaryEncoder>: IDisposable where
     /// </summary>
     /// <param name="trackId">The 0-indexed track or channel number of the control, in the range [0, 7].</param>
     /// <returns>A scribble strip control that writes values to the LCD screen on the given track.</returns>
-    IScribbleStrip GetScribbleStrip(int trackId);
+    TScribbleStrip GetScribbleStrip(int trackId);
 
 }
 
@@ -94,10 +94,12 @@ public interface IBehringerXTouchExtender<out TRotaryEncoder>: IDisposable where
 /// <para>A client for communicating with a Behringer X-Touch Extender which was set to <c>CtrlRel</c> mode in its onboard settings menu.</para>
 /// <para>Create an instance of this interface using <see cref="BehringerXTouchExtenderFactory.CreateWithRelativeMode"/>.</para>
 /// </summary>
-public interface IRelativeBehringerXTouchExtender: IBehringerXTouchExtender<IRelativeRotaryEncoder> { }
+public interface IRelativeBehringerXTouchExtender: IBehringerXTouchExtender<IRelativeRotaryEncoder, ICtrlScribbleStrip>;
+
+public interface IHuiBehringerXTouchExtender: IBehringerXTouchExtender<IHuiRotaryEncoder, IHuiScribbleStrip>;
 
 /// <summary>
 /// A client for communicating with a Behringer X-Touch Extender which was set to <c>Ctrl</c> mode in its onboard settings menu.
 /// <para>Create an instance of this interface using <see cref="BehringerXTouchExtenderFactory.CreateWithAbsoluteMode"/>.</para>
 /// </summary>
-public interface IAbsoluteBehringerXTouchExtender: IBehringerXTouchExtender<IAbsoluteRotaryEncoder> { }
+public interface IAbsoluteBehringerXTouchExtender: IBehringerXTouchExtender<IAbsoluteRotaryEncoder, ICtrlScribbleStrip>;

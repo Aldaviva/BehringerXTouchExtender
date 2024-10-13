@@ -6,7 +6,7 @@ namespace BehringerXTouchExtender;
 
 internal class RelativeBehringerXTouchExtender: CtrlBehringerXTouchExtender<IRelativeRotaryEncoder>, IRelativeBehringerXTouchExtender {
 
-    private readonly RelativeRotaryEncoder[] _rotaryEncoders = new RelativeRotaryEncoder[TRACK_COUNT];
+    private readonly IRelativeRotaryEncoderInternal[] _rotaryEncoders = new IRelativeRotaryEncoderInternal[TRACK_COUNT];
 
     public RelativeBehringerXTouchExtender() {
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
@@ -28,8 +28,7 @@ internal class RelativeBehringerXTouchExtender: CtrlBehringerXTouchExtender<IRel
 
     protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
         if ((int) incomingEventControlValue is 1 or 65) {
-            bool isClockwise = incomingEventControlValue == 65;
-            _rotaryEncoders[trackId].OnRotated(isClockwise);
+            _rotaryEncoders[trackId].OnRotated(incomingEventControlValue == 65, 1);
         }
     }
 

@@ -2,22 +2,15 @@
 
 namespace BehringerXTouchExtender.Utilities;
 
-internal class FixedSizeArrayPool<T> {
+internal class FixedSizeArrayPool<T>(int arrayLength, int preferredPoolSize) {
 
-    private readonly int                  _arrayLength;
-    private readonly int                  _preferredPoolSize;
     private readonly ConcurrentStack<T[]> _available = new();
 
     internal int BorrowedCount;
 
-    public FixedSizeArrayPool(int arrayLength, int preferredPoolSize) {
-        _arrayLength       = arrayLength;
-        _preferredPoolSize = preferredPoolSize;
-    }
-
     public T[] Borrow() {
         if (!_available.TryPop(out T[] toLend)) {
-            toLend = new T[_arrayLength];
+            toLend = new T[arrayLength];
         }
         Interlocked.Increment(ref BorrowedCount);
         return toLend;
@@ -29,7 +22,7 @@ internal class FixedSizeArrayPool<T> {
             borrowedCountAfterReturn = BorrowedCount;
         }
 
-        if (borrowedCountAfterReturn + AvailableCount < _preferredPoolSize) {
+        if (borrowedCountAfterReturn + AvailableCount < preferredPoolSize) {
             _available.Push(borrowed);
         }
     }

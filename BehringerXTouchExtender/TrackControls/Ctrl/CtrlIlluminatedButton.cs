@@ -1,27 +1,11 @@
 ﻿using BehringerXTouchExtender.Enums;
-using KoKo.Property;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Ctrl;
 
-internal class IlluminatedButton: PressableButton, IIlluminatedButtonInternal {
-
-    private readonly MidiClient _midiClient;
-
-    public override int TrackId { get; }
-    public IlluminatedButtonType ButtonType { get; }
-
-    public ConnectableProperty<IlluminatedButtonState> IlluminationState { get; } = new();
-
-    public IlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType) {
-        _midiClient = midiClient;
-        TrackId     = trackId;
-        ButtonType  = buttonType;
-
-        IlluminationState.PropertyChanged += WriteStateToDevice;
-    }
+internal class CtrlIlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType): IlluminatedButton(midiClient, trackId, buttonType) {
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         SevenBitNumber noteId = (SevenBitNumber) (TrackId + ButtonType switch {
@@ -39,8 +23,8 @@ internal class IlluminatedButton: PressableButton, IIlluminatedButtonInternal {
             _                               => SevenBitNumber.MinValue
         });
 
-        _midiClient.AssertOpen();
-        _midiClient.ToDevice?.SendEvent(new NoteOnEvent(noteId, velocity));
+        MidiClient.AssertOpen();
+        MidiClient.ToDevice?.SendEvent(new NoteOnEvent(noteId, velocity));
     }
 
 }

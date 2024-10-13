@@ -7,28 +7,45 @@ using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
-internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXTouchExtender<TRotaryEncoder> where TRotaryEncoder: IRotaryEncoder {
+internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXTouchExtender<TRotaryEncoder, ICtrlScribbleStrip> where TRotaryEncoder: IRotaryEncoder {
+
+    internal override MidiClient MidiClient { get; } = new();
+
+    private readonly ICtrlScribbleStripInternal[] _scribbleStrips = new ICtrlScribbleStripInternal[TRACK_COUNT];
 
     protected CtrlBehringerXTouchExtender() {
+
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
-            RecordButtons[trackId]  = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Record);
-            SoloButtons[trackId]    = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Solo);
-            MuteButtons[trackId]    = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Mute);
-            SelectButtons[trackId]  = new IlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Select);
-            VuMeters[trackId]       = new VuMeter(MidiClient, trackId);
-            Faders[trackId]         = new Fader(MidiClient, trackId);
-            ScribbleStrips[trackId] = new ScribbleStrip(MidiClient, trackId);
+            RecordButtons[trackId]   = new CtrlIlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Record);
+            SoloButtons[trackId]     = new CtrlIlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Solo);
+            MuteButtons[trackId]     = new CtrlIlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Mute);
+            SelectButtons[trackId]   = new CtrlIlluminatedButton(MidiClient, trackId, IlluminatedButtonType.Select);
+            VuMeters[trackId]        = new CtrlVuMeter(MidiClient, trackId);
+            Faders[trackId]          = new CtrlFader(MidiClient, trackId);
+            _scribbleStrips[trackId] = new CtrlScribbleStrip(MidiClient, trackId);
             //rotary encoders are constructed in concrete subclasses
         }
     }
 
-    protected override void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs e) {
-        switch (e.Event.EventType) {
-            case MidiEventType.NoteOn:
-                OnEventReceivedFromDevice((NoteOnEvent) e.Event);
+    public override void Open() {
+        base.Open();
+        for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
+            _scribbleStrips[trackId].WriteStateToDevice();
+        }
+    }
+
+    public override ICtrlScribbleStrip GetScribbleStrip(int trackId) {
+        ValidateTrackId(trackId);
+        return _scribbleStrips[trackId];
+    }
+
+    protected override void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs args) {
+        switch (args.Event) {
+            case NoteOnEvent e:
+                OnEventReceivedFromDevice(e);
                 break;
-            case MidiEventType.ControlChange:
-                OnEventReceivedFromDevice((ControlChangeEvent) e.Event);
+            case ControlChangeEvent e:
+                OnEventReceivedFromDevice(e);
                 break;
             default:
                 break;
@@ -37,34 +54,27 @@ internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXT
 
     // ReSharper disable once SuggestBaseTypeForParameter
     private void OnEventReceivedFromDevice(NoteOnEvent incomingEvent) {
-        int            trackId;
         SevenBitNumber noteId    = incomingEvent.NoteNumber;
         bool           isPressed = incomingEvent.Velocity == SevenBitNumber.MaxValue;
 
         switch (noteId) {
-            case < 0x00 + TRACK_COUNT:
-                trackId = noteId - 0x00;
-                ((RotaryEncoder) (object) GetRotaryEncoder(trackId)).OnButtonEvent(isPressed);
+            case < 0 + TRACK_COUNT:
+                ((IPressableButtonInternal) GetRotaryEncoder(noteId - 0)).OnButtonEvent(isPressed);
                 break;
-            case < 0x08 + TRACK_COUNT:
-                trackId = noteId - 0x08;
-                RecordButtons[trackId].OnButtonEvent(isPressed);
+            case < 8 + TRACK_COUNT:
+                RecordButtons[noteId - 8].OnButtonEvent(isPressed);
                 break;
-            case < 0x10 + TRACK_COUNT:
-                trackId = noteId - 0x10;
-                SoloButtons[trackId].OnButtonEvent(isPressed);
+            case < 16 + TRACK_COUNT:
+                SoloButtons[noteId - 16].OnButtonEvent(isPressed);
                 break;
-            case < 0x18 + TRACK_COUNT:
-                trackId = noteId - 0x18;
-                MuteButtons[trackId].OnButtonEvent(isPressed);
+            case < 24 + TRACK_COUNT:
+                MuteButtons[noteId - 24].OnButtonEvent(isPressed);
                 break;
-            case < 0x20 + TRACK_COUNT:
-                trackId = noteId - 0x20;
-                SelectButtons[trackId].OnButtonEvent(isPressed);
+            case < 32 + TRACK_COUNT:
+                SelectButtons[noteId - 32].OnButtonEvent(isPressed);
                 break;
-            case >= 0x6E and < 0x6E + TRACK_COUNT:
-                trackId = noteId - 0x6E;
-                Faders[trackId].OnButtonEvent(isPressed);
+            case >= 110 and < 110 + TRACK_COUNT:
+                Faders[noteId - 110].OnButtonEvent(isPressed);
                 break;
             default:
                 break;
@@ -73,22 +83,20 @@ internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXT
 
     private void OnEventReceivedFromDevice(ControlChangeEvent incomingEvent) {
         int controlNumber = incomingEvent.ControlNumber;
-        int trackId;
 
         switch (controlNumber) {
             case >= 80 and < 80 + TRACK_COUNT:
-                trackId = controlNumber - 80;
-                OnRotaryEncoderRotationEventReceivedFromDevice(trackId, incomingEvent.ControlValue);
+                OnRotaryEncoderRotationEventReceivedFromDevice(controlNumber - 80, incomingEvent.ControlValue);
                 break;
             case >= 70 and < 70 + TRACK_COUNT:
-                trackId = controlNumber - 70;
-                double newValue = (double) incomingEvent.ControlValue / SevenBitNumber.MaxValue;
-                Faders[trackId].OnFaderMoved(newValue);
+                Faders[controlNumber - 70].OnFaderMoved((double) incomingEvent.ControlValue / SevenBitNumber.MaxValue);
                 break;
             default:
                 break;
         }
 
     }
+
+    protected abstract void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue);
 
 }

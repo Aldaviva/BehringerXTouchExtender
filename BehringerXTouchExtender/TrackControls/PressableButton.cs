@@ -4,12 +4,13 @@ namespace BehringerXTouchExtender.TrackControls;
 
 internal abstract class PressableButton: WritableControl, IPressableButtonInternal {
 
-    public abstract int TrackId { get; }
+    public int TrackId { get; }
 
     private readonly StoredProperty<bool> _isPressed = new();
     public Property<bool> IsPressed { get; }
 
-    protected PressableButton() {
+    protected PressableButton(MidiClient midiClient, int trackId): base(midiClient) {
+        TrackId   = trackId;
         IsPressed = _isPressed;
     }
 

@@ -18,16 +18,20 @@ public interface ITrackControl {
 
 }
 
+public interface IScribbleStrip: ITrackControl {
+
+    /// <summary>
+    /// The maximum number of characters that can appear in each row of text.
+    /// </summary>
+    int TextColumnCount { get; }
+
+}
+
 /// <summary>
 /// <para>An LCD screen that can show custom text and colors.</para>
 /// <para>For raw protocol details, see https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips</para>
 /// </summary>
-public interface IScribbleStrip: ITrackControl {
-
-    /// <summary>
-    /// <c>7</c>, the maximum number of characters that can appear in each row of text.
-    /// </summary>
-    int TextColumnCount { get; }
+public interface ICtrlScribbleStrip: IScribbleStrip {
 
     /// <summary>
     /// <para>The text that appears in the top half of the screen.</para>
@@ -69,6 +73,12 @@ public interface IScribbleStrip: ITrackControl {
 
 }
 
+public interface IHuiScribbleStrip: IScribbleStrip {
+
+    ConnectableProperty<string> Text { get; }
+
+}
+
 /// <summary>
 /// A control that the device can detect when you press or touch it
 /// </summary>
@@ -101,7 +111,7 @@ public interface IIlluminatedButton: IPressableButton {
 }
 
 /// <summary>
-/// <para>A knob you can turn or press, with a ring of orange LEDs surrounding it.</para>
+/// <para>A knob you can turn or press, with a ring of 13 orange LEDs surrounding it.</para>
 /// <para>Clicking in on the top of the knob will update the <see cref="IPressableButton.IsPressed"/> property.</para>
 /// </summary>
 public interface IRotaryEncoder: IPressableButton {
@@ -118,32 +128,44 @@ public interface IRotaryEncoder: IPressableButton {
     /// </summary>
     ConnectableProperty<int> LightPosition { get; }
 
+    Property<int> MinPosition { get; }
+    Property<int> MaxPosition { get; }
+
 }
 
 /// <summary>
 /// <para>A knob you can turn or press, with a ring of orange LEDs surrounding it.</para>
 /// <para>Clicking in on the top of the knob will update the <see cref="IPressableButton.IsPressed"/> property.</para>
 /// <para>Rotation events are reported with their direction: clockwise or counter-clockwise.</para>
-/// <para>This type of rotary encoder is used when you call <see cref="BehringerXTouchExtenderFactory.CreateWithRelativeMode"/> and set the X-Touch Extender to use <c>CtrlRel</c> mode.</para>
+/// <para>This type of rotary encoder is used in <c>CtrlRel</c> and <c>HUI</c> modes.</para>
 /// </summary>
 public interface IRelativeRotaryEncoder: IRotaryEncoder {
 
     /// <summary>
     /// <para>Event fired when you turn the knob of a rotary encoder. The event describes the direction you turned it.</para>
-    /// <para>There is no angular distance reported. Instead, to express how far the knob was turned, multiple events will be fired, one for each detent. There are 24 detents per complete 360° rotation (15° apart).</para>
+    /// <para><c>CtrlRel</c> mode: There is no angular distance reported. Instead, to express how far the knob was turned, multiple events will be fired, one for each detent. There are 24 detents per complete 360° rotation (15° apart).</para>
+    /// <para><c>HUI</c> mode: Rotation events are batched and report an angular distance, which is a positive number starting at 1 and increasing for higher rotation speeds.</para>
     /// </summary>
     event EventHandler<RotaryEncoderRelativeRotationArgs> Rotated;
 
     /// <summary>
-    /// Whether the rotary encoder was turned clockwise or counterclockwise one detent (15°).
+    /// Whether the rotary encoder was turned clockwise or counterclockwise.
     /// </summary>
-    /// <param name="IsClockwise"><c>true</c> if the rotary encoder was turned clockwise, or <c>false</c> if it was turned counterclockwise</param>
-    record RotaryEncoderRelativeRotationArgs(bool IsClockwise) {
+    /// <param name="isClockwise"><c>true</c> if the rotary encoder was turned clockwise, or <c>false</c> if it was turned counterclockwise</param>
+    /// <param name="distance">Absolute value of how far the encoder was rotated, in an arbitrary angular unit. In <c>CtrlRel</c> mode, this is always 1, but in <c>HUI</c> mode it may be more than 1 for fast rotations. A distance of 1 means 1 detent, which is 15°.</param>
+    readonly struct RotaryEncoderRelativeRotationArgs(bool isClockwise, uint distance = 1) {
 
         /// <summary>
         /// <c>true</c> if the rotary encoder was turned clockwise, or <c>false</c> if it was turned counterclockwise
         /// </summary>
-        public bool IsClockwise { get; } = IsClockwise;
+        public bool IsClockwise { get; } = isClockwise;
+
+        /// <summary>
+        /// <para>How far (in arbitrary angular units) the rotary encoder was rotated. Never 0, and always positive, regardless of the value of <see cref="IsClockwise"/>.</para>
+        /// <para>In <c>CtrlRel</c> mode, this is always 1, which represents a rotation of 1 detent, or 15°. Fast rotations result in multiple events being fired.</para>
+        /// <para>In <c>HUI</c> mode, this will be 1 for slow rotations, but for faster rotations (more than one detent per reporting interval) the value will be greater than 1. This batching allows the device to batch updates in the face of frequent changes without having to send a deluge of events of distance 1.</para>
+        /// </summary>
+        public uint Distance { get; } = distance;
 
     }
 
@@ -219,6 +241,10 @@ internal interface IWritableControl {
 
 internal interface IScribbleStripInternal: IScribbleStrip, IWritableControl;
 
+internal interface ICtrlScribbleStripInternal: ICtrlScribbleStrip, IWritableControl;
+
+internal interface IHuiScribbleStripInternal: IHuiScribbleStrip, IWritableControl;
+
 internal interface IFaderInternal: IFader, IPressableButtonInternal, IWritableControl {
 
     void OnFaderMoved(double newPosition);
@@ -234,3 +260,24 @@ internal interface IPressableButtonInternal: IPressableButton {
     void OnButtonEvent(bool isPressed);
 
 }
+
+internal interface IRelativeRotaryEncoderInternal: IRelativeRotaryEncoder, IPressableButtonInternal, IWritableControl {
+
+    void OnRotated(bool isClockwise, uint distance);
+
+}
+
+internal interface IAbsoluteRotaryEncoderInternal: IAbsoluteRotaryEncoder, IPressableButtonInternal, IWritableControl {
+
+    SettableProperty<double> AbsoluteRotationPosition { get; }
+
+}
+
+public interface IHuiRotaryEncoder: IRelativeRotaryEncoder {
+
+    ConnectableProperty<bool> IlluminateBounds { get; }
+    ConnectableProperty<RotaryEncoderFillMode> Fill { get; }
+
+}
+
+internal interface IHuiRotaryEncoderInternal: IHuiRotaryEncoder, IRelativeRotaryEncoderInternal;

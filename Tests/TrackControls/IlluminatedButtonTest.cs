@@ -176,7 +176,7 @@ public class IlluminatedButtonTest: AbstractTrackControlTest {
 
     [Fact]
     public void InvalidEnumValues() {
-        IIlluminatedButton button = new IlluminatedButton(XTouch.MidiClient, 0, (IlluminatedButtonType) 4);
+        IIlluminatedButton button = new CtrlIlluminatedButton(XTouch.MidiClient, 0, (IlluminatedButtonType) 4);
 
         Action thrower = () => button.IlluminationState.Connect(IlluminatedButtonState.On);
         thrower.Should().Throw<ArgumentOutOfRangeException>();

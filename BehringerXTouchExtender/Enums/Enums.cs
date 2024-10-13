@@ -78,44 +78,6 @@ public enum ScribbleStripTextColor: byte {
 }
 
 /// <summary>
-/// Whether a control which detects when it's pressed or touched is either a <see cref="RotaryEncoder"/> knob that you can click in on, one of the four types of illuminated buttons (<see cref="Record"/>, <see cref="Solo"/>, <see cref="Mute"/>, or <see cref="Select"/>), or the sliding <see cref="Fader"/> knobs that detect whether or not you're touching them.
-/// </summary>
-public enum PressableButtonType {
-
-    /// <summary>
-    /// The knobs at the top of each track, which can be spun and clicked in, surrounded by a ring of orange LEDs
-    /// </summary>
-    RotaryEncoder,
-
-    /// <summary>
-    /// The <c>REC</c> buttons that can light up red
-    /// </summary>
-    Record,
-
-    /// <summary>
-    /// The <c>SOLO</c> buttons that can light up yellow
-    /// </summary>
-    Solo,
-
-    /// <summary>
-    /// The <c>MUTE</c> buttons that can light up red
-    /// </summary>
-    Mute,
-
-    /// <summary>
-    /// The <c>SELECT</c> buttons that can light up green
-    /// </summary>
-    Select,
-
-    /// <summary>
-    /// <para>The shiny silver slider knobs that you can push up and down.</para>
-    /// <para>They can't actually be pressed in like a normal button, but they do detect when you're touching them with your finger.</para>
-    /// </summary>
-    Fader
-
-}
-
-/// <summary>
 /// Whether a button that lights up is a <c>REC</c>, <c>SOLO</c>, <c>MUTE</c>, or <c>SELECT</c> button
 /// </summary>
 public enum IlluminatedButtonType {
@@ -163,28 +125,19 @@ public enum IlluminatedButtonState {
     Blinking
 
 }
-//
-// /// <summary>
-// /// <para>The operation mode selected in the X-Touch Extender's configuration setup menu.</para>
-// /// <para>This value affects the way the rotary encoders publish change events when they are turned.</para>
-// /// <para>This library supports both <c>Ctrl</c> (<see cref="Absolute"/>) and <c>CtrlRel</c> (<see cref="Relative"/>) modes, but not <c>MC</c> nor <c>HUI</c> modes.</para>
-// /// <para>In <see cref="Relative"/> mode, each time you turn a knob one detent, an event is fired that describes the direction it was turned (e.g. rotary encoder 0 was turned 1 click clockwise or counterclockwise).</para>
-// /// <para>In <see cref="Absolute"/> mode, each time you turn a knob, an event is fired that describes the new angle of the knob, on a scale from <c>0.0</c> to <c>1.0</c> (e.g. rotary encoder 0 was turned to 50%).</para>
-// /// <para>Make sure the mode chosen on the X-Touch Extender matches the factory method you call on <see cref="BehringerXTouchExtenderFactory"/> to create an instance, so that the <see cref="IRotaryEncoder"/> instances will expose the correct events.</para>
-// /// </summary>
-// public enum MidiControlMode {
-//
-//     /// <summary>
-//     /// <para>The <c>Ctrl</c> operation mode of the X-Touch Extender.</para>
-//     /// <para>When rotated, rotary encoders will report their position on a scale from <c>0.0</c> to <c>1.0</c>, based on how far they are from their starting point <c>0.0</c>.</para>
-//     /// </summary>
-//     Absolute,
-//
-//     /// <summary>
-//     /// <para>The <c>CtrlRel</c> operation mode of the X-Touch Extender.</para>
-//     /// <para>When rotated, rotary encoders will report the direction of rotation relative to the previous angle.</para>
-//     /// <para>This corresponds to the </para>
-//     /// </summary>
-//     Relative
-//
-// }
+
+public enum RotaryEncoderFillMode {
+
+    NoFill,
+    FillCounterclockwise,
+    FillToCenterAsymmetric,
+    FillToCenterSymmetric
+
+}
+
+internal enum DeviceModel {
+
+    XTouchExtender,
+    XTouch
+
+}

@@ -1,26 +1,24 @@
-﻿using BehringerXTouchExtender.Exceptions;
+﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
-using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
-internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouchExtender<TRotaryEncoder> where TRotaryEncoder: IRotaryEncoder {
-
-    private const string DeviceName = "X-Touch-Ext";
+internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>: IBehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>
+    where TRotaryEncoder: IRotaryEncoder where TScribbleStrip: IScribbleStrip {
 
     protected internal const int TRACK_COUNT = 8;
     public int TrackCount => TRACK_COUNT;
 
-    internal readonly MidiClient MidiClient = new();
+    internal abstract MidiClient MidiClient { get; }
 
-    protected readonly IIlluminatedButtonInternal[] RecordButtons  = new IIlluminatedButtonInternal[TRACK_COUNT];
-    protected readonly IIlluminatedButtonInternal[] SoloButtons    = new IIlluminatedButtonInternal[TRACK_COUNT];
-    protected readonly IIlluminatedButtonInternal[] MuteButtons    = new IIlluminatedButtonInternal[TRACK_COUNT];
-    protected readonly IIlluminatedButtonInternal[] SelectButtons  = new IIlluminatedButtonInternal[TRACK_COUNT];
-    protected readonly IVuMeterInternal[]           VuMeters       = new IVuMeterInternal[TRACK_COUNT];
-    protected readonly IFaderInternal[]             Faders         = new IFaderInternal[TRACK_COUNT];
-    protected readonly IScribbleStripInternal[]     ScribbleStrips = new IScribbleStripInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] RecordButtons = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] SoloButtons   = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] MuteButtons   = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IIlluminatedButtonInternal[] SelectButtons = new IIlluminatedButtonInternal[TRACK_COUNT];
+    protected readonly IVuMeterInternal[]           VuMeters      = new IVuMeterInternal[TRACK_COUNT];
+    protected readonly IFaderInternal[]             Faders        = new IFaderInternal[TRACK_COUNT];
 
     public IIlluminatedButton GetRecordButton(int trackId) {
         ValidateTrackId(trackId);
@@ -54,10 +52,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         return Faders[trackId];
     }
 
-    public IScribbleStrip GetScribbleStrip(int trackId) {
-        ValidateTrackId(trackId);
-        return ScribbleStrips[trackId];
-    }
+    public abstract TScribbleStrip GetScribbleStrip(int trackId);
 
     public bool IsOpen => MidiClient.IsOpen;
 
@@ -71,22 +66,36 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         MidiClient.Dispose();
 
         try {
-            try {
-                MidiClient.FromDevice = InputDevice.GetByName(DeviceName);
-            } catch (ArgumentException e) {
-                throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to receive MIDI messages from.", e);
+            Exception? deviceNotFoundException = null;
+            foreach (DeviceModel deviceModel in new[] { DeviceModel.XTouchExtender, DeviceModel.XTouch }) {
+                string name = deviceModel switch {
+                    DeviceModel.XTouch => "X-Touch",
+                    _                  => "X-Touch-Ext"
+                };
+                InputDevice?  fromDevice = null;
+                OutputDevice? toDevice   = null;
+                try {
+                    fromDevice             = InputDevice.GetByName(name);
+                    toDevice               = OutputDevice.GetByName(name);
+                    MidiClient.FromDevice  = fromDevice;
+                    MidiClient.ToDevice    = toDevice;
+                    MidiClient.DeviceModel = deviceModel;
+                    break;
+                } catch (ArgumentException e) {
+                    fromDevice?.Dispose();
+                    toDevice?.Dispose();
+                    deviceNotFoundException = e;
+                }
             }
 
-            try {
-                MidiClient.ToDevice = OutputDevice.GetByName(DeviceName);
-            } catch (ArgumentException e) {
-                throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender to send MIDI messages to.", e);
+            if (MidiClient.ToDevice == null) {
+                throw new DeviceNotFoundException("Could not find connected Behringer X-Touch Extender.", deviceNotFoundException!);
             }
 
             SubscribeToEventsFromDevice();
 
-            MidiClient.ToDevice.PrepareForEventsSending();
-            MidiClient.FromDevice.StartEventsListening();
+            MidiClient.ToDevice!.PrepareForEventsSending();
+            MidiClient.FromDevice!.StartEventsListening();
         } catch (MidiDeviceException e) {
             throw new DeviceNotFoundException("Found a Behringer X-Touch Extender, but could not connect to it, possibly because it is already in use by another process on this computer.", e);
         }
@@ -98,7 +107,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
             MuteButtons[trackId].WriteStateToDevice();
             VuMeters[trackId].WriteStateToDevice();
             Faders[trackId].WriteStateToDevice();
-            ScribbleStrips[trackId].WriteStateToDevice();
         }
     }
 
@@ -111,9 +119,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder>: IBehringerXTouc
         }
     }
 
-    protected abstract void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs e);
-
-    protected abstract void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue);
+    protected abstract void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs args);
 
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected static void ValidateTrackId(int trackId) {

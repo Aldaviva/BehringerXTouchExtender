@@ -6,7 +6,7 @@ namespace BehringerXTouchExtender;
 
 internal class AbsoluteBehringerXTouchExtender: CtrlBehringerXTouchExtender<IAbsoluteRotaryEncoder>, IAbsoluteBehringerXTouchExtender {
 
-    private readonly AbsoluteRotaryEncoder[] _rotaryEncoders = new AbsoluteRotaryEncoder[TRACK_COUNT];
+    private readonly IAbsoluteRotaryEncoderInternal[] _rotaryEncoders = new IAbsoluteRotaryEncoderInternal[TRACK_COUNT];
 
     public AbsoluteBehringerXTouchExtender() {
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
@@ -27,8 +27,7 @@ internal class AbsoluteBehringerXTouchExtender: CtrlBehringerXTouchExtender<IAbs
     }
 
     protected override void OnRotaryEncoderRotationEventReceivedFromDevice(int trackId, SevenBitNumber incomingEventControlValue) {
-        double newValue = (double) incomingEventControlValue / SevenBitNumber.MaxValue;
-        _rotaryEncoders[trackId].AbsoluteRotationPosition.Value = newValue;
+        _rotaryEncoders[trackId].AbsoluteRotationPosition.Value = (double) incomingEventControlValue / SevenBitNumber.MaxValue;
     }
 
 }
