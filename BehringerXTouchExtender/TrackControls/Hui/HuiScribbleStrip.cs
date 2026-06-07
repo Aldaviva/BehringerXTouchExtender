@@ -1,4 +1,3 @@
-﻿using BehringerXTouchExtender.Utilities;
 using KoKo.Property;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
@@ -9,7 +8,7 @@ namespace BehringerXTouchExtender.TrackControls.Hui;
 /// <para>Scribble strips are the dot-matrix LCDs that show text at the top of each track.</para>
 /// <para>For details about the data format used to set their text and colors, refer to https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips.</para>
 /// </summary>
-internal class HuiScribbleStrip: ScribbleStrip, IHuiScribbleStripInternal {
+internal sealed class HuiScribbleStrip: ScribbleStrip, IHuiScribbleStripInternal {
 
     /// <summary>
     /// Byte count of a scribble strip SysEx message, not including the leading 0xF0 but including the trailing 0xF7
@@ -19,8 +18,6 @@ internal class HuiScribbleStrip: ScribbleStrip, IHuiScribbleStripInternal {
     private const int TEXT_COLUMN_COUNT = 4;
     public override int TextColumnCount => TEXT_COLUMN_COUNT;
 
-    private static readonly FixedSizeArrayPool<byte> ArrayPool = new(SysExMessageLength, HuiBehringerXTouchExtender.TRACK_COUNT);
-
     public ConnectableProperty<string> Text { get; } = new(string.Empty);
 
     public HuiScribbleStrip(MidiClient midiClient, int trackId): base(midiClient, trackId) {
@@ -28,7 +25,7 @@ internal class HuiScribbleStrip: ScribbleStrip, IHuiScribbleStripInternal {
     }
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
-        byte[] payload = ArrayPool.Borrow();
+        byte[] payload = new byte[SysExMessageLength];
         // leading 0xF0 is automatically prepended by NormalSysExEvent, so don't add it again here
         payload[0] = 0;
         payload[1] = 0;
@@ -42,7 +39,6 @@ internal class HuiScribbleStrip: ScribbleStrip, IHuiScribbleStripInternal {
 
         MidiClient.AssertOpen();
         MidiClient.ToDevice?.SendEvent(new NormalSysExEvent(payload));
-        ArrayPool.Return(payload);
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using KoKo.Property;
 using System.ComponentModel;
 
@@ -12,12 +12,16 @@ public interface ITrackControl {
     /// <summary>
     /// <para>The 0-indexed track number of the control.</para>
     /// <para>The Behringer X-Touch Extender has 8 tracks. This library numbers them from <c>0</c> (on the left side) to <c>7</c> (on the right).</para>
-    /// <para>The number of tracks is available in <see cref="IBehringerXTouchExtender{TRotaryEncoder}.TrackCount"/> if you want to avoid hard-coding the magic value <c>8</c>.</para>
+    /// <para>The number of tracks is available in <see cref="IBehringerXTouchExtender{TRotaryEncoder,TScribbleStrip}.TrackCount"/> if you want to avoid hard-coding the magic value <c>8</c>.</para>
     /// </summary>
     int TrackId { get; }
 
 }
 
+/// <summary>
+/// <para>An LCD screen that can show custom text.</para>
+/// <para>For raw protocol details, see https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips</para>
+/// </summary>
 public interface IScribbleStrip: ITrackControl {
 
     /// <summary>
@@ -28,8 +32,8 @@ public interface IScribbleStrip: ITrackControl {
 }
 
 /// <summary>
-/// <para>An LCD screen that can show custom text and colors.</para>
-/// <para>For raw protocol details, see https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips</para>
+/// <inheritdoc cref="IScribbleStrip" path="/Summary" />
+/// <para>In Absolute and Relative control modes, this can show two rows of seven ASCII characters each, with customizable text and background colors.</para>
 /// </summary>
 public interface ICtrlScribbleStrip: IScribbleStrip {
 
@@ -73,8 +77,18 @@ public interface ICtrlScribbleStrip: IScribbleStrip {
 
 }
 
+/// <summary>
+/// <inheritdoc cref="IScribbleStrip" path="/Summary" />
+/// <para>In HUI modes, this can show one rows of four ASCII characters each. The text is always white and the background is always black.</para>
+/// </summary>
 public interface IHuiScribbleStrip: IScribbleStrip {
 
+    /// <summary>
+    /// <para>The text that appears in the middle of the screen.</para>
+    /// <para>Must be characters representable with 7-bit ASCII; unrepresentable characters will be converted to one or more <c>?</c> characters.</para>
+    /// <para>The maximum length is <c>4</c> characters. If you set the property value to fewer than 4 characters, the text will be left-aligned in the screen with empty space on the right. If you set the value to more than 4 characters, the extra characters will be truncated.</para>
+    /// <para>Defaults to the empty string.</para>
+    /// </summary>
     ConnectableProperty<string> Text { get; }
 
 }
@@ -128,7 +142,10 @@ public interface IRotaryEncoder: IPressableButton {
     /// </summary>
     ConnectableProperty<int> LightPosition { get; }
 
+    /// <summary>The lowest valid value for this rotary encoder.</summary>
     Property<int> MinPosition { get; }
+
+    /// <summary>The highest valid value for this rotary encoder.</summary>
     Property<int> MaxPosition { get; }
 
 }
@@ -273,9 +290,16 @@ internal interface IAbsoluteRotaryEncoderInternal: IAbsoluteRotaryEncoder, IPres
 
 }
 
+/// <summary>
+/// <inheritdoc cref="IRelativeRotaryEncoder" path="/Summary" />
+/// <para>In HUI mode, additional options to illuminate a range of lights for a fill effect or the boundary lights are available.</para>
+/// </summary>
 public interface IHuiRotaryEncoder: IRelativeRotaryEncoder {
 
+    /// <summary>When <c>true</c>, each of the single most clockwise and counter-clockwise lights will always be illuminated; when <c>false</c> (default), they will never be illuminated.</summary>
     ConnectableProperty<bool> IlluminateBounds { get; }
+
+    /// <summary>Also illuminate a range of adjacent lights to fill in a pattern. Defaults to only illuminating one light for the current value.</summary>
     ConnectableProperty<RotaryEncoderFillMode> Fill { get; }
 
 }

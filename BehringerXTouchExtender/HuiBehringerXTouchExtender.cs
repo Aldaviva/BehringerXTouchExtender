@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 using BehringerXTouchExtender.TrackControls.Hui;
 using Melanchall.DryWetMidi.Common;
@@ -7,7 +7,7 @@ using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
-internal class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRotaryEncoder, IHuiScribbleStrip>, IHuiBehringerXTouchExtender {
+internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRotaryEncoder, IHuiScribbleStrip>, IHuiBehringerXTouchExtender {
 
     private static readonly NormalSysExEvent HealthCheckEvent = new([0x00, 0x00, 0x66, 0x14, 0x00, SysExEvent.EndOfEventByte]);
 
@@ -52,7 +52,9 @@ internal class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRotaryEnc
     }
 
     private void SendHealthCheck(object? state = null) {
-        MidiClient.ToDevice?.SendEvent(HealthCheckEvent);
+        try {
+            MidiClient.ToDevice?.SendEvent(HealthCheckEvent);
+        } catch (MidiDeviceException) {}
     }
 
     public override IHuiRotaryEncoder GetRotaryEncoder(int trackId) {
@@ -106,10 +108,12 @@ internal class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRotaryEnc
     }
 
     private void BlinkButtons(object? state = null) {
-        HuiMidiClient.BlinkingButtonsAreIlluminated = !HuiMidiClient.BlinkingButtonsAreIlluminated;
-        foreach (IIlluminatedButtonInternal button in _illuminatedButtons.Where(button => button.IlluminationState.Value == IlluminatedButtonState.Blinking)) {
-            button.WriteStateToDevice(this);
-        }
+        try {
+            HuiMidiClient.BlinkingButtonsAreIlluminated = !HuiMidiClient.BlinkingButtonsAreIlluminated;
+            foreach (IIlluminatedButtonInternal button in _illuminatedButtons.Where(button => button.IlluminationState.Value == IlluminatedButtonState.Blinking)) {
+                button.WriteStateToDevice(this);
+            }
+        } catch (MidiDeviceException) {}
     }
 
     protected override void Dispose(bool disposing) {

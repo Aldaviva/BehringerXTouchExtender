@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RollForward>latestMajor</RollForward>
+        <RollForward>major</RollForward>
         <LangVersion>latest</LangVersion>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
@@ -12,17 +12,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FakeItEasy" Version="8.3.0" />
-        <PackageReference Include="FluentAssertions" Version="6.12.1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="FakeItEasy" Version="9.0.1" />
+        <PackageReference Include="FluentAssertions" Version="[7.2.2,8)" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
         <!-- System.Security.Permissions is required by JustMock -->
         <PackageReference Include="System.Security.Permissions" Version="8.0.0" />
-        <PackageReference Include="xunit" Version="2.9.2" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+        <PackageReference Include="xunit.v3" Version="3.2.2" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="6.0.2">
+        <PackageReference Include="coverlet.collector" Version="[6.0.4,7)">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -34,7 +34,7 @@
 
     <ItemGroup Condition="'$(Configuration)' != 'Debug'">
         <Folder Include="Vendor\" />
-        
+
         <!--
             If you get a TypeLoadException during test execution, it probably indicates a mismatch between the .NET Framework and .NET Core builds of Telerik.JustMock.dll.
             .NET Framework: <installation-directory>\Libraries\Telerik.JustMock.dll

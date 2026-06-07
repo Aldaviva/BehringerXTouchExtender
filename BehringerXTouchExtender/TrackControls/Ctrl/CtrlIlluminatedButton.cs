@@ -1,11 +1,11 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Ctrl;
 
-internal class CtrlIlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType): IlluminatedButton(midiClient, trackId, buttonType) {
+internal sealed class CtrlIlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType): IlluminatedButton(midiClient, trackId, buttonType) {
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         SevenBitNumber noteId = (SevenBitNumber) (TrackId + ButtonType switch {

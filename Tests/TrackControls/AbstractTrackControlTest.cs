@@ -1,4 +1,4 @@
-﻿using Melanchall.DryWetMidi.Multimedia;
+using Melanchall.DryWetMidi.Multimedia;
 
 namespace Tests.TrackControls;
 
@@ -15,8 +15,9 @@ public abstract class AbstractTrackControlTest {
         XTouch.SubscribeToEventsFromDevice();
 
         A.CallTo(() => FromDevice.IsListeningForEvents).Returns(true);
+
     }
 
-    public static IEnumerable<object[]> TrackIdData = Enumerable.Range(0, 8).Select(i => new object[] { i });
+    public static readonly TheoryData<int> TrackIdData = new(Enumerable.Range(0, 8));
 
 }

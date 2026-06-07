@@ -1,15 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.0.1</Version>
+        <Version>2.0.0</Version>
         <Authors>Ben Hutchison</Authors>
         <Company>Ben Hutchison</Company>
         <PackageId>BehringerXTouchExtender</PackageId>
         <Product>BehringerXTouchExtender</Product>
         <Description>Send and receive events with a Behringer X-Touch Extender DAW MIDI control surface over USB.</Description>
-        <Copyright>© 2024 Ben Hutchison</Copyright>
+        <Copyright>© 2026 Ben Hutchison</Copyright>
         <PackageProjectUrl>https://github.com/Aldaviva/BehringerXTouchExtender</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/Aldaviva/BehringerXTouchExtender.git</RepositoryUrl>
+        <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
+        <PackageReleaseNotes>$(PackageProjectUrl)/releases/tag/$(Version)</PackageReleaseNotes>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -30,14 +31,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="KoKo" Version="2.2.0" />
-        <PackageReference Include="Melanchall.DryWetMidi" Version="7.2.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+        <PackageReference Include="KoKo" Version="2.4.0-beta.1" NoWarn="NU5104" />
+        <PackageReference Include="Melanchall.DryWetMidi" Version="8.0.3" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="icon.jpg" Pack="true" PackagePath="\" />
-        <None Include="..\Readme.md" Pack="true" PackagePath="\" />
+        <None Include="..\Readme.md;icon.jpg" Pack="true" PackagePath="\" />
+        <None Include="..\.github*\**" />
+        <None Include="*.sln.DotSettings;*.csproj.DotSettings" Visible="false" />
         <InternalsVisibleTo Include="Tests;DynamicProxyGenAssembly2" />
     </ItemGroup>
 

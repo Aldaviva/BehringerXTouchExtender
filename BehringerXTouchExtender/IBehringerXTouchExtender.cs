@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Exceptions;
+using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
 
 namespace BehringerXTouchExtender;
@@ -8,6 +8,7 @@ namespace BehringerXTouchExtender;
 /// <para>Create instances of this interface using the static methods on <see cref="BehringerXTouchExtenderFactory"/>.</para>
 /// </summary>
 /// <typeparam name="TRotaryEncoder">Whether the rotary encoders report relative (<see cref="IRelativeRotaryEncoder"/>) or absolute (<see cref="IAbsoluteRotaryEncoder"/>) rotation events</typeparam>
+/// <typeparam name="TScribbleStrip">Whether the scribble strips support multiple longer lines and custom foreground and background colors or not.</typeparam>
 public interface IBehringerXTouchExtender<out TRotaryEncoder, out TScribbleStrip>: IDisposable where TRotaryEncoder: IRotaryEncoder where TScribbleStrip: IScribbleStrip {
 
     /// <summary>
@@ -96,10 +97,14 @@ public interface IBehringerXTouchExtender<out TRotaryEncoder, out TScribbleStrip
 /// </summary>
 public interface IRelativeBehringerXTouchExtender: IBehringerXTouchExtender<IRelativeRotaryEncoder, ICtrlScribbleStrip>;
 
-public interface IHuiBehringerXTouchExtender: IBehringerXTouchExtender<IHuiRotaryEncoder, IHuiScribbleStrip>;
-
 /// <summary>
 /// A client for communicating with a Behringer X-Touch Extender which was set to <c>Ctrl</c> mode in its onboard settings menu.
 /// <para>Create an instance of this interface using <see cref="BehringerXTouchExtenderFactory.CreateWithAbsoluteMode"/>.</para>
 /// </summary>
 public interface IAbsoluteBehringerXTouchExtender: IBehringerXTouchExtender<IAbsoluteRotaryEncoder, ICtrlScribbleStrip>;
+
+/// <summary>
+/// <para>A client for communicating with a Behringer X-Touch Extender which was set to <c>HUI</c> mode in its onboard settings menu.</para>
+/// <para>Create an instance of this interface using <see cref="BehringerXTouchExtenderFactory.CreateWithHuiMode"/>.</para>
+/// </summary>
+public interface IHuiBehringerXTouchExtender: IBehringerXTouchExtender<IHuiRotaryEncoder, IHuiScribbleStrip>;

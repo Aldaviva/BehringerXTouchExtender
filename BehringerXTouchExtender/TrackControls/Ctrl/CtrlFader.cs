@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Ctrl;
 
-internal class CtrlFader(MidiClient midiClient, int trackId): Fader(midiClient, trackId) {
+internal sealed class CtrlFader(MidiClient midiClient, int trackId): Fader(midiClient, trackId) {
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         double newValue = Math.Max(Math.Min(DesiredPosition.Value, 1), 0);

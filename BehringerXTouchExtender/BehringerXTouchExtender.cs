@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Multimedia;
@@ -69,8 +69,8 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
             Exception? deviceNotFoundException = null;
             foreach (DeviceModel deviceModel in new[] { DeviceModel.XTouchExtender, DeviceModel.XTouch }) {
                 string name = deviceModel switch {
-                    DeviceModel.XTouch => "X-Touch",
-                    _                  => "X-Touch-Ext"
+                    DeviceModel.XTouchExtender => "X-Touch-Ext",
+                    DeviceModel.XTouch         => "X-Touch"
                 };
                 InputDevice?  fromDevice = null;
                 OutputDevice? toDevice   = null;

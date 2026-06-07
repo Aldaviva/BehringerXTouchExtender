@@ -1,11 +1,11 @@
-﻿using KoKo.Events;
+using KoKo.Events;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Hui;
 
-internal class HuiFader: Fader {
+internal sealed class HuiFader: Fader {
 
     private const double MAX_WRITABLE_VALUE = (1 << 14) - 1;
 

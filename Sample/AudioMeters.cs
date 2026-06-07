@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender;
+using BehringerXTouchExtender;
 using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 using CSCore.CoreAudioAPI;
@@ -23,11 +23,9 @@ public static class AudioMeters {
             using AudioMeterInformation audioMeterInformation = AudioMeterInformation.FromDevice(mmDevice);
             int                         audioChannelCount     = audioMeterInformation.MeteringChannelCount;
 
-            int     vuMeterLightCount   = device.GetVuMeter(1).LightCount;
-            int[][] ledPositionsBlitted = new int[2][];
-            ledPositionsBlitted[0] = new int[vuMeterLightCount];
-            ledPositionsBlitted[1] = new int[vuMeterLightCount];
-            int ledPositionsBlitOffset = 0;
+            int     vuMeterLightCount      = device.GetVuMeter(1).LightCount;
+            int[][] ledPositionsBlitted    = [new int[vuMeterLightCount], new int[vuMeterLightCount]];
+            int     ledPositionsBlitOffset = 0;
             ManuallyRecalculatedProperty<int[]> audioPeaks = new(() => {
                 float[] peaks        = audioMeterInformation.GetChannelsPeakValues(audioChannelCount);
                 int[]   ledPositions = ledPositionsBlitted[ledPositionsBlitOffset ^= 1];
@@ -54,7 +52,7 @@ public static class AudioMeters {
                 rotaryEncoder.IlluminateBounds.Connect(trackId >= 4);
                 rotaryEncoder.Fill.Connect(trackId switch {
                     0 or 4 => RotaryEncoderFillMode.NoFill,
-                    1 or 5 => RotaryEncoderFillMode.FillCounterclockwise,
+                    1 or 5 => RotaryEncoderFillMode.FillCounterClockwise,
                     2 or 6 => RotaryEncoderFillMode.FillToCenterAsymmetric,
                     3 or 7 => RotaryEncoderFillMode.FillToCenterSymmetric
                 });
@@ -121,7 +119,7 @@ public static class AudioMeters {
 
             Console.WriteLine("Press Ctrl+C to exit.");
             cts.Token.WaitHandle.WaitOne();
-        } catch (MidiDeviceException) { }
+        } catch (MidiDeviceException) {}
     }
 
 }

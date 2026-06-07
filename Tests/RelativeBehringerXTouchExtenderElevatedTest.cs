@@ -1,4 +1,4 @@
-﻿#if RUN_ELEVATED_TESTS
+#if RUN_ELEVATED_TESTS
 using BehringerXTouchExtender.Exceptions;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
@@ -18,14 +18,16 @@ namespace Tests;
  * In CI, these tests will always run because of Tests.runsettings
  */
 public class BehringerXTouchExtenderElevatedTest {
-    
+
     private readonly ITestOutputHelper               _testOutputHelper;
-    private readonly InputDevice                     _fromDevice = Mock.Create<InputDevice>();
-    private readonly OutputDevice                    _toDevice = Mock.Create<OutputDevice>();
+    private readonly InputDevice                     _fromDevice;
+    private readonly OutputDevice                    _toDevice;
     private readonly RelativeBehringerXTouchExtender _xtouch = new();
 
     public BehringerXTouchExtenderElevatedTest(ITestOutputHelper testOutputHelper) {
         _testOutputHelper = testOutputHelper;
+        _fromDevice       = Mock.Create<InputDevice>();
+        _toDevice         = Mock.Create<OutputDevice>();
 
         Mock.SetupStatic(typeof(InputDevice), StaticConstructor.Mocked);
         Mock.SetupStatic(typeof(OutputDevice), StaticConstructor.Mocked);
@@ -65,7 +67,7 @@ public class BehringerXTouchExtenderElevatedTest {
 
     [ElevatedTheory]
     [MemberData(nameof(XtouchData))]
-    public void Open(IBehringerXTouchExtender<IRotaryEncoder> xTouch) {
+    public void Open(IBehringerXTouchExtender<IRotaryEncoder, IScribbleStrip> xTouch) {
         /*
          * We need to dispose of these theory data instances early, before the test method returns, to avoid an uncaught exception. If we don't, the following confusing sequence occurs.
          *
@@ -121,6 +123,7 @@ public class BehringerXTouchExtenderElevatedTest {
             }
         }
     }
+
 }
 
 #endif

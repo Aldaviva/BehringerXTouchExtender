@@ -1,10 +1,10 @@
-﻿using Melanchall.DryWetMidi.Common;
+using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Ctrl;
 
-internal class CtrlVuMeter(MidiClient midiClient, int trackId): VuMeter(midiClient, trackId) {
+internal sealed class CtrlVuMeter(MidiClient midiClient, int trackId): VuMeter(midiClient, trackId) {
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         int newValue = Math.Max(Math.Min(LightPosition.Value, LightCount), 0);

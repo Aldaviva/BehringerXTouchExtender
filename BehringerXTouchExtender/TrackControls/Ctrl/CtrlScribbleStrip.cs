@@ -1,5 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
-using BehringerXTouchExtender.Utilities;
+using BehringerXTouchExtender.Enums;
 using KoKo.Property;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
@@ -10,7 +9,7 @@ namespace BehringerXTouchExtender.TrackControls.Ctrl;
 /// <para>Scribble strips are the dot-matrix LCDs that show text at the top of each track.</para>
 /// <para>For details about the data format used to set their text and colors, refer to https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips.</para>
 /// </summary>
-internal class CtrlScribbleStrip: ScribbleStrip, ICtrlScribbleStripInternal {
+internal sealed class CtrlScribbleStrip: ScribbleStrip, ICtrlScribbleStripInternal {
 
     /// <summary>
     /// Byte count of a scribble strip SysEx message, not including the leading 0xF0 but including the trailing 0xF7
@@ -18,8 +17,6 @@ internal class CtrlScribbleStrip: ScribbleStrip, ICtrlScribbleStripInternal {
     private const int SysExMessageLength = 22;
 
     private const int TEXT_COLUMN_COUNT = 7;
-
-    private static readonly FixedSizeArrayPool<byte> ArrayPool = new(SysExMessageLength, RelativeBehringerXTouchExtender.TRACK_COUNT);
 
     public override int TextColumnCount => TEXT_COLUMN_COUNT;
     public ConnectableProperty<string> TopText { get; } = new(string.Empty);
@@ -41,7 +38,7 @@ internal class CtrlScribbleStrip: ScribbleStrip, ICtrlScribbleStripInternal {
     }
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
-        byte[] payload = ArrayPool.Borrow();
+        byte[] payload = new byte[SysExMessageLength];
         // leading 0xF0 is automatically prepended by NormalSysExEvent, so don't add it again here
         payload[0] = 0;    // Behringer manufacturer ID (https://electronicmusic.fandom.com/wiki/List_of_MIDI_Manufacturer_IDs#Europe)
         payload[1] = 0x20; // Behringer manufacturer ID
@@ -63,7 +60,6 @@ internal class CtrlScribbleStrip: ScribbleStrip, ICtrlScribbleStripInternal {
 
         MidiClient.AssertOpen();
         MidiClient.ToDevice?.SendEvent(new NormalSysExEvent(payload));
-        ArrayPool.Return(payload);
     }
 
 }

@@ -1,11 +1,11 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
 
 namespace BehringerXTouchExtender.TrackControls.Hui;
 
-internal class HuiIlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType): IlluminatedButton(midiClient, trackId, buttonType) {
+internal sealed class HuiIlluminatedButton(MidiClient midiClient, int trackId, IlluminatedButtonType buttonType): IlluminatedButton(midiClient, trackId, buttonType) {
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         int buttonId = ButtonType switch {

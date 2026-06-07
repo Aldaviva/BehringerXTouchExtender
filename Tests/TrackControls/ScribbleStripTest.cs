@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Core;
 using Tests.Helpers;
@@ -10,7 +10,7 @@ public class ScribbleStripTest: AbstractTrackControlTest {
     [Theory]
     [MemberData(nameof(TrackIdData))]
     public void Render(int trackId) {
-        IScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(trackId);
+        ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(trackId);
         scribbleStrip.TopText.Connect("Hello");
         scribbleStrip.BottomText.Connect("World");
         scribbleStrip.TopTextColor.Connect(ScribbleStripTextColor.Light);
@@ -25,7 +25,7 @@ public class ScribbleStripTest: AbstractTrackControlTest {
     [Theory]
     [MemberData(nameof(EncodeColorData))]
     public void EncodeColor(ScribbleStripTextColor topTextColor, ScribbleStripTextColor bottomTextColor, ScribbleStripBackgroundColor backgroundColor, byte expected) {
-        IScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
+        ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
         scribbleStrip.TopTextColor.Connect(topTextColor);
         scribbleStrip.BottomTextColor.Connect(bottomTextColor);
         scribbleStrip.BackgroundColor.Connect(backgroundColor);
@@ -34,44 +34,44 @@ public class ScribbleStripTest: AbstractTrackControlTest {
         A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.Matches(sysex => sysex.Data[6].Equals(expected)))).MustHaveHappened();
     }
 
-    public static readonly IEnumerable<object[]> EncodeColorData = [
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Black, (byte) 0x00],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Red, (byte) 0x01],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Green, (byte) 0x02],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Yellow, (byte) 0x03],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Blue, (byte) 0x04],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Magenta, (byte) 0x05],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Cyan, (byte) 0x06],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.White, (byte) 0x07],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Black, (byte) 0x10],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Red, (byte) 0x11],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Green, (byte) 0x12],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Yellow, (byte) 0x13],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Blue, (byte) 0x14],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Magenta, (byte) 0x15],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Cyan, (byte) 0x16],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.White, (byte) 0x17],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Black, (byte) 0x20],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Red, (byte) 0x21],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Green, (byte) 0x22],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Yellow, (byte) 0x23],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Blue, (byte) 0x24],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Magenta, (byte) 0x25],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Cyan, (byte) 0x26],
-        [ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.White, (byte) 0x27],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Black, (byte) 0x30],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Red, (byte) 0x31],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Green, (byte) 0x32],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Yellow, (byte) 0x33],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Blue, (byte) 0x34],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Magenta, (byte) 0x35],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Cyan, (byte) 0x36],
-        [ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.White, (byte) 0x37]
-    ];
+    public static readonly TheoryData<ScribbleStripTextColor, ScribbleStripTextColor, ScribbleStripBackgroundColor, byte> EncodeColorData = new() {
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Black, 0x00 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Red, 0x01 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Green, 0x02 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Yellow, 0x03 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Blue, 0x04 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Magenta, 0x05 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Cyan, 0x06 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.White, 0x07 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Black, 0x10 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Red, 0x11 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Green, 0x12 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Yellow, 0x13 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Blue, 0x14 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Magenta, 0x15 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.Cyan, 0x16 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripBackgroundColor.White, 0x17 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Black, 0x20 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Red, 0x21 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Green, 0x22 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Yellow, 0x23 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Blue, 0x24 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Magenta, 0x25 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Cyan, 0x26 },
+        { ScribbleStripTextColor.Light, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.White, 0x27 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Black, 0x30 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Red, 0x31 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Green, 0x32 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Yellow, 0x33 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Blue, 0x34 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Magenta, 0x35 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.Cyan, 0x36 },
+        { ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripBackgroundColor.White, 0x37 }
+    };
 
     [Fact]
     public void ShortTextIsPadded() {
-        IScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
+        ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
         scribbleStrip.TopText.Connect("a");
         scribbleStrip.BottomText.Connect("");
 
@@ -82,7 +82,7 @@ public class ScribbleStripTest: AbstractTrackControlTest {
 
     [Fact]
     public void LongTextIsTruncated() {
-        IScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
+        ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
         scribbleStrip.TopText.Connect("Behringer");
         scribbleStrip.BottomText.Connect("X-Touch Extender");
 
@@ -94,7 +94,7 @@ public class ScribbleStripTest: AbstractTrackControlTest {
 
     [Fact]
     public void NonAsciiCharactersAreConverted() {
-        IScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
+        ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
         scribbleStrip.TopText.Connect("Bÿ☃💩");
 
         // Technically this is converting the single grapheme cluster/rune 💩 into two ASCII bytes because it's encoded in UTF-16 with two code units instead of one (as a surrogate pair).

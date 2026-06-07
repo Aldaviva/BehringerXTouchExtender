@@ -33,7 +33,7 @@
 
 ```bat
 dotnet new console
-dotnet add package BehringerXTouchExtender
+dotnet package add BehringerXTouchExtender
 ```
 
 ```cs
@@ -59,7 +59,7 @@ dotnet run
 
 ## Prerequisites
 
-- A [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
+- A [Behringer X-Touch Extender](https://www.behringer.com/en/products/0808-AAH)
 - A Microsoft .NET runtime that supports [.NET Standard 2.0 or later](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#net-standard-versions):
     - [.NET 5.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
     - [.NET Core 2.0 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
@@ -67,11 +67,22 @@ dotnet run
 
 ### MIDI control mode
 
-You must manually set the X-Touch Extender to use absolute or relative MIDI control mode. The other two modes, HUI and MC, are not supported by this library.
+The X-Touch Extender has four modes of operation. This library is compatible with three of them. You must manually configure the device to have the desired mode, and also inform this library which mode you chose.
 
-1. Turn on the X-Touch Extender while holding the leftmost Select button
-1. Turn the leftmost rotary encoder knob until the LCD shows `Ctrl` (**absolute** MIDI control mode) or `CtrlRel` (**relative** MIDI control mode)
-1. Press the leftmost Select button
+||Absolute `Ctrl`|Relative `CtrlRel`|HUI|
+|-|-|-|-|
+|Factory method|`CreateWithRelativeMode`|`CreateWithAbsoluteMode`|`CreateWithHuiMode`|
+|Rotary encoders|Delta to initial angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries|Delta to previous angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries|Delta to previous angle<br>👍 Multiple lights<br>👍 4 fill patterns<br>👍 Boundary option|
+|Scribble strips|👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors|👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors|☹ 1 row<br>☹ 4 columns<br>☹ Light text<br>☹ Dark background|
+|VU meters|☹ 1 light<br>☹ No fill|☹ 1 light<br>☹ No fill|👍 Multiple lights<br>👍 Fill below|
+
+*MC (Mackie Control) mode is not supported.*
+
+1. Hold the leftmost <kbd>Select</kbd> button down
+1. Turn on the X-Touch Extender and wait for it to boot into the configuration setup mode
+1. Release the leftmost <kbd>Select</kbd> button
+1. Turn the leftmost rotary encoder knob until the LCD shows `Ctrl` (**absolute** MIDI control mode), `CtrlRel` (**relative** MIDI control mode), or `HUI` (Mackie **Human User Interface** mode)
+1. Press the leftmost <kbd>Select</kbd> button
 1. Remember which mode you chose when you [connect](#connection) to the device
 
 Once configured, the X-Touch Extender will persist this control mode setting until you change it again, even after being turned off or unplugged. You don't have to set it every time you turn the device on.
@@ -80,10 +91,10 @@ Once configured, the X-Touch Extender will persist this control mode setting unt
 
 If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
 
-1. [Download the firmware](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
+1. [Download the firmware](https://github.com/Aldaviva/BehringerXTouchExtender/raw/refs/heads/master/Reference%20Material/X-TOUCH-EXT_Firmware_V1.22.zip)
 1. Extract the `.syx` file from the `.zip` file
 1. Turn on the X-Touch Extender while holding the rightmost Record button
-1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel) computer connected to the X-Touch Extender over USB
+1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel CPU) computer connected to the X-Touch Extender over USB
 1. Select Options › MIDI Devices and highlight the `X-Touch-Ext` entries
 1. Select Actions › Send › SysEx File and choose the `.syx` file from step 2
 1. Wait for the upgrade to finish
@@ -92,24 +103,30 @@ If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must
 ## Installation
 
 You can install this library into your project from [NuGet Gallery](https://www.nuget.org/packages/BehringerXTouchExtender):
-- `dotnet add package BehringerXTouchExtender`
-- `Install-Package BehringerXTouchExtender`
-- Go to Project › Manage NuGet Packages in Visual Studio and search for `BehringerXTouchExtender`
+```ps1
+dotnet package add BehringerXTouchExtender
+```
 
 ## Connection
 
 1. Use `BehringerXTouchExtenderFactory` to create a device instance you can use. The choice of which factory method to call depends on the device's [configured MIDI control mode](#midi-control-mode).
-    - If you set your X-Touch Extender to `Ctrl` mode:
+    - If you set your X-Touch Extender to Absolute `Ctrl` mode:
         ```cs
         using BehringerXTouchExtender;
 
         using var device = BehringerXTouchExtenderFactory.CreateWithAbsoluteMode();
         ```
-    - If you set your X-Touch Extender to `CtrlRel` mode:
+    - If you set your X-Touch Extender to Relative `CtrlRel` mode:
         ```cs
         using BehringerXTouchExtender;
 
         using var device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
+        ```
+    - If you set your X-Touch Extender to `HUI` mode:
+        ```cs
+        using BehringerXTouchExtender;
+
+        using var device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
         ```
 1. Once the X-Touch Extender is powered on and connected over USB, open the connection.
     ```cs
@@ -153,7 +170,7 @@ var greeting = DerivedProperty.Create<string>(cultureInfo, culture => culture.Na
     _ => "Hello"
 });
 scribbleStrip.TopText.Connect(greeting);
-// The device will automatically update the greeting shown whenever the cultureInfo property changes
+// The device will automatically update the greeting shown whenever the cultureInfo Property changes
 ```
 
 These Properties are used for reading changing data as well as writing it. You can read the immediate value, as well as registering for events whenever the Property changes in the future.
@@ -172,7 +189,7 @@ button.IsPressed.PropertyChanged += (sender, args) => {
 };
 ```
 
-If you don't want to create reactive properties, you can connect the device's properties to constant values whenever you want them to change.
+If you don't want to create reactive Properties, you can connect the device's Properties to constant values whenever you want them to change.
 
 ```cs
 scribbleStrip.BottomText.Connect("World");
@@ -188,11 +205,16 @@ IRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 
 #### Illuminating lights
 
-There are thirteen orange lights on each rotary encoder. *Exactly one* of them is illuminated at any given time. You can't turn them all off at the same time. Set the **`LightPosition`** property to change which light is illuminated.
+There are thirteen orange lights on each rotary encoder. Set the **`LightPosition`** Property to change which light is illuminated.
 
-They are numbered from `0` (most counter-clockwise) to `12` (most clockwise). Values outside this range are clipped to stay within `[0, 12]`.
+- In Absolute and Relative control modes, *exactly one* of them is illuminated at any given time. You can't turn them all off at the same time.
+- In HUI mode, zero or more lights can be illuminated at any given time.
+    - To illuminate multiple lights at the same time, change the **`Fill`** Property from `NoFill` to `FillCounterClockwise`, `FillToCenterSymmetric`, or `FillToCenterAsymmetric`.
+    - To illuminate the boundaries of the range, set the **`IlluminateBounds`** Property to `true`.
 
-The number of lights `13` is available programmatically in the `IRotaryEncoder.LightCount` property.
+The lights are numbered from `0` (most counter-clockwise) to `12` (most clockwise). Values are automatically clipped when they are outside the valid range, which will change depending on the HUI-specific Properties.
+
+The number of lights `13` is available programmatically in the `LightCount` Property.
 
 ```cs
 rotaryEncoder.LightPosition.Connect(0);
@@ -212,9 +234,9 @@ rotaryEncoder.IsPressed.PropertyChanged += (sender, args) =>
 
 #### Detecting rotation
 
-The available Properties and their values for a rotary encoder depend on whether you created your `IBehringerXTouchExtender` instance using either `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()` or `.CreateWithRelativeMode()`.
+The available Properties and their values for a rotary encoder depend on whether you created your `IBehringerXTouchExtender` instance using `BehringerXTouchExtenderFactory.CreateWithAbsoluteMode()`, `CreateWithRelativeMode()`, or `CreateWithHuiMode()`.
 
-This control mode must match the [configured mode on the physical X-Touch Extender](#midi-control-mode) (`Ctrl` or `CtrlRel`, respectively).
+This control mode must match the [configured mode on the physical X-Touch Extender](#midi-control-mode) (`Ctrl`, `CtrlRel`, or `HUI`, respectively).
 
 ##### Absolute control mode
 
@@ -235,7 +257,7 @@ rotaryEncoder.RotationPosition.PropertyChanged += (sender, args) =>
 
 ##### Relative control mode
 
-Available when you [set the X-Touch Extender's control mode](#midi-control-mode) to `CtrlRel` and called `BehringerXTouchExtenderFactory.CreateWithRelativeMode()`.
+Available when you [set the X-Touch Extender's control mode](#midi-control-mode) to `CtrlRel` and called `BehringerXTouchExtenderFactory.CreateWithRelativeMode()`, or to `HUI` and called `BehringerXTouchExtenderFactory.CreateWithHuiMode()`.
 
 When the knob is rotated, the rotary encoder will emit a **`Rotated`** event that tells you in which direction it was rotated. It does not tell you how far it was rotated, instead, it sends more `Rotated` events as you continue to turn the knob.
 
@@ -252,14 +274,13 @@ rotaryEncoder.Rotated += (sender, args) =>
 
 ### Scribble strips
 
-These are the LCD screens at the top of each track column. They are so named because they are digital replacements for putting a strip of tape on your analog mixer and scribbling the channel name on them with a marker.
+These are the eight LCD screens at the top of each track column. They are so named because they are digital replacements for putting a strip of tape on your analog mixer and scribbling the track name on them with a marker.
 
-The eight X-Touch Extender scribble strips can each show two lines of seven ASCII characters each. The background color can be `Black`, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`, or `White`. The text color can be light or dark, with the negative space inverted, and can be set independently for both rows.
-
-I recommend not using a `Black` background, because it's completely illegible and the LCD appears to be off or broken, even with `Light` text. Instead, to show white text on a black background, you should set the background color to `White` and the text color to `Light`.
+- In Absolute and Relative control [modes](#midi-control-mode), the scribble strips can each show two lines of seven ASCII characters each. The background color can be `Black`*, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`, or `White`. The text color can be `Light` or `Dark`, with the negative space inverted, and can be set independently for both rows.
+- In HUI [mode](#midi-control-mode), the scribble strips can each show one line of four ASCII characters. The background is always black, and the text is always white.
 
 ```cs
-IScribbleStrip scribbleStrip = device.GetScribbleStrip(0);
+ICtrlScribbleStrip scribbleStrip = device.GetScribbleStrip(0);
 scribbleStrip.TopText.Connect("Hello");
 scribbleStrip.BottomText.Connect("World");
 scribbleStrip.TopTextColor.Connect(ScribbleStripTextColor.Light);
@@ -269,15 +290,18 @@ scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 
 For low-level protocol details of this control, see the [Scribble strip RAW MIDI usage](https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips#raw-midi-usage).
 
+*\* Setting the background color to `Black` is only useful if you want make it look like the screen is off and not show any text, because it would be so dim as to be illegible. If you instead want to show white text on a black background, you should set the background color to `White` and the text color to `Light`.*
+
 ### VU meters
 
-There are eight lights on each VU meter, *at most one* of which can be illuminated at any time. They can also all be turned off.
+There are eight lights on each VU meter. The lights are numbered from `1` at the bottom to `8` at the top, with `0` representing all lights being turned off. You can change which one is illuminated by setting the **`LightPosition`** Property.
 
-The lights are numbered from `1` at the bottom to `8` at the top, with `0` representing all lights being turned off. You can change which one is illuminated by setting the **`LightPosition`** Property.
+- In Relative and Absolute control [modes](#midi-control-mode), *at most one* of the lights can be illuminated at any time. They can also all be turned off.
+- In HUI [mode](#midi-control-mode), zero or more lights can be illuminated at any time. When you illuminate a given light, all of the other VU lights below it in the same track also illuminate.
 
 The bottom four lights (`1`–`4`) are green, the next three (`5`–`7`) are orange, and the top light (`8`) is red.
 
-The maximum value `8` is available programmatically in the `IVuMeter.LightCount` property.
+The maximum value `8` is available programmatically in the `IVuMeter.LightCount` Property.
 
 ```cs
 IVuMeter vuMeter = device.GetVuMeter(0);
@@ -354,7 +378,7 @@ If the fader is being pressed when you change the `DesiredPosition` value, the c
 
 There is a separate **`ActualPosition`** Property that shows where the fader is currently located, which is different from the `DesiredPosition` Property that you use to actuate the motor. These are two separate Properties instead of one in order to prevent infinite event loops, and to make it possible to subscribe to only the changes events that you want.
 
-This property will change in response to both manual (finger) and automatic (motor) movement, so it will always have an up-to-date value for the fader's position.
+This Property will change in response to both manual (finger) and automatic (motor) movement, so it will always have an up-to-date value for the fader's position.
 
 ```cs
 fader.ActualPosition.PropertyChanged += (sender, args) =>
@@ -394,12 +418,11 @@ public void ImplicitlyDisposeWithUsingStatement() {
 ```
 
 ## References
-- [Product page: Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH)
-- [Documentation: Quick Start Guide](https://mediadl.musictribe.com/media/PLM/data/docs/P0CCR/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
-- [Documentation: MIDI interface specifications](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/Document_BE_X-TOUCH-X-TOUCH-EXTENDER-MIDI-Mode-Implementation.pdf)
-- [Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)
+- [Product page: Behringer X-Touch Extender](https://www.behringer.com/en/products/0808-AAH)
+- [Documentation: Quick Start Guide](https://cdn-media.empowertribe.com/8639333f6b92478fb5e2330150d1953a/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
+- [Documentation: MIDI interface specifications](https://github.com/Aldaviva/BehringerXTouchExtender/blob/master/Reference%20Material/Document_BE_X-TOUCH-X-TOUCH-EXTENDER-MIDI-Mode-Implementation.pdf)
+- ~[Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)~ *deleted, see [saved firmware in this repository](https://github.com/Aldaviva/BehringerXTouchExtender/tree/master/Reference%20Material)*
 
 ## Acknowledgements
-
 - [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library that controls MIDI devices from .NET
-- The person on the now-deleted MusicTribe forums who correctly [answered a question](https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306) about the 5th byte of the scribble strip SysEx message, the value of which must be the message length `0x15` instead of the incorrectly documented device ID `0x42`
+- The person on the now-deleted MusicTribe forums who correctly ~[answered a question](https://community.musictribe.com/t5/Recording/X-Touch-Extender-Scribble-Strip-Midi-Sysex-Command/td-p/251306)~ about the 5th byte of the scribble strip SysEx message, the value of which must be the device ID `0x15` instead of the incorrectly documented `0x42`

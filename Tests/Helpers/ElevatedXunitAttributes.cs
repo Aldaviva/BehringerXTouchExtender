@@ -1,4 +1,6 @@
-﻿// ReSharper disable VirtualMemberCallInConstructor
+// ReSharper disable VirtualMemberCallInConstructor
+
+using System.Runtime.CompilerServices;
 
 namespace Tests.Helpers;
 
@@ -8,7 +10,7 @@ public class ElevatedFactAttribute: FactAttribute {
         "Run \"dotnet test\" with the argument \"--settings Tests\\Tests.runsettings\", and ensure the absolute paths to Telerik.CodeWeaver.Profiler.dll are correct inside the file" :
         "Enable JustMock Profiler, then run test with either ReSharper's Cover mode or Visual Studio's Test Explorer (although that crashes on [ElevatedTheory])";
 
-    public ElevatedFactAttribute() {
+    public ElevatedFactAttribute([CallerFilePath] string? sourceFilePath = null, [CallerLineNumber] int sourceLineNumber = -1): base(sourceFilePath, sourceLineNumber) {
 #if RUN_ELEVATED_TESTS
         if (Skip == null && !Mock.IsProfilerEnabled) {
             Skip = ElevationRequiredMessage;
@@ -32,7 +34,7 @@ public class ElevatedFactAttribute: FactAttribute {
 /// </summary>
 public class ElevatedTheoryAttribute: TheoryAttribute {
 
-    public ElevatedTheoryAttribute() {
+    public ElevatedTheoryAttribute([CallerFilePath] string? sourceFilePath = null, [CallerLineNumber] int sourceLineNumber = -1): base(sourceFilePath, sourceLineNumber) {
 #if RUN_ELEVATED_TESTS
         if (Skip == null && !Mock.IsProfilerEnabled) {
             Skip = ElevatedFactAttribute.ElevationRequiredMessage;

@@ -1,4 +1,6 @@
-﻿namespace BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.TrackControls;
+
+namespace BehringerXTouchExtender.Enums;
 
 /// <summary>
 /// <para>Controls the hue of the LCD screens. Each of the eight screens can independently have its entire background color set to one of eight choices.</para>
@@ -126,18 +128,37 @@ public enum IlluminatedButtonState {
 
 }
 
+/// <summary>In HUI mode, optionally illuminate an extra range of lights on a rotary encoder in various patterns.</summary>
 public enum RotaryEncoderFillMode {
 
+    /// <summary>
+    /// <para>Only illuminate the light for the selected value, like Absolute and Relative modes.</para>
+    /// <para>Example: ⬯⬯⬯⬮⬯⬯⬯⬯⬯⬯⬯⬯⬯</para>
+    /// </summary>
     NoFill,
-    FillCounterclockwise,
+
+    /// <summary>
+    /// <para>In addition to illuminating the light of the selected value, also illuminate all lights on this track's rotary encoder that are between the selected light and the most counter-clockwise light (exclusive, because that light is used as a boundary by <see cref="IHuiRotaryEncoder.IlluminateBounds"/>).</para>
+    /// <para>Example: ⬯⬮⬮⬮⬯⬯⬯⬯⬯⬯⬯⬯⬯</para>
+    /// </summary>
+    FillCounterClockwise,
+
+    /// <summary>
+    /// <para>In addition to illuminating the light of the selected value, also illuminate all lights on this track's rotary encoder that are between the selected light and the center light (inclusive).</para>
+    /// <para>Example: ⬯⬯⬯⬮⬮⬮⬮⬯⬯⬯⬯⬯⬯</para>
+    /// </summary>
     FillToCenterAsymmetric,
+
+    /// <summary>
+    /// <para>In addition to illuminating the light of the selected value, also illuminate all lights on this track's rotary encoder that are between the selected light and the center light (inclusive), and reflect this pattern about the axis from the encoder to the center light for a mirrored effect.</para>
+    /// <para>Example: ⬯⬯⬯⬮⬮⬮⬮⬮⬮⬮⬯⬯⬯</para>
+    /// </summary>
     FillToCenterSymmetric
 
 }
 
 internal enum DeviceModel {
 
-    XTouchExtender,
-    XTouch
+    XTouchExtender, XTouch
 
 }

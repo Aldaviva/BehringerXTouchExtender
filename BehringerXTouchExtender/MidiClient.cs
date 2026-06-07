@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.Exceptions;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
@@ -34,7 +34,7 @@ internal class MidiClient: IDisposable {
 
 }
 
-internal class HuiMidiClient: MidiClient {
+internal sealed class HuiMidiClient: MidiClient {
 
     private volatile int _mostRecentOutputTrackId = -1;
 

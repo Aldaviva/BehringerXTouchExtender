@@ -1,4 +1,4 @@
-﻿using KoKo.Property;
+using KoKo.Property;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using System.ComponentModel;
@@ -23,7 +23,7 @@ internal abstract class CtrlRotaryEncoder(MidiClient midiClient, int trackId): R
 
 }
 
-internal class RelativeRotaryEncoder(MidiClient midiClient, int trackId): CtrlRotaryEncoder(midiClient, trackId), IRelativeRotaryEncoderInternal {
+internal sealed class RelativeRotaryEncoder(MidiClient midiClient, int trackId): CtrlRotaryEncoder(midiClient, trackId), IRelativeRotaryEncoderInternal {
 
     public event EventHandler<IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs>? Rotated;
 
@@ -31,7 +31,7 @@ internal class RelativeRotaryEncoder(MidiClient midiClient, int trackId): CtrlRo
 
 }
 
-internal class AbsoluteRotaryEncoder(MidiClient midiClient, int trackId): CtrlRotaryEncoder(midiClient, trackId), IAbsoluteRotaryEncoderInternal {
+internal sealed class AbsoluteRotaryEncoder(MidiClient midiClient, int trackId): CtrlRotaryEncoder(midiClient, trackId), IAbsoluteRotaryEncoderInternal {
 
     public SettableProperty<double> AbsoluteRotationPosition { get; } = new StoredProperty<double>();
     public Property<double> RotationPosition => AbsoluteRotationPosition;
