@@ -22,11 +22,10 @@ internal sealed class HuiRotaryEncoder: RotaryEncoder, IHuiRotaryEncoderInternal
         Fill.PropertyChanged             += WriteStateToDevice;
     }
 
-    public void OnRotated(bool isClockwise, uint distance) => Rotated?.Invoke(this, new IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs(isClockwise));
+    public void OnRotated(bool isClockwise, uint distance) => Rotated?.Invoke(this, new IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs(isClockwise, distance));
 
     public override void WriteStateToDevice(object? sender = null, PropertyChangedEventArgs? args = null) {
         int fillOffset = Fill.Value switch {
-            RotaryEncoderFillMode.NoFill                 => 0,
             RotaryEncoderFillMode.FillCounterClockwise   => 32,
             RotaryEncoderFillMode.FillToCenterAsymmetric => 17,
             RotaryEncoderFillMode.FillToCenterSymmetric  => 48,
@@ -40,8 +39,6 @@ internal sealed class HuiRotaryEncoder: RotaryEncoder, IHuiRotaryEncoderInternal
     }
 
     private static int calculateMaxPosition(RotaryEncoderFillMode fill) => fill switch {
-        RotaryEncoderFillMode.NoFill                 => 11,
-        RotaryEncoderFillMode.FillCounterClockwise   => 11,
         RotaryEncoderFillMode.FillToCenterAsymmetric => 10,
         RotaryEncoderFillMode.FillToCenterSymmetric  => 6,
         _                                            => 11

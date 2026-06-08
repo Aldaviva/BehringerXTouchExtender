@@ -5,7 +5,7 @@ using Tests.Helpers;
 
 namespace Tests.TrackControls;
 
-public class ScribbleStripTest: AbstractTrackControlTest {
+public class ScribbleStripTest: RelativeTrackControlTest {
 
     [Theory]
     [MemberData(nameof(TrackIdData))]
@@ -17,9 +17,9 @@ public class ScribbleStripTest: AbstractTrackControlTest {
         scribbleStrip.BottomTextColor.Connect(ScribbleStripTextColor.Dark);
         scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
 
-        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(
-            new NormalSysExEvent(new byte[] { 0x00, 0x20, 0x32, 0x15, 0x4c, (byte) trackId, 0x25, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x20, 0x20, 0xf7 }),
-            SysExEventComparer.Instance))).MustHaveHappened();
+        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] {
+            0x00, 0x20, 0x32, 0x15, 0x4c, (byte) trackId, 0x25, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x20, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x20, 0x20, 0xf7
+        }), SysExEventComparer.Instance))).MustHaveHappened();
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ScribbleStripTest: AbstractTrackControlTest {
         scribbleStrip.TopText.Connect("a");
         scribbleStrip.BottomText.Connect("");
 
-        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(
-            new NormalSysExEvent(new byte[] { 0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x61, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0xf7 }),
-            SysExEventComparer.Instance))).MustHaveHappenedOnceExactly();
+        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] {
+            0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x61, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0xf7
+        }), SysExEventComparer.Instance))).MustHaveHappenedOnceExactly();
     }
 
     [Fact]
@@ -86,10 +86,9 @@ public class ScribbleStripTest: AbstractTrackControlTest {
         scribbleStrip.TopText.Connect("Behringer");
         scribbleStrip.BottomText.Connect("X-Touch Extender");
 
-        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(
-            new NormalSysExEvent(new byte[] { 0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x42, 0x65, 0x68, 0x72, 0x69, 0x6E, 0x67, 0x58, 0x2D, 0x54, 0x6F, 0x75, 0x63, 0x68, 0xf7 }),
-            SysExEventComparer.Instance))).MustHaveHappened();
-        // Technically it only happens once, after the BottomText value change, but at assertion time it appears to have happened twice because the byte array was reused in a pool. In real usage, it's not read after IOutputDevice.SendEvent returns, but in tests the lifetime is longer, so it looks wrong.
+        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] {
+            0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x42, 0x65, 0x68, 0x72, 0x69, 0x6E, 0x67, 0x58, 0x2D, 0x54, 0x6F, 0x75, 0x63, 0x68, 0xf7
+        }), SysExEventComparer.Instance))).MustHaveHappened();
     }
 
     [Fact]
@@ -99,9 +98,21 @@ public class ScribbleStripTest: AbstractTrackControlTest {
 
         // Technically this is converting the single grapheme cluster/rune 💩 into two ASCII bytes because it's encoded in UTF-16 with two code units instead of one (as a surrogate pair).
         // Ideally it would be converted into just "?" instead of "??" since it's only one grapheme cluster, but whatever.
-        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(
-            new NormalSysExEvent(new byte[] { 0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x42, 0x3f, 0x3f, 0x3f, 0x3f, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0xf7 }),
-            SysExEventComparer.Instance))).MustHaveHappenedOnceExactly();
+        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] {
+            0x00, 0x20, 0x32, 0x15, 0x4c, 0x00, 0x00, 0x42, 0x3f, 0x3f, 0x3f, 0x3f, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0xf7
+        }), SysExEventComparer.Instance))).MustHaveHappenedOnceExactly();
+    }
+
+    [Theory]
+    [InlineData(DeviceModel.XTouchExtender, 0x15)]
+    [InlineData(DeviceModel.XTouch, 0x14)]
+    internal void DeviceId(DeviceModel deviceModel, byte expectedDeviceIdByte) {
+        XTouch.MidiClient.DeviceModel = deviceModel;
+
+        XTouch.GetScribbleStrip(0).TopText.Connect("A");
+        A.CallTo(() => ToDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] {
+            0x00, 0x20, 0x32, expectedDeviceIdByte, 0x4c, 0x00, 0x00, (byte) 'A', 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0xf7
+        }), SysExEventComparer.Instance))).MustHaveHappenedOnceExactly();
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.TrackControls;
+using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
@@ -31,7 +31,7 @@ public class AbsoluteRotaryEncoderTest {
     }
 
     public static IEnumerable<object[]> RelativeRotaryEncoderRotationData() {
-        for (int trackId = 0; trackId < 8; trackId++) {
+        for (int trackId = 0; trackId < AbsoluteBehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return [trackId, 0, 0];
             yield return [trackId, 32, 0.25];
             yield return [trackId, 64, 0.50];

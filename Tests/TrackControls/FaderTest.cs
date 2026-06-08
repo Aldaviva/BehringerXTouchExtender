@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.TrackControls;
+using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
@@ -6,11 +6,11 @@ using Tests.Helpers;
 
 namespace Tests.TrackControls;
 
-public class FaderTest: AbstractTrackControlTest {
+public class FaderTest: RelativeTrackControlTest {
 
     [Theory]
     [MemberData(nameof(MoveFaderData))]
-    public void MoveFaderToDevice(int trackId, double inputPosition, int expectedPositionToDevice) {
+    public void MoveFaderToDevice(int trackId, double inputPosition, byte expectedPositionToDevice) {
         IFader fader = XTouch.GetFader(trackId);
         fader.DesiredPosition.Connect(1); //fader is initialized to 0 when opening the client, so temporarily set a different value to cause the disabling event to be sent below
 
@@ -21,13 +21,13 @@ public class FaderTest: AbstractTrackControlTest {
             ControlChangeEventComparer.Instance))).MustHaveHappenedOnceExactly();
     }
 
-    public static IEnumerable<object[]> MoveFaderData() {
-        for (int trackId = 0; trackId < 8; trackId++) {
-            yield return [trackId, 0.00, 0];
-            yield return [trackId, 0.25, 32];
-            yield return [trackId, 0.50, 64];
-            yield return [trackId, 0.75, 95];
-            yield return [trackId, 1.00, 127];
+    public static IEnumerable<TheoryDataRow<int, double, byte>> MoveFaderData() {
+        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+            yield return new TheoryDataRow<int, double, byte>(trackId, 0.00, 0);
+            yield return new TheoryDataRow<int, double, byte>(trackId, 0.25, 32);
+            yield return new TheoryDataRow<int, double, byte>(trackId, 0.50, 64);
+            yield return new TheoryDataRow<int, double, byte>(trackId, 0.75, 95);
+            yield return new TheoryDataRow<int, double, byte>(trackId, 1.00, 127);
         }
     }
 
@@ -52,7 +52,7 @@ public class FaderTest: AbstractTrackControlTest {
 
     [Theory]
     [MemberData(nameof(MoveFaderData))]
-    public void HandleFaderMoveFromDevice(int trackId, double expectedPosition, int positionFromDevice) {
+    public void HandleFaderMoveFromDevice(int trackId, double expectedPosition, byte positionFromDevice) {
         IFader fader = XTouch.GetFader(trackId);
         FromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) (70 + trackId), (SevenBitNumber) positionFromDevice)));
         fader.ActualPosition.Value.Should().BeApproximately(expectedPosition, 0.01);

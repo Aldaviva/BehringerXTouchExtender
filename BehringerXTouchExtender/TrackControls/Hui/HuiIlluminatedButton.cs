@@ -19,7 +19,7 @@ internal sealed class HuiIlluminatedButton(MidiClient midiClient, int trackId, I
             || (IlluminationState.Value == IlluminatedButtonState.Blinking && ((HuiMidiClient) MidiClient).BlinkingButtonsAreIlluminated) ? 64 : 0);
 
         MidiClient.AssertOpen();
-        ((HuiMidiClient) MidiClient).BeforeWritingToTrackControl(TrackId);
+        ((HuiMidiClient) MidiClient).BeforeWritingToIlluminatedButton(TrackId);
         MidiClient.ToDevice?.SendEvent(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) controlValue));
     }
 

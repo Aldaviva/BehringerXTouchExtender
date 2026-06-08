@@ -12,6 +12,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
     public int TrackCount => TRACK_COUNT;
 
     internal abstract MidiClient MidiClient { get; }
+    internal MidiDeviceFactory MidiDeviceFactory = MidiDeviceFactory.Instance;
 
     protected readonly IIlluminatedButtonInternal[] RecordButtons = new IIlluminatedButtonInternal[TRACK_COUNT];
     protected readonly IIlluminatedButtonInternal[] SoloButtons   = new IIlluminatedButtonInternal[TRACK_COUNT];
@@ -72,11 +73,11 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
                     DeviceModel.XTouchExtender => "X-Touch-Ext",
                     DeviceModel.XTouch         => "X-Touch"
                 };
-                InputDevice?  fromDevice = null;
-                OutputDevice? toDevice   = null;
+                IInputDevice?  fromDevice = null;
+                IOutputDevice? toDevice   = null;
                 try {
-                    fromDevice             = InputDevice.GetByName(name);
-                    toDevice               = OutputDevice.GetByName(name);
+                    fromDevice             = MidiDeviceFactory.GetInputDeviceByName(name);
+                    toDevice               = MidiDeviceFactory.GetOutputDeviceByName(name);
                     MidiClient.FromDevice  = fromDevice;
                     MidiClient.ToDevice    = toDevice;
                     MidiClient.DeviceModel = deviceModel;

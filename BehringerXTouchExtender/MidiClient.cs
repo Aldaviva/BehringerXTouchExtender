@@ -41,9 +41,9 @@ internal sealed class HuiMidiClient: MidiClient {
     public bool BlinkingButtonsAreIlluminated;
 
     /// <summary>
-    /// Call this before writing to a track control.
+    /// Call this before writing to an illuminated button track control.
     /// </summary>
-    public void BeforeWritingToTrackControl(int trackId) {
+    public void BeforeWritingToIlluminatedButton(int trackId) {
         if (_mostRecentOutputTrackId != trackId) {
             ToDevice?.SendEvent(new ControlChangeEvent((SevenBitNumber) 0x0c, (SevenBitNumber) trackId));
             _mostRecentOutputTrackId = trackId;

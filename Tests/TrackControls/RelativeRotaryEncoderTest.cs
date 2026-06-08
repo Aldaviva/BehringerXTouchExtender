@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.TrackControls;
+using BehringerXTouchExtender.TrackControls;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
@@ -6,11 +6,11 @@ using Tests.Helpers;
 
 namespace Tests.TrackControls;
 
-public class RelativeRotaryEncoderTest: AbstractTrackControlTest {
+public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
 
     [Theory]
     [MemberData(nameof(SetLightPositionData))]
-    public void SetLightPosition(int trackId, int lightPosition, int expectedControlValue) {
+    public void SetLightPosition(int trackId, int lightPosition, byte expectedControlValue) {
         IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         if (lightPosition == 0) {
             //rotary encoder light is initialized to most counterclockwise when opening the client, so temporarily set a different value to cause the disabling event to be sent below
@@ -23,21 +23,21 @@ public class RelativeRotaryEncoderTest: AbstractTrackControlTest {
             ControlChangeEventComparer.Instance))).MustHaveHappenedOnceExactly();
     }
 
-    public static IEnumerable<object[]> SetLightPositionData() {
-        for (int trackId = 0; trackId < 8; trackId++) {
-            yield return [trackId, 0, 0];
-            yield return [trackId, 1, 11];
-            yield return [trackId, 2, 21];
-            yield return [trackId, 3, 32];
-            yield return [trackId, 4, 42];
-            yield return [trackId, 5, 53];
-            yield return [trackId, 6, 64];
-            yield return [trackId, 7, 74];
-            yield return [trackId, 8, 85];
-            yield return [trackId, 9, 95];
-            yield return [trackId, 10, 106];
-            yield return [trackId, 11, 116];
-            yield return [trackId, 12, 127];
+    public static IEnumerable<TheoryDataRow<int, int, byte>> SetLightPositionData() {
+        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+            yield return new TheoryDataRow<int, int, byte>(trackId, 0, 0);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 1, 11);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 2, 21);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 3, 32);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 4, 42);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 5, 53);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 6, 64);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 7, 74);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 8, 85);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 9, 95);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 10, 106);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 11, 116);
+            yield return new TheoryDataRow<int, int, byte>(trackId, 12, 127);
         }
     }
 
@@ -51,21 +51,30 @@ public class RelativeRotaryEncoderTest: AbstractTrackControlTest {
     }
 
     [Theory]
+    [MemberData(nameof(TrackIdData))]
+    public void ValueValidRange(int trackId) {
+        IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
+        rotaryEncoder.MinPosition.Value.Should().Be(0);
+        rotaryEncoder.MaxPosition.Value.Should().Be(13);
+    }
+
+    [Theory]
     [MemberData(nameof(RelativeRotaryEncoderRotationData))]
     public void HandleRotaryEncoderRotation(int trackId, int controlValue, bool expectedIsClockwise) {
-        IRelativeRotaryEncoder rotaryEncoder     = XTouch.GetRotaryEncoder(trackId);
-        bool?                  actualIsClockwise = null;
-        rotaryEncoder.Rotated += (_, args) => actualIsClockwise = args.IsClockwise;
+        IRelativeRotaryEncoder                                    rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
+        IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs? actual        = null;
+        rotaryEncoder.Rotated += (_, args) => actual = args;
 
         FromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) (80 + trackId), (SevenBitNumber) controlValue)));
 
-        actualIsClockwise.Should().Be(expectedIsClockwise);
+        actual!.Value.IsClockwise.Should().Be(expectedIsClockwise);
+        actual.Value.Distance.Should().Be(1);
     }
 
-    public static IEnumerable<object[]> RelativeRotaryEncoderRotationData() {
-        for (int trackId = 0; trackId < 8; trackId++) {
-            yield return [trackId, 1, false];
-            yield return [trackId, 65, true];
+    public static IEnumerable<TheoryDataRow<int, int, bool>> RelativeRotaryEncoderRotationData() {
+        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+            yield return new TheoryDataRow<int, int, bool>(trackId, 1, false);
+            yield return new TheoryDataRow<int, int, bool>(trackId, 65, true);
         }
     }
 

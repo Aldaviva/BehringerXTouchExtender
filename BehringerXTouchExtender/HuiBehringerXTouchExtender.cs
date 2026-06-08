@@ -34,11 +34,13 @@ internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRo
             _rotaryEncoders[trackId] = new HuiRotaryEncoder(HuiMidiClient, trackId);
         }
 
+        _illuminatedButtons = RecordButtons.Concat(SoloButtons).Concat(MuteButtons).Concat(SelectButtons).OrderBy(button => button.TrackId).ToList();
+
         _healthCheckTimer    = new Timer(SendHealthCheck);
         _blinkingButtonTimer = new Timer(BlinkButtons);
-        _illuminatedButtons  = RecordButtons.Concat(SoloButtons).Concat(MuteButtons).Concat(SelectButtons).OrderBy(button => button.TrackId).ToList();
     }
 
+    /// <inheritdoc cref="BehringerXTouchExtender{TRotaryEncoder,TScribbleStrip}.Open" />
     public override void Open() {
         base.Open();
 

@@ -1,11 +1,11 @@
-﻿using BehringerXTouchExtender.Exceptions;
+using BehringerXTouchExtender.Exceptions;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 
 namespace Tests;
 
-public class RelativeBehringerXTouchExtenderTest {
+public class RelativeBehringerXTouchExtenderTest: IDisposable {
 
     private readonly IInputDevice                    _fromDevice = A.Fake<IInputDevice>();
     private readonly IOutputDevice                   _toDevice   = A.Fake<IOutputDevice>();
@@ -44,13 +44,13 @@ public class RelativeBehringerXTouchExtenderTest {
     [InlineData(-1)]
     [InlineData(8)]
     [InlineData(9)]
-    public void TheoryMethodName(int trackId) {
+    public void InvalidTrackId(int trackId) {
         Action thrower = () => _xtouch.GetRecordButton(trackId);
         thrower.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
-    public void Dispose() {
+    public void Disposal() {
         _xtouch.Dispose();
         _xtouch.MidiClient.FromDevice.Should().BeNull();
         _xtouch.MidiClient.ToDevice.Should().BeNull();
@@ -72,6 +72,11 @@ public class RelativeBehringerXTouchExtenderTest {
     public void IgnoreUnrecognizedControlChangeEvent() {
         _xtouch.SubscribeToEventsFromDevice();
         _fromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent(SevenBitNumber.MinValue, SevenBitNumber.MinValue)));
+    }
+
+    public void Dispose() {
+        _xtouch.Dispose();
+        GC.SuppressFinalize(this);
     }
 
 }

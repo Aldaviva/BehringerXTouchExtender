@@ -170,7 +170,7 @@ public interface IRelativeRotaryEncoder: IRotaryEncoder {
     /// </summary>
     /// <param name="isClockwise"><c>true</c> if the rotary encoder was turned clockwise, or <c>false</c> if it was turned counterclockwise</param>
     /// <param name="distance">Absolute value of how far the encoder was rotated, in an arbitrary angular unit. In <c>CtrlRel</c> mode, this is always 1, but in <c>HUI</c> mode it may be more than 1 for fast rotations. A distance of 1 means 1 detent, which is 15°.</param>
-    readonly struct RotaryEncoderRelativeRotationArgs(bool isClockwise, uint distance = 1) {
+    readonly struct RotaryEncoderRelativeRotationArgs(bool isClockwise, uint distance) {
 
         /// <summary>
         /// <c>true</c> if the rotary encoder was turned clockwise, or <c>false</c> if it was turned counterclockwise
@@ -180,7 +180,7 @@ public interface IRelativeRotaryEncoder: IRotaryEncoder {
         /// <summary>
         /// <para>How far (in arbitrary angular units) the rotary encoder was rotated. Never 0, and always positive, regardless of the value of <see cref="IsClockwise"/>.</para>
         /// <para>In <c>CtrlRel</c> mode, this is always 1, which represents a rotation of 1 detent, or 15°. Fast rotations result in multiple events being fired.</para>
-        /// <para>In <c>HUI</c> mode, this will be 1 for slow rotations, but for faster rotations (more than one detent per reporting interval) the value will be greater than 1. This batching allows the device to batch updates in the face of frequent changes without having to send a deluge of events of distance 1.</para>
+        /// <para>In <c>HUI</c> mode, this will be 1 for slow rotations, but for faster rotations (more than one detent per reporting interval) the value will be greater than 1. This aggregation allows the device to batch updates in the face of frequent changes without having to send a deluge of events of distance 1.</para>
         /// </summary>
         public uint Distance { get; } = distance;
 

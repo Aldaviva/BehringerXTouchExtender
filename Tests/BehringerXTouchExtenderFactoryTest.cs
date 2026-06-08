@@ -14,4 +14,10 @@ public class BehringerXTouchExtenderFactoryTest {
         actual.Should().BeOfType<AbsoluteBehringerXTouchExtender>();
     }
 
+    [Fact]
+    public void Hui() {
+        IHuiBehringerXTouchExtender actual = BehringerXTouchExtenderFactory.CreateWithHuiMode();
+        actual.Should().BeOfType<HuiBehringerXTouchExtender>();
+    }
+
 }

@@ -1,4 +1,4 @@
-﻿using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Core;
 
 namespace Tests.Helpers;
 
@@ -57,6 +57,24 @@ internal class SysExEventComparer: IEqualityComparer<SysExEvent> {
 
     public int GetHashCode(SysExEvent obj) {
         return HashCode.Combine(obj.Data, obj.EventType);
+    }
+
+}
+
+internal class NoteAftertouchEventComparer: IEqualityComparer<NoteAftertouchEvent> {
+
+    public static NoteAftertouchEventComparer Instance = new();
+
+    public bool Equals(NoteAftertouchEvent? x, NoteAftertouchEvent? y) {
+        if (ReferenceEquals(x, y)) return true;
+        if (x is null) return false;
+        if (y is null) return false;
+        if (x.GetType() != y.GetType()) return false;
+        return x.EventType == y.EventType && x.NoteNumber.Equals(y.NoteNumber) && x.AftertouchValue.Equals(y.AftertouchValue);
+    }
+
+    public int GetHashCode(NoteAftertouchEvent obj) {
+        return HashCode.Combine((int) obj.EventType, obj.NoteNumber, obj.AftertouchValue);
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender.Enums;
+using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 using BehringerXTouchExtender.TrackControls.Ctrl;
 using Melanchall.DryWetMidi.Common;
@@ -27,6 +27,7 @@ internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXT
         }
     }
 
+    /// <inheritdoc cref="BehringerXTouchExtender{TRotaryEncoder,TScribbleStrip}.Open" />
     public override void Open() {
         base.Open();
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {
