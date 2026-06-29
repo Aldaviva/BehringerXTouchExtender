@@ -45,7 +45,7 @@ internal sealed class HuiMidiClient: MidiClient {
     /// </summary>
     public void BeforeWritingToIlluminatedButton(int trackId) {
         if (_mostRecentOutputTrackId != trackId) {
-            ToDevice?.SendEvent(new ControlChangeEvent((SevenBitNumber) 0x0c, (SevenBitNumber) trackId));
+            ToDevice?.SendEvent(new ControlChangeEvent((SevenBitNumber) 0x0c, (SevenBitNumber) (byte) trackId));
             _mostRecentOutputTrackId = trackId;
         }
     }

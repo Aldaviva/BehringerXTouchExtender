@@ -27,7 +27,7 @@ internal abstract class CtrlBehringerXTouchExtender<TRotaryEncoder>: BehringerXT
         }
     }
 
-    /// <inheritdoc cref="BehringerXTouchExtender{TRotaryEncoder,TScribbleStrip}.Open" />
+    /// <inheritdoc cref="BehringerXTouchExtender.Open" />
     public override void Open() {
         base.Open();
         for (int trackId = 0; trackId < TRACK_COUNT; trackId++) {

@@ -7,7 +7,7 @@ namespace Tests.TrackControls.Hui;
 
 public class HuiVuMeterTest: HuiTrackControlTest {
 
-    [Theory] [MemberData(nameof(SetLightPositionData))]
+    [Theory, MemberData(nameof(SetLightPositionData))] 
     public void SetLightPosition(int trackId, int lightPosition, byte expectedControlValue) {
         IVuMeter vuMeter = XTouch.GetVuMeter(trackId);
         if (lightPosition == 0) {
@@ -20,7 +20,7 @@ public class HuiVuMeterTest: HuiTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, byte>> SetLightPositionData() {
-        for (int trackId = 0; trackId < HuiBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, byte>(trackId, 0, 0);
             yield return new TheoryDataRow<int, int, byte>(trackId, 1, 2);
             yield return new TheoryDataRow<int, int, byte>(trackId, 2, 3);

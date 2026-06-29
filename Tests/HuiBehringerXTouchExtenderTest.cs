@@ -73,7 +73,50 @@ public class HuiBehringerXTouchExtenderTest: IDisposable {
     }
 
     [Fact]
-    public async Task Open() {
+    public void IgnoreFaderVelocityControlChangeEvent() {
+        _xtouch.SubscribeToEventsFromDevice();
+        _fromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) 32, SevenBitNumber.MinValue)));
+    }
+
+    [Fact]
+    public void IgnoreUnrecognizedButtonPressEvent() {
+        _xtouch.SubscribeToEventsFromDevice();
+        _fromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) 47, (SevenBitNumber) 8)));
+    }
+
+    [Fact]
+    public void Open() {
+        using ManualResetEventSlim blinked = new();
+
+        bool isListening = false;
+        _xtouch.MidiClient.Dispose();
+        A.CallTo(() => _deviceFactory.GetInputDeviceByName(A<string>._)).Returns(_fromDevice);
+        A.CallTo(() => _deviceFactory.GetOutputDeviceByName(A<string>._)).Returns(_toDevice);
+        A.CallTo(() => _fromDevice.StartEventsListening()).Invokes(() => isListening = true);
+        A.CallTo(() => _fromDevice.IsListeningForEvents).ReturnsLazily(() => isListening);
+        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.Matches(midiEvent => midiEvent.ControlNumber == 0x2c))).Invokes(blinked.Set);
+
+        try {
+            _xtouch.GetRecordButton(0).IlluminationState.Connect(IlluminatedButtonState.Blinking);
+        } catch (LifecycleException) {}
+
+        _xtouch.Open();
+
+        A.CallTo(() => _toDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] { 0x00, 0x00, 0x66, 0x14, 0x00, 0xF7 }), SysExEventComparer.Instance)))
+            .MustHaveHappened();
+
+        blinked.Wait(TestContext.Current.CancellationToken);
+
+        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 71), ControlChangeEventComparer.Instance)))
+            .MustHaveHappened();
+        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 7), ControlChangeEventComparer.Instance)))
+            .MustHaveHappened();
+    }
+
+    [Fact]
+    public void BlinkButtonsIgnoresDeviceErrors() {
+        using CountdownEvent blinkLatch = new(2);
+
         bool isListening = false;
         _xtouch.MidiClient.Dispose();
         A.CallTo(() => _deviceFactory.GetInputDeviceByName(A<string>._)).Returns(_fromDevice);
@@ -87,15 +130,32 @@ public class HuiBehringerXTouchExtenderTest: IDisposable {
 
         _xtouch.Open();
 
-        A.CallTo(() => _toDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] { 0x00, 0x00, 0x66, 0x14, 0x00, 0xF7 }), SysExEventComparer.Instance)))
-            .MustHaveHappened();
+        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.Matches(midiEvent => midiEvent.ControlNumber == (SevenBitNumber) 0x0c || midiEvent.ControlNumber == 0x2c)))
+            .Invokes(() => {
+                try {
+                    blinkLatch.Signal();
+                } catch (InvalidOperationException) {}
+            }).Throws<MidiDeviceException>();
 
-        await Task.Delay(4500, TestContext.Current.CancellationToken);
+        blinkLatch.Wait(TestContext.Current.CancellationToken);
+    }
 
-        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 71), ControlChangeEventComparer.Instance)))
-            .MustHaveHappened();
-        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 7), ControlChangeEventComparer.Instance)))
-            .MustHaveHappened();
+    [Fact]
+    public void HealthCheckIgnoresDeviceErrors() {
+        bool isListening = false;
+        _xtouch.MidiClient.Dispose();
+        A.CallTo(() => _deviceFactory.GetInputDeviceByName(A<string>._)).Returns(_fromDevice);
+        A.CallTo(() => _deviceFactory.GetOutputDeviceByName(A<string>._)).Returns(_toDevice);
+        A.CallTo(() => _fromDevice.StartEventsListening()).Invokes(() => isListening = true);
+        A.CallTo(() => _fromDevice.IsListeningForEvents).ReturnsLazily(() => isListening);
+        byte[] expectedHealthCheck = [0, 0, 0x66, 0x14, 0, 0xF7];
+        A.CallTo(() => _toDevice.SendEvent(A<SysExEvent>.That.Matches(midiEvent => midiEvent.Data.SequenceEqual(expectedHealthCheck)))).Throws<MidiDeviceException>();
+
+        try {
+            _xtouch.GetRecordButton(0).IlluminationState.Connect(IlluminatedButtonState.Blinking);
+        } catch (LifecycleException) {}
+
+        _xtouch.Open();
     }
 
     public void Dispose() {

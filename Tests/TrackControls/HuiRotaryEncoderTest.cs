@@ -10,8 +10,7 @@ namespace Tests.TrackControls;
 
 public class HuiRotaryEncoderTest: HuiTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(SetLightPositionData))]
+    [Theory, MemberData(nameof(SetLightPositionData))]
     public void SetLightPosition(int trackId, int lightPosition, RotaryEncoderFillMode fill, bool illuminateBounds, byte expectedControlValue) {
         IHuiRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         if (lightPosition == 0) {
@@ -28,7 +27,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, RotaryEncoderFillMode, bool, byte>> SetLightPositionData() {
-        for (int trackId = 0; trackId < HuiBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, RotaryEncoderFillMode, bool, byte>(trackId, 0, RotaryEncoderFillMode.NoFill, false, 0);
             yield return new TheoryDataRow<int, int, RotaryEncoderFillMode, bool, byte>(trackId, 1, RotaryEncoderFillMode.NoFill, false, 1);
             yield return new TheoryDataRow<int, int, RotaryEncoderFillMode, bool, byte>(trackId, 2, RotaryEncoderFillMode.NoFill, false, 2);
@@ -141,8 +140,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
         }
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleRotaryEncoderPress(int trackId) {
         IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         rotaryEncoder.IsPressed.Value.Should().BeFalse();
@@ -151,8 +149,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
         rotaryEncoder.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(ValueValidRangeData))]
+    [Theory, MemberData(nameof(ValueValidRangeData))]
     public void ValueValidRange(int trackId, RotaryEncoderFillMode fill, int expectedMin, int expectedMax) {
         IHuiRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         rotaryEncoder.Fill.Connect(fill);
@@ -161,7 +158,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, RotaryEncoderFillMode, int, int>> ValueValidRangeData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, RotaryEncoderFillMode, int, int>(trackId, RotaryEncoderFillMode.NoFill, 0, 11);
             yield return new TheoryDataRow<int, RotaryEncoderFillMode, int, int>(trackId, RotaryEncoderFillMode.FillCounterClockwise, 0, 11);
             yield return new TheoryDataRow<int, RotaryEncoderFillMode, int, int>(trackId, RotaryEncoderFillMode.FillToCenterAsymmetric, 0, 10);
@@ -169,8 +166,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
         }
     }
 
-    [Theory]
-    [MemberData(nameof(RelativeRotaryEncoderRotationData))]
+    [Theory, MemberData(nameof(RelativeRotaryEncoderRotationData))]
     public void HandleRotaryEncoderRotation(int trackId, int controlValue, bool expectedIsClockwise, uint expectedDistance) {
         IHuiRotaryEncoder                                         rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs? actual        = null;
@@ -183,7 +179,7 @@ public class HuiRotaryEncoderTest: HuiTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, bool, uint>> RelativeRotaryEncoderRotationData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, bool, uint>(trackId, 1, false, 1);
             yield return new TheoryDataRow<int, int, bool, uint>(trackId, 65, true, 1);
             yield return new TheoryDataRow<int, int, bool, uint>(trackId, 2, false, 2);

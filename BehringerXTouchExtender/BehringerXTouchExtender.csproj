@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>2.0.0</Version>
+        <Version>2.0.0-beta.0</Version>
         <Authors>Ben Hutchison</Authors>
         <Company>Ben Hutchison</Company>
         <PackageId>BehringerXTouchExtender</PackageId>
@@ -28,6 +28,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
+        <WarningsAsErrors>$(WarningsAsErrors);CA1859</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

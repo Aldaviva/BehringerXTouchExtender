@@ -8,8 +8,7 @@ namespace Tests.TrackControls;
 
 public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(SetLightPositionData))]
+    [Theory, MemberData(nameof(SetLightPositionData))]
     public void SetLightPosition(int trackId, int lightPosition, byte expectedControlValue) {
         IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         if (lightPosition == 0) {
@@ -24,7 +23,7 @@ public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, byte>> SetLightPositionData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, byte>(trackId, 0, 0);
             yield return new TheoryDataRow<int, int, byte>(trackId, 1, 11);
             yield return new TheoryDataRow<int, int, byte>(trackId, 2, 21);
@@ -41,8 +40,7 @@ public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
         }
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleRotaryEncoderPress(int trackId) {
         IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         rotaryEncoder.IsPressed.Value.Should().BeFalse();
@@ -50,16 +48,14 @@ public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
         rotaryEncoder.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void ValueValidRange(int trackId) {
         IRelativeRotaryEncoder rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         rotaryEncoder.MinPosition.Value.Should().Be(0);
         rotaryEncoder.MaxPosition.Value.Should().Be(13);
     }
 
-    [Theory]
-    [MemberData(nameof(RelativeRotaryEncoderRotationData))]
+    [Theory, MemberData(nameof(RelativeRotaryEncoderRotationData))]
     public void HandleRotaryEncoderRotation(int trackId, int controlValue, bool expectedIsClockwise) {
         IRelativeRotaryEncoder                                    rotaryEncoder = XTouch.GetRotaryEncoder(trackId);
         IRelativeRotaryEncoder.RotaryEncoderRelativeRotationArgs? actual        = null;
@@ -72,7 +68,7 @@ public class RelativeRotaryEncoderTest: RelativeTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, bool>> RelativeRotaryEncoderRotationData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, bool>(trackId, 1, false);
             yield return new TheoryDataRow<int, int, bool>(trackId, 65, true);
         }

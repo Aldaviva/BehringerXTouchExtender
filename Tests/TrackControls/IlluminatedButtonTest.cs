@@ -10,8 +10,7 @@ namespace Tests.TrackControls;
 
 public class IlluminatedButtonTest: RelativeTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleRecordButtonPress(int trackId) {
         IIlluminatedButton button = XTouch.GetRecordButton(trackId);
         button.IsPressed.Value.Should().BeFalse();
@@ -19,8 +18,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
         button.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleSoloButtonPress(int trackId) {
         IIlluminatedButton button = XTouch.GetSoloButton(trackId);
         button.IsPressed.Value.Should().BeFalse();
@@ -28,8 +26,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
         button.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleMuteButtonPress(int trackId) {
         IIlluminatedButton button = XTouch.GetMuteButton(trackId);
         button.IsPressed.Value.Should().BeFalse();
@@ -37,8 +34,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
         button.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleSelectButtonPress(int trackId) {
         IIlluminatedButton button = XTouch.GetSelectButton(trackId);
         button.IsPressed.Value.Should().BeFalse();
@@ -46,8 +42,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
         button.IsPressed.Value.Should().BeTrue();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetRecordButtonLightOn(int trackId) {
         IIlluminatedButton button = XTouch.GetRecordButton(trackId);
 
@@ -56,8 +51,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetRecordButtonLightBlinking(int trackId) {
         IIlluminatedButton button = XTouch.GetRecordButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.Blinking);
@@ -65,8 +59,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetRecordButtonLightOff(int trackId) {
         IIlluminatedButton button = XTouch.GetRecordButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.On);
@@ -78,8 +71,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSoloButtonLightOn(int trackId) {
         IIlluminatedButton button = XTouch.GetSoloButton(trackId);
 
@@ -88,8 +80,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSoloButtonLightBlinking(int trackId) {
         IIlluminatedButton button = XTouch.GetSoloButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.Blinking);
@@ -97,8 +88,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSoloButtonLightOff(int trackId) {
         IIlluminatedButton button = XTouch.GetSoloButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.On);
@@ -110,8 +100,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetMuteButtonLightOn(int trackId) {
         IIlluminatedButton button = XTouch.GetMuteButton(trackId);
 
@@ -120,8 +109,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetMuteButtonLightBlinking(int trackId) {
         IIlluminatedButton button = XTouch.GetMuteButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.Blinking);
@@ -129,8 +117,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetMuteButtonLightOff(int trackId) {
         IIlluminatedButton button = XTouch.GetMuteButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.On);
@@ -142,8 +129,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSelectButtonLightOn(int trackId) {
         IIlluminatedButton button = XTouch.GetSelectButton(trackId);
 
@@ -152,8 +138,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSelectButtonLightBlinking(int trackId) {
         IIlluminatedButton button = XTouch.GetSelectButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.Blinking);
@@ -161,8 +146,7 @@ public class IlluminatedButtonTest: RelativeTrackControlTest {
             .MustHaveHappenedOnceExactly();
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void SetSelectButtonLightOff(int trackId) {
         IIlluminatedButton button = XTouch.GetSelectButton(trackId);
         button.IlluminationState.Connect(IlluminatedButtonState.On);

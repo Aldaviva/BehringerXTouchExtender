@@ -7,8 +7,7 @@ namespace Tests.TrackControls;
 
 public class VuMeterTest: RelativeTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(SetLightPositionData))]
+    [Theory, MemberData(nameof(SetLightPositionData))]
     public void SetLightPosition(int trackId, int lightPosition, byte expectedControlValue) {
         IVuMeter vuMeter = XTouch.GetVuMeter(trackId);
         vuMeter.LightPosition.Connect(vuMeter.LightCount); //meter is initialized to off when opening the client, so temporarily set a different value to cause the disabling event to be sent below
@@ -20,7 +19,7 @@ public class VuMeterTest: RelativeTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, int, byte>> SetLightPositionData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, int, byte>(trackId, 0, 7);
             yield return new TheoryDataRow<int, int, byte>(trackId, 1, 21);
             yield return new TheoryDataRow<int, int, byte>(trackId, 2, 35);

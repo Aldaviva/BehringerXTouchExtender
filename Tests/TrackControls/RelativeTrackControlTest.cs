@@ -18,6 +18,6 @@ public abstract class RelativeTrackControlTest {
         A.CallTo(() => FromDevice.IsListeningForEvents).Returns(true);
     }
 
-    public static readonly TheoryData<int> TrackIdData = new(Enumerable.Range(0, RelativeBehringerXTouchExtender.TRACK_COUNT));
+    public static readonly TheoryData<int> TrackIdData = new(Enumerable.Range(0, BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT));
 
 }

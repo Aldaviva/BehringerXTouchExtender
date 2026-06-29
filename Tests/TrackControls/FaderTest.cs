@@ -8,8 +8,7 @@ namespace Tests.TrackControls;
 
 public class FaderTest: RelativeTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(MoveFaderData))]
+    [Theory, MemberData(nameof(MoveFaderData))]
     public void MoveFaderToDevice(int trackId, double inputPosition, byte expectedPositionToDevice) {
         IFader fader = XTouch.GetFader(trackId);
         fader.DesiredPosition.Connect(1); //fader is initialized to 0 when opening the client, so temporarily set a different value to cause the disabling event to be sent below
@@ -22,7 +21,7 @@ public class FaderTest: RelativeTrackControlTest {
     }
 
     public static IEnumerable<TheoryDataRow<int, double, byte>> MoveFaderData() {
-        for (int trackId = 0; trackId < RelativeBehringerXTouchExtender.TRACK_COUNT; trackId++) {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
             yield return new TheoryDataRow<int, double, byte>(trackId, 0.00, 0);
             yield return new TheoryDataRow<int, double, byte>(trackId, 0.25, 32);
             yield return new TheoryDataRow<int, double, byte>(trackId, 0.50, 64);
@@ -31,8 +30,7 @@ public class FaderTest: RelativeTrackControlTest {
         }
     }
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void HandleButtonPress(int trackId) {
         IFader fader = XTouch.GetFader(trackId);
         fader.IsPressed.Value.Should().BeFalse();
@@ -50,8 +48,7 @@ public class FaderTest: RelativeTrackControlTest {
         A.CallTo(() => ToDevice.SendEvent(A<ControlChangeEvent>._)).MustNotHaveHappened();
     }
 
-    [Theory]
-    [MemberData(nameof(MoveFaderData))]
+    [Theory, MemberData(nameof(MoveFaderData))]
     public void HandleFaderMoveFromDevice(int trackId, double expectedPosition, byte positionFromDevice) {
         IFader fader = XTouch.GetFader(trackId);
         FromDevice.EventReceived += Raise.With(new MidiEventReceivedEventArgs(new ControlChangeEvent((SevenBitNumber) (70 + trackId), (SevenBitNumber) positionFromDevice)));

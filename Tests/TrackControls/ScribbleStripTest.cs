@@ -7,8 +7,7 @@ namespace Tests.TrackControls;
 
 public class ScribbleStripTest: RelativeTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void Render(int trackId) {
         ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(trackId);
         scribbleStrip.TopText.Connect("Hello");
@@ -22,8 +21,7 @@ public class ScribbleStripTest: RelativeTrackControlTest {
         }), SysExEventComparer.Instance))).MustHaveHappened();
     }
 
-    [Theory]
-    [MemberData(nameof(EncodeColorData))]
+    [Theory, MemberData(nameof(EncodeColorData))]
     public void EncodeColor(ScribbleStripTextColor topTextColor, ScribbleStripTextColor bottomTextColor, ScribbleStripBackgroundColor backgroundColor, byte expected) {
         ICtrlScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(0);
         scribbleStrip.TopTextColor.Connect(topTextColor);

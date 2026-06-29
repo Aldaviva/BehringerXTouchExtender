@@ -10,8 +10,6 @@ jobs:
   build:
     env:
       ProjectName: BehringerXTouchExtender
-      CORECLR_PROFILER_PATH_32: ${{ github.workspace }}\Tests\Vendor\JustMock\32\Telerik.CodeWeaver.Profiler.dll
-      CORECLR_PROFILER_PATH_64: ${{ github.workspace }}\Tests\Vendor\JustMock\64\Telerik.CodeWeaver.Profiler.dll
 
     runs-on: windows-latest
 

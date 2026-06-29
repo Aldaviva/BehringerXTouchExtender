@@ -6,8 +6,7 @@ namespace Tests.TrackControls.Hui;
 
 public class HuiScribbleStripTest: HuiTrackControlTest {
 
-    [Theory]
-    [MemberData(nameof(TrackIdData))]
+    [Theory, MemberData(nameof(TrackIdData))]
     public void Render(int trackId) {
         IHuiScribbleStrip scribbleStrip = XTouch.GetScribbleStrip(trackId);
         scribbleStrip.Text.Connect("Hola");

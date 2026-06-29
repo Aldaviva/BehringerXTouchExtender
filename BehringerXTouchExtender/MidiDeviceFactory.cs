@@ -9,11 +9,9 @@ internal class MidiDeviceFactory {
     public static readonly MidiDeviceFactory Instance = new();
 
     /// <inheritdoc cref="InputDevice.GetByName" />
-    public virtual IInputDevice GetInputDeviceByName(string name) =>
-        InputDevice.GetByName(name);
+    public virtual IInputDevice GetInputDeviceByName(string name) => InputDevice.GetByName(name);
 
     /// <inheritdoc cref="OutputDevice.GetByName" />
-    public virtual IOutputDevice GetOutputDeviceByName(string name) =>
-        OutputDevice.GetByName(name);
+    public virtual IOutputDevice GetOutputDeviceByName(string name) => OutputDevice.GetByName(name);
 
 }

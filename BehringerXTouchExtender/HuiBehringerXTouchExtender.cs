@@ -4,6 +4,8 @@ using BehringerXTouchExtender.TrackControls.Hui;
 using Melanchall.DryWetMidi.Common;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BehringerXTouchExtender;
 
@@ -40,7 +42,7 @@ internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRo
         _blinkingButtonTimer = new Timer(BlinkButtons);
     }
 
-    /// <inheritdoc cref="BehringerXTouchExtender{TRotaryEncoder,TScribbleStrip}.Open" />
+    /// <inheritdoc cref="BehringerXTouchExtender.Open" />
     public override void Open() {
         base.Open();
 
@@ -49,7 +51,10 @@ internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRo
             _rotaryEncoders[trackId].WriteStateToDevice();
         }
 
-        _healthCheckTimer.Change(0, 3000);
+        SendHealthCheck();
+        _healthCheckTimer.Change(3000, 3000);
+        // Documentation lies: dueTime=0 doesn't run the timer callback immediately, it's actually deferred and asynchronous, which is the opposite of immediate. Same as window.setTimeout(cb, 0).
+
         _blinkingButtonTimer.Change(0, 500);
     }
 
@@ -69,7 +74,7 @@ internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRo
         return _scribbleStrips[trackId];
     }
 
-    /// <exception cref="ArgumentOutOfRangeException">if the control change refers to an unknown control</exception>
+    [SuppressMessage("ReSharper", "CoVariantArrayConversion")] // there is obviously no write access to that array's elements
     protected override void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs args) {
         if (args.Event is ControlChangeEvent { ControlNumber: var control, ControlValue: var value } evt) {
             switch (control) {
@@ -101,11 +106,11 @@ internal sealed class HuiBehringerXTouchExtender: BehringerXTouchExtender<IHuiRo
                     // fader velocity, ignore
                     break;
                 default:
-                    Console.WriteLine($"Received unknown control change event with channel {evt.Channel}, control {control}, and value {value}"); //TODO
+                    Debug.WriteLine($"Received unknown control change event with channel {evt.Channel}, control {control}, and value {value}");
                     break;
             }
         } else {
-            Console.WriteLine($"Received unknown MIDI event from device: {args.Event.EventType}");
+            Debug.WriteLine($"Received unknown MIDI event from device: {args.Event.EventType}");
         }
     }
 

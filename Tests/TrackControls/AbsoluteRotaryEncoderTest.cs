@@ -20,8 +20,7 @@ public class AbsoluteRotaryEncoderTest {
         A.CallTo(() => _fromDevice.IsListeningForEvents).Returns(true);
     }
 
-    [Theory]
-    [MemberData(nameof(RelativeRotaryEncoderRotationData))]
+    [Theory, MemberData(nameof(RelativeRotaryEncoderRotationData))]
     public void HandleRotaryEncoderRotation(int trackId, int controlValue, double expectedPosition) {
         IAbsoluteRotaryEncoder rotaryEncoder = _xTouch.GetRotaryEncoder(trackId);
 
@@ -30,13 +29,13 @@ public class AbsoluteRotaryEncoderTest {
         rotaryEncoder.RotationPosition.Value.Should().BeApproximately(expectedPosition, 0.01);
     }
 
-    public static IEnumerable<object[]> RelativeRotaryEncoderRotationData() {
-        for (int trackId = 0; trackId < AbsoluteBehringerXTouchExtender.TRACK_COUNT; trackId++) {
-            yield return [trackId, 0, 0];
-            yield return [trackId, 32, 0.25];
-            yield return [trackId, 64, 0.50];
-            yield return [trackId, 95, 0.75];
-            yield return [trackId, 127, 1.00];
+    public static IEnumerable<TheoryDataRow<int, int, double>> RelativeRotaryEncoderRotationData() {
+        for (int trackId = 0; trackId < BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT; trackId++) {
+            yield return new TheoryDataRow<int, int, double>(trackId, 0, 0);
+            yield return new TheoryDataRow<int, int, double>(trackId, 32, 0.25);
+            yield return new TheoryDataRow<int, int, double>(trackId, 64, 0.50);
+            yield return new TheoryDataRow<int, int, double>(trackId, 95, 0.75);
+            yield return new TheoryDataRow<int, int, double>(trackId, 127, 1.00);
         }
     }
 

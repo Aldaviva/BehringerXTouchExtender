@@ -5,8 +5,7 @@ using Melanchall.DryWetMidi.Multimedia;
 
 namespace BehringerXTouchExtender;
 
-internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>: IBehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>
-    where TRotaryEncoder: IRotaryEncoder where TScribbleStrip: IScribbleStrip {
+internal abstract class BehringerXTouchExtender: IDisposable {
 
     protected internal const int TRACK_COUNT = 8;
     public int TrackCount => TRACK_COUNT;
@@ -41,8 +40,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
         return SelectButtons[trackId];
     }
 
-    public abstract TRotaryEncoder GetRotaryEncoder(int trackId);
-
     public IVuMeter GetVuMeter(int trackId) {
         ValidateTrackId(trackId);
         return VuMeters[trackId];
@@ -52,8 +49,6 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
         ValidateTrackId(trackId);
         return Faders[trackId];
     }
-
-    public abstract TScribbleStrip GetScribbleStrip(int trackId);
 
     public bool IsOpen => MidiClient.IsOpen;
 
@@ -85,7 +80,7 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
                 } catch (ArgumentException e) {
                     fromDevice?.Dispose();
                     toDevice?.Dispose();
-                    deviceNotFoundException = e;
+                    deviceNotFoundException ??= e;
                 }
             }
 
@@ -114,11 +109,8 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
     /// <summary>
     /// This is a separate method from <see cref="Open"/> to facilitate unit testing. We want callbacks to work without all the initialization logic running for each track control.
     /// </summary>
-    internal void SubscribeToEventsFromDevice() {
-        if (MidiClient.FromDevice != null) {
-            MidiClient.FromDevice.EventReceived += OnEventReceivedFromDevice;
-        }
-    }
+    internal void SubscribeToEventsFromDevice() =>
+        MidiClient.FromDevice?.EventReceived += OnEventReceivedFromDevice;
 
     protected abstract void OnEventReceivedFromDevice(object sender, MidiEventReceivedEventArgs args);
 
@@ -131,16 +123,20 @@ internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>:
 
     protected virtual void Dispose(bool disposing) {
         if (disposing) {
-            if (MidiClient.FromDevice is not null) {
-                MidiClient.FromDevice.EventReceived -= OnEventReceivedFromDevice;
-            }
+            MidiClient.FromDevice?.EventReceived -= OnEventReceivedFromDevice;
             MidiClient.Dispose();
         }
     }
 
-    public void Dispose() {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+    public void Dispose() => Dispose(true);
+
+}
+
+internal abstract class BehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>: BehringerXTouchExtender, IBehringerXTouchExtender<TRotaryEncoder, TScribbleStrip>
+    where TRotaryEncoder: IRotaryEncoder where TScribbleStrip: IScribbleStrip {
+
+    public abstract TRotaryEncoder GetRotaryEncoder(int trackId);
+
+    public abstract TScribbleStrip GetScribbleStrip(int trackId);
 
 }
