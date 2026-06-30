@@ -69,12 +69,42 @@ dotnet run
 
 The X-Touch Extender has four modes of operation. This library is compatible with three of them. You must manually configure the device to have the desired mode, and also inform this library which mode you chose.
 
-||Absolute `Ctrl`|Relative `CtrlRel`|HUI|
-|-|-|-|-|
-|Factory method|`CreateWithRelativeMode`|`CreateWithAbsoluteMode`|`CreateWithHuiMode`|
-|Rotary encoders|Delta to initial angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries|Delta to previous angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries|Delta to previous angle<br>👍 Multiple lights<br>👍 4 fill patterns<br>👍 Boundary option|
-|Scribble strips|👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors|👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors|☹ 1 row<br>☹ 4 columns<br>☹ Light text<br>☹ Dark background|
-|VU meters|☹ 1 light<br>☹ No fill|☹ 1 light<br>☹ No fill|👍 Multiple lights<br>👍 Fill below|
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Absolute <code>Ctrl</code></th>
+            <th>Relative <code>CtrlRel</code></th>
+            <th>HUI</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Factory method</td>
+            <td><code>CreateWithRelativeMode</code></td>
+            <td><code>CreateWithAbsoluteMode</code></td>
+            <td><code>CreateWithHuiMode</code></td>
+        </tr>
+        <tr>
+            <td>Rotary encoders</td>
+            <td>Delta to initial angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
+            <td>Delta to previous angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
+            <td>Delta to previous angle<br>👍 Multiple lights<br>👍 4 fill patterns<br>👍 Boundary option</td>
+        </tr>
+        <tr>
+            <td>Scribble strips</td>
+            <td>👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors</td>
+            <td>👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors</td>
+            <td>☹ 1 row<br>☹ 4 columns<br>☹ Light text<br>☹ Dark background</td>
+        </tr>
+        <tr>
+            <td>VU meters</td>
+            <td>☹ 1 light<br>☹ No fill</td>
+            <td>☹ 1 light<br>☹ No fill</td>
+            <td>👍 Multiple lights<br>👍 Fill below</td>
+        </tr>
+    </tbody>
+</table>
 
 *MC (Mackie Control) mode is not supported.*
 
