@@ -86,15 +86,27 @@ public class HuiBehringerXTouchExtenderTest: IDisposable {
 
     [Fact]
     public void Open() {
-        using ManualResetEventSlim blinked = new();
+        using AutoResetEvent blinked     = new(false);
+        int                  blinks      = 0;
+        bool                 isListening = false;
 
-        bool isListening = false;
         _xtouch.MidiClient.Dispose();
         A.CallTo(() => _deviceFactory.GetInputDeviceByName(A<string>._)).Returns(_fromDevice);
         A.CallTo(() => _deviceFactory.GetOutputDeviceByName(A<string>._)).Returns(_toDevice);
         A.CallTo(() => _fromDevice.StartEventsListening()).Invokes(() => isListening = true);
         A.CallTo(() => _fromDevice.IsListeningForEvents).ReturnsLazily(() => isListening);
-        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.Matches(midiEvent => midiEvent.ControlNumber == 0x2c))).Invokes(blinked.Set);
+        A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.Matches(midiEvent => midiEvent.ControlNumber == 0x2c))).Invokes((MidiEvent midiEvent) => {
+            int? nextState = (byte) ((ControlChangeEvent) midiEvent).ControlValue switch {
+                71 => 1,
+                7  => 2,
+                _  => null
+            };
+
+            if (nextState != null) {
+                Interlocked.CompareExchange(ref blinks, nextState.Value, nextState.Value - 1);
+                blinked.Set();
+            }
+        });
 
         try {
             _xtouch.GetRecordButton(0).IlluminationState.Connect(IlluminatedButtonState.Blinking);
@@ -105,12 +117,14 @@ public class HuiBehringerXTouchExtenderTest: IDisposable {
         A.CallTo(() => _toDevice.SendEvent(A<NormalSysExEvent>.That.IsEqualTo(new NormalSysExEvent(new byte[] { 0x00, 0x00, 0x66, 0x14, 0x00, 0xF7 }), SysExEventComparer.Instance)))
             .MustHaveHappened();
 
-        blinked.Wait(TestContext.Current.CancellationToken);
+        while (blinks < 2) {
+            blinked.WaitOne();
+        }
 
         A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 71), ControlChangeEventComparer.Instance)))
-            .MustHaveHappened();
+            .MustHaveHappenedOnceOrMore();
         A.CallTo(() => _toDevice.SendEvent(A<ControlChangeEvent>.That.IsEqualTo(new ControlChangeEvent((SevenBitNumber) 0x2c, (SevenBitNumber) 7), ControlChangeEventComparer.Instance)))
-            .MustHaveHappened();
+            .MustHaveHappened(BehringerXTouchExtender.BehringerXTouchExtender.TRACK_COUNT + 1, Times.OrMore);
     }
 
     [Fact]
