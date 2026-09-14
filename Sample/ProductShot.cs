@@ -1,4 +1,4 @@
-﻿using BehringerXTouchExtender;
+using BehringerXTouchExtender;
 using BehringerXTouchExtender.Enums;
 using BehringerXTouchExtender.TrackControls;
 
@@ -8,40 +8,52 @@ public static class ProductShot {
 
     /// <summary>
     /// <para>Recreates the control state shown in the official product photograph on https://www.behringer.com/product.html?modelCode=0808-AAH</para>
-    /// <para>Photo: https://mediadl.musictribe.com/media/PLM/data/images/products/P0CCR/2000Wx2000H/Image_BE_P0CCR_X-TOUCH-EXTENDER_Top_XL.png</para>
+    /// <para>Photo: https://cdn-media.empowertribe.com/9640d351590b4927b54183d8b8c05743/Image_BE_0808-AAH_X-TOUCH-EXTENDER_Top_XL.png</para>
     /// </summary>
-    /// <exception cref="BehringerXTouchExtender.Exceptions.LifecycleException"></exception>
-    /// <exception cref="BehringerXTouchExtender.Exceptions.DeviceNotFoundException"></exception>
     public static void Main() {
-        using IRelativeBehringerXTouchExtender device = BehringerXTouchExtenderFactory.CreateWithRelativeMode();
+        using var device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
         device.Open();
 
-        int[]    rotaryEncoderLightPositions = { 2, 2, 0, 0, 6, 10, 12, 12 };
-        string[] scribbleStripBottomText     = { "-32", "-32", "-64", "-64", "C", "+32", "+64", "+64" };
-        ScribbleStripTextColor[] scribbleStripTextColors = {
+        int[]    ctrlRotaryEncoderLightPositions = [2, 2, 0, 0, 6, 10, 12, 12];
+        int[]    huiRotaryEncoderLightPositions  = [1, 1, 0, 0, 5, 9, 10, 10];
+        string[] scribbleStripBottomText         = ["-32", "-32", "-64", "-64", "C", "+32", "+64", "+64"];
+        ScribbleStripTextColor[] scribbleStripTextColors = [
             ScribbleStripTextColor.Dark, ScribbleStripTextColor.Dark, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light, ScribbleStripTextColor.Light,
             ScribbleStripTextColor.Light, ScribbleStripTextColor.Light
-        };
-        ScribbleStripBackgroundColor[] scribbleStripBackgroundColors = {
+        ];
+        ScribbleStripBackgroundColor[] scribbleStripBackgroundColors = [
             ScribbleStripBackgroundColor.Yellow, ScribbleStripBackgroundColor.Yellow, ScribbleStripBackgroundColor.Red, ScribbleStripBackgroundColor.Red, ScribbleStripBackgroundColor.Blue,
             ScribbleStripBackgroundColor.Blue, ScribbleStripBackgroundColor.Green, ScribbleStripBackgroundColor.Green
-        };
-        int[]    vuMeterLightPositions = { 7, 4, 3, 1, 7, 5, 4, 5 };
-        bool[]   recordButtonLightIsOn = { true, false, false, true, true, false, false, false };
-        bool[]   soloButtonLightIsOn   = { false, true, false, true, false, false, false, true };
-        bool[]   muteButtonLightIsOn   = { false, false, true, false, false, true, true, false };
-        bool[]   selectButtonLightIsOn = { true, true, false, true, true, false, false, true };
-        double[] faderPositions        = { 0.5, 0.7, 0.7, 0.5, 0.375, 0.25, 0.375, 0.5 };
+        ];
+        int[]    vuMeterLightPositions = [7, 4, 3, 1, 7, 5, 4, 5];
+        bool[]   recordButtonLightIsOn = [true, false, false, true, true, false, false, false];
+        bool[]   soloButtonLightIsOn   = [false, true, false, true, false, false, false, true];
+        bool[]   muteButtonLightIsOn   = [false, false, true, false, false, true, true, false];
+        bool[]   selectButtonLightIsOn = [true, true, false, true, true, false, false, true];
+        double[] faderPositions        = [0.5, 0.72, 0.72, 0.5, 0.375, 0.25, 0.375, 0.5];
 
         for (int trackId = 0; trackId < device.TrackCount; trackId++) {
-            device.GetRotaryEncoder(trackId).LightPosition.Connect(rotaryEncoderLightPositions[trackId]);
+            IRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(trackId);
+            if (rotaryEncoder is IHuiRotaryEncoder huiRotaryEncoder) {
+                huiRotaryEncoder.Fill.Connect(RotaryEncoderFillMode.FillToCenterAsymmetric);
+                rotaryEncoder.LightPosition.Connect(huiRotaryEncoderLightPositions[trackId]);
+            } else {
+                rotaryEncoder.LightPosition.Connect(ctrlRotaryEncoderLightPositions[trackId]);
+            }
 
-            ICtrlScribbleStrip scribbleStrip = device.GetScribbleStrip(trackId);
-            scribbleStrip.TopText.Connect("PAN");
-            scribbleStrip.BottomText.Connect(scribbleStripBottomText[trackId]);
-            scribbleStrip.TopTextColor.Connect(scribbleStripTextColors[trackId]);
-            scribbleStrip.BottomTextColor.Connect(scribbleStripTextColors[trackId]);
-            scribbleStrip.BackgroundColor.Connect(scribbleStripBackgroundColors[trackId]);
+            IScribbleStrip trackScribbleStrip = device.GetScribbleStrip(trackId);
+            switch (trackScribbleStrip) {
+                case ICtrlScribbleStrip scribbleStrip:
+                    scribbleStrip.TopText.Connect("PAN");
+                    scribbleStrip.BottomText.Connect(scribbleStripBottomText[trackId]);
+                    scribbleStrip.TopTextColor.Connect(scribbleStripTextColors[trackId]);
+                    scribbleStrip.BottomTextColor.Connect(scribbleStripTextColors[trackId]);
+                    scribbleStrip.BackgroundColor.Connect(scribbleStripBackgroundColors[trackId]);
+                    break;
+                case IHuiScribbleStrip scribbleStrip:
+                    scribbleStrip.Text.Connect(scribbleStripBottomText[trackId]);
+                    break;
+            }
 
             device.GetVuMeter(trackId).LightPosition.Connect(vuMeterLightPositions[trackId]);
 
@@ -51,7 +63,6 @@ public static class ProductShot {
             device.GetSelectButton(trackId).IlluminationState.Connect(selectButtonLightIsOn[trackId] ? IlluminatedButtonState.On : IlluminatedButtonState.Off);
             device.GetFader(trackId).DesiredPosition.Connect(faderPositions[trackId]);
         }
-
     }
 
 }

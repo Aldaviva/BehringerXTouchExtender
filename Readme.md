@@ -3,7 +3,7 @@
 
 [![Nuget](https://img.shields.io/nuget/v/BehringerXTouchExtender?logo=nuget)](https://www.nuget.org/packages/BehringerXTouchExtender/) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Aldaviva/BehringerXTouchExtender/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/BehringerXTouchExtender/actions/workflows/dotnetpackage.yml) [![Testspace](https://img.shields.io/testspace/tests/Aldaviva/Aldaviva:BehringerXTouchExtender/master?passed_label=passing&failed_label=failing&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NTkgODYxIj48cGF0aCBkPSJtNTk4IDUxMy05NCA5NCAyOCAyNyA5NC05NC0yOC0yN3pNMzA2IDIyNmwtOTQgOTQgMjggMjggOTQtOTQtMjgtMjh6bS00NiAyODctMjcgMjcgOTQgOTQgMjctMjctOTQtOTR6bTI5My0yODctMjcgMjggOTQgOTQgMjctMjgtOTQtOTR6TTQzMiA4NjFjNDEuMzMgMCA3Ni44My0xNC42NyAxMDYuNS00NFM1ODMgNzUyIDU4MyA3MTBjMC00MS4zMy0xNC44My03Ni44My00NC41LTEwNi41UzQ3My4zMyA1NTkgNDMyIDU1OWMtNDIgMC03Ny42NyAxNC44My0xMDcgNDQuNXMtNDQgNjUuMTctNDQgMTA2LjVjMCA0MiAxNC42NyA3Ny42NyA0NCAxMDdzNjUgNDQgMTA3IDQ0em0wLTU1OWM0MS4zMyAwIDc2LjgzLTE0LjgzIDEwNi41LTQ0LjVTNTgzIDE5Mi4zMyA1ODMgMTUxYzAtNDItMTQuODMtNzcuNjctNDQuNS0xMDdTNDczLjMzIDAgNDMyIDBjLTQyIDAtNzcuNjcgMTQuNjctMTA3IDQ0cy00NCA2NS00NCAxMDdjMCA0MS4zMyAxNC42NyA3Ni44MyA0NCAxMDYuNVMzOTAgMzAyIDQzMiAzMDJ6bTI3NiAyODJjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjY3IDE0LjY3LTEwNiA0NHMtNDQgNjUtNDQgMTA3YzAgNDEuMzMgMTQuNjcgNzYuODMgNDQgMTA2LjVTNjY2LjY3IDU4NCA3MDggNTg0em0tNTU3IDBjNDIgMCA3Ny42Ny0xNC44MyAxMDctNDQuNXM0NC02NS4xNyA0NC0xMDYuNWMwLTQyLTE0LjY3LTc3LjY3LTQ0LTEwN3MtNjUtNDQtMTA3LTQ0Yy00MS4zMyAwLTc2LjgzIDE0LjY3LTEwNi41IDQ0UzAgMzkxIDAgNDMzYzAgNDEuMzMgMTQuODMgNzYuODMgNDQuNSAxMDYuNVMxMDkuNjcgNTg0IDE1MSA1ODR6IiBmaWxsPSIjZmZmIi8%2BPC9zdmc%2B)](https://aldaviva.testspace.com/spaces/191394) [![Coveralls](https://img.shields.io/coveralls/github/Aldaviva/BehringerXTouchExtender?logo=coveralls)](https://coveralls.io/github/Aldaviva/BehringerXTouchExtender?branch=master)
 
-*Send and receive events with a [Behringer X-Touch Extender](https://www.behringer.com/product.html?modelCode=0808-AAH) DAW MIDI control surface over USB.*
+*Send and receive events with a [Behringer X-Touch Extender](https://www.behringer.com/en/products/0808-AAH) DAW MIDI control surface over USB.*
 
 <!-- MarkdownTOC autolink="true" bracket="round" autoanchor="false" levels="1,2,3" bullets="1.,-,-" -->
 
@@ -67,14 +67,14 @@ dotnet run
 
 ### MIDI control mode
 
-The X-Touch Extender has four modes of operation. This library is compatible with three of them. You must manually configure the device to have the desired mode, and also inform this library which mode you chose.
+The X-Touch Extender has four modes of operation, three of which are compatible with this library. You must manually configure the device to have the desired mode, and also inform this library which mode you chose.
 
 <table>
     <thead>
         <tr>
             <th></th>
-            <th>Absolute <code>Ctrl</code></th>
-            <th>Relative <code>CtrlRel</code></th>
+            <th>Absolute (<code>Ctrl</code>)</th>
+            <th>Relative (<code>CtrlRel</code>)</th>
             <th>HUI</th>
         </tr>
     </thead>
@@ -87,27 +87,28 @@ The X-Touch Extender has four modes of operation. This library is compatible wit
         </tr>
         <tr>
             <td>Rotary encoders</td>
-            <td>Delta to initial angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
-            <td>Delta to previous angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
-            <td>Delta to previous angle<br>👍 Multiple lights<br>👍 4 fill patterns<br>👍 Boundary option</td>
+            <td>Delta to <strong>initial</strong> angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
+            <td>Delta to <strong>previous</strong> angle<br>☹ 1 light<br>☹ No fill<br>☹ No boundaries</td>
+            <td>Delta to <strong>previous</strong> angle<br>✅ Multiple lights<br>✅ 4 fill patterns<br>✅ Boundary option</td>
         </tr>
         <tr>
             <td>Scribble strips</td>
-            <td>👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors</td>
-            <td>👍 2 rows<br>👍 7 columns<br>👍 Light or dark text<br>👍 8 background colors</td>
+            <td>✅ 2 rows<br>✅ 7 columns<br>✅ Light or dark text<br>✅ 8 background colors</td>
+            <td>✅ 2 rows<br>✅ 7 columns<br>✅ Light or dark text<br>✅ 8 background colors</td>
             <td>☹ 1 row<br>☹ 4 columns<br>☹ Light text<br>☹ Dark background</td>
         </tr>
         <tr>
             <td>VU meters</td>
             <td>☹ 1 light<br>☹ No fill</td>
             <td>☹ 1 light<br>☹ No fill</td>
-            <td>👍 Multiple lights<br>👍 Fill below</td>
+            <td>✅ Multiple lights<br>✅ Fill below</td>
         </tr>
     </tbody>
 </table>
 
 *MC (Mackie Control) mode is not supported.*
 
+1. Turn off the X-Touch Extender
 1. Hold the leftmost <kbd>Select</kbd> button down
 1. Turn on the X-Touch Extender and wait for it to boot into the configuration setup mode
 1. Release the leftmost <kbd>Select</kbd> button
@@ -119,9 +120,9 @@ Once configured, the X-Touch Extender will persist this control mode setting unt
 
 ### Firmware upgrade
 
-If your computer has an AMD Zen2 (Ryzen 3000 series) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
+If your computer has an AMD Zen 2 (Ryzen 3000 series) or later CPU, then you must install X-Touch Extender firmware 1.21 or later to fix the [broken USB connection](https://community.amd.com/t5/drivers-software/behringer-x-touch-usb-driver-issues/m-p/199495).
 
-1. [Download the firmware](https://github.com/Aldaviva/BehringerXTouchExtender/raw/refs/heads/master/Reference%20Material/X-TOUCH-EXT_Firmware_V1.22.zip)
+1. [Download the firmware](https://github.com/Aldaviva/BehringerXTouchExtender/raw/refs/heads/master/Reference%20Material/Firmware/X-TOUCH-EXT_Firmware_V1.22.zip)
 1. Extract the `.syx` file from the `.zip` file
 1. Turn on the X-Touch Extender while holding the rightmost Record button
 1. Download and run [MIDI-OX](http://www.midiox.com/moxdown.htm) on an unaffected (e.g. Intel CPU) computer connected to the X-Touch Extender over USB
@@ -158,7 +159,7 @@ dotnet package add BehringerXTouchExtender
 
         using var device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
         ```
-1. Once the X-Touch Extender is powered on and connected over USB, open the connection.
+1. Once the X-Touch Extender is powered on and connected over USB, open the connection
     ```cs
     device.Open();
     ```
@@ -177,7 +178,7 @@ In most of the code examples below, the `trackId` argument used is `0`.
 
 This library handles data using **[KoKo](https://github.com/Aldaviva/KoKo/) `Property` objects**. These encapsulate values that can change, including automatically in response to other Properties, and they automatically fire change events.
 
-If you have your own Property that you want to drive a control on the X-Touch Extender, you can connect it to this library.
+If you have your own `Property` that you want to drive a control on the X-Touch Extender, you can connect it to this library.
 
 ```cs
 using KoKo;
@@ -208,12 +209,12 @@ These Properties are used for reading changing data as well as writing it. You c
 ```cs
 var button = device.GetRecordButton(0);
 
-if(button.IsPressed.Value){
+if (button.IsPressed.Value) {
     Console.WriteLine("Button is pressed");
 }
 
 button.IsPressed.PropertyChanged += (sender, args) => {
-    if(args.NewValue){
+    if (args.NewValue) {
         Console.WriteLine("Button was pressed");
     }
 };
@@ -259,7 +260,7 @@ You can click in on the knob and the rotary encoder's **`IsPressed`** Property w
 Console.WriteLine($"Rotary encoder is currently {(rotaryEncoder.IsPressed.Value ? "pressed" : "not pressed")}");
 
 rotaryEncoder.IsPressed.PropertyChanged += (sender, args) => 
-        Console.WriteLine($"Rotary encoder was {(args.NewValue ? "pressed" : "released")}");
+    Console.WriteLine($"Rotary encoder was {(args.NewValue ? "pressed" : "released")}");
 ```
 
 #### Detecting rotation
@@ -282,7 +283,7 @@ device.Open();
 IAbsoluteRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 
 rotaryEncoder.RotationPosition.PropertyChanged += (sender, args) => 
-        Console.WriteLine($"Knob was turned to {args.NewValue:P0}");
+    Console.WriteLine($"Knob was turned to {args.NewValue:P0}");
 ```
 
 ##### Relative control mode
@@ -299,7 +300,7 @@ device.Open();
 IRelativeRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(0);
 
 rotaryEncoder.Rotated += (sender, args) =>
-        Console.WriteLine($"Knob was turned 15° {(args.IsClockwise ? "clockwise" : "counter-clockwise")}");
+    Console.WriteLine($"Knob was turned 15° {(args.IsClockwise ? "clockwise" : "counter-clockwise")}");
 ```
 
 ### Scribble strips
@@ -307,16 +308,19 @@ rotaryEncoder.Rotated += (sender, args) =>
 These are the eight LCD screens at the top of each track column. They are so named because they are digital replacements for putting a strip of tape on your analog mixer and scribbling the track name on them with a marker.
 
 - In Absolute and Relative control [modes](#midi-control-mode), the scribble strips can each show two lines of seven ASCII characters each. The background color can be `Black`*, `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`, or `White`. The text color can be `Light` or `Dark`, with the negative space inverted, and can be set independently for both rows.
+    ```cs
+    ICtrlScribbleStrip scribbleStrip = device.GetScribbleStrip(0);
+    scribbleStrip.TopText.Connect("Hello");
+    scribbleStrip.BottomText.Connect("World");
+    scribbleStrip.TopTextColor.Connect(ScribbleStripTextColor.Light);
+    scribbleStrip.BottomTextColor.Connect(ScribbleStripTextColor.Dark);
+    scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
+    ```
 - In HUI [mode](#midi-control-mode), the scribble strips can each show one line of four ASCII characters. The background is always black, and the text is always white.
-
-```cs
-ICtrlScribbleStrip scribbleStrip = device.GetScribbleStrip(0);
-scribbleStrip.TopText.Connect("Hello");
-scribbleStrip.BottomText.Connect("World");
-scribbleStrip.TopTextColor.Connect(ScribbleStripTextColor.Light);
-scribbleStrip.BottomTextColor.Connect(ScribbleStripTextColor.Dark);
-scribbleStrip.BackgroundColor.Connect(ScribbleStripBackgroundColor.Magenta);
-```
+    ```cs
+    IHuiScribbleStrip scribbleStrip = device.GetScribbleStrip(0);
+    scribbleStrip.Text.Connect("Hi");
+    ```
 
 For low-level protocol details of this control, see the [Scribble strip RAW MIDI usage](https://github.com/Aldaviva/BehringerXTouchExtender/wiki/Scribble-strips#raw-midi-usage).
 
@@ -361,7 +365,7 @@ button.IlluminationState.Connect(IlluminatedButtonState.On);
 ```cs
 // Light up whenever button is pressed
 button.IlluminationState.Connect(DerivedProperty<IlluminatedButtonState>.Create(button.IsPressed, isPressed => 
-        isPressed ? IlluminatedButtonState.On : IlluminatedButtonState.Off));
+    isPressed ? IlluminatedButtonState.On : IlluminatedButtonState.Off));
 ```
 
 #### Detecting presses
@@ -384,7 +388,7 @@ You can touch the fader knob and its **`IsPressed`** Property will change to `tr
 
 ```cs
 fader.IsPressed.PropertyChanged += (sender, args) => 
-        Console.WriteLine($"{(args.NewValue ? "Touching" : "Not touching")} fader");
+    Console.WriteLine($"{(args.NewValue ? "Touching" : "Not touching")} fader");
 ```
 
 #### Requesting movement
@@ -412,7 +416,7 @@ This Property will change in response to both manual (finger) and automatic (mot
 
 ```cs
 fader.ActualPosition.PropertyChanged += (sender, args) =>
-        Console.WriteLine($"Fader moved to {args.NewValue:P0}");
+    Console.WriteLine($"Fader moved to {args.NewValue:P0}");
 ```
 
 ### Disposal
@@ -450,8 +454,8 @@ public void ImplicitlyDisposeWithUsingStatement() {
 ## References
 - [Product page: Behringer X-Touch Extender](https://www.behringer.com/en/products/0808-AAH)
 - [Documentation: Quick Start Guide](https://cdn-media.empowertribe.com/8639333f6b92478fb5e2330150d1953a/QSG_BE_0808-AAH_X-TOUCH%20EXTENDER_WW.pdf)
-- [Documentation: MIDI interface specifications](https://github.com/Aldaviva/BehringerXTouchExtender/blob/master/Reference%20Material/Document_BE_X-TOUCH-X-TOUCH-EXTENDER-MIDI-Mode-Implementation.pdf)
-- ~[Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)~ *deleted, see [saved firmware in this repository](https://github.com/Aldaviva/BehringerXTouchExtender/tree/master/Reference%20Material)*
+- [Documentation: MIDI interface specifications](https://github.com/Aldaviva/BehringerXTouchExtender/blob/master/Reference%20Material/Documentation/Document_BE_X-TOUCH-X-TOUCH-EXTENDER-MIDI-Mode-Implementation.pdf)
+- ~[Firmware: 1.22 ZIP](https://mediadl.musictribe.com/download/software/behringer/X-TOUCH/X-TOUCH-EXT_Firmware_V1.22.zip)~ *deleted, see [saved firmware in this repository](https://github.com/Aldaviva/BehringerXTouchExtender/tree/master/Reference%20Material/Firmware)*
 
 ## Acknowledgements
 - [Maxim Dobroselsky](https://github.com/melanchall) for the [DryWetMIDI](https://github.com/melanchall/drywetmidi) library that controls MIDI devices from .NET

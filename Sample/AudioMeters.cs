@@ -10,9 +10,9 @@ namespace Sample;
 
 public static class AudioMeters {
 
-    public static void Main() {
+    public static async Task Main() {
         try {
-            using IHuiBehringerXTouchExtender device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
+            using var device = BehringerXTouchExtenderFactory.CreateWithHuiMode();
 
             Console.WriteLine("Connecting to Behringer X-Touch Extender...");
             device.Open();
@@ -39,12 +39,13 @@ public static class AudioMeters {
             for (int i = 0; i < device.TrackCount; i++) {
                 int trackId = i; //create closure so it doesn't change between when a callback is defined and executed
 
-                IHuiRotaryEncoder rotaryEncoder = device.GetRotaryEncoder(trackId);
+                var rotaryEncoder = device.GetRotaryEncoder(trackId);
                 StoredProperty<int> rotaryEncoderLightPosition = new(trackId switch {
                     0 or 1 or 4 => 11,
                     2 or 5 or 6 => 10,
                     3           => 6,
-                    7           => 5
+                    7           => 5,
+                    _           => throw new IndexOutOfRangeException("track ID must be in the range [0, 7]")
                 });
                 rotaryEncoder.LightPosition.Connect(rotaryEncoderLightPosition);
                 rotaryEncoder.Rotated += (_, rotationArgs) =>
@@ -54,7 +55,8 @@ public static class AudioMeters {
                     0 or 4 => RotaryEncoderFillMode.NoFill,
                     1 or 5 => RotaryEncoderFillMode.FillCounterClockwise,
                     2 or 6 => RotaryEncoderFillMode.FillToCenterAsymmetric,
-                    3 or 7 => RotaryEncoderFillMode.FillToCenterSymmetric
+                    3 or 7 => RotaryEncoderFillMode.FillToCenterSymmetric,
+                    _      => throw new IndexOutOfRangeException("track ID must be in the range [0, 7]")
                 });
                 // rotaryEncoderLightPosition.Value = Math.Max(Math.Min(rotaryEncoderLightPosition.Value + (rotationArgs.IsClockwise ? 1 : -1), rotaryEncoder.LightCount - 1), 0);
 
@@ -111,14 +113,14 @@ public static class AudioMeters {
             audioPeakTimer.Elapsed += (_, _) => audioPeaks.Recalculate();
             audioPeakTimer.Start();
 
-            CancellationTokenSource cts = new();
+            TaskCompletionSource tcs = new();
             Console.CancelKeyPress += (_, args) => {
-                cts.Cancel();
                 args.Cancel = true;
+                tcs.TrySetResult();
             };
 
             Console.WriteLine("Press Ctrl+C to exit.");
-            cts.Token.WaitHandle.WaitOne();
+            await tcs.Task;
         } catch (MidiDeviceException) {}
     }
 

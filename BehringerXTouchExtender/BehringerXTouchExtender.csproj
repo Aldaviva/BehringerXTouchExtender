@@ -1,13 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>2.0.0-beta.0</Version>
+        <Version>2.0.0</Version>
         <Authors>Ben Hutchison</Authors>
-        <Company>Ben Hutchison</Company>
-        <PackageId>BehringerXTouchExtender</PackageId>
-        <Product>BehringerXTouchExtender</Product>
         <Description>Send and receive events with a Behringer X-Touch Extender DAW MIDI control surface over USB.</Description>
-        <Copyright>© 2026 Ben Hutchison</Copyright>
+        <Copyright>© 2026 $(Authors)</Copyright>
         <PackageProjectUrl>https://github.com/Aldaviva/BehringerXTouchExtender</PackageProjectUrl>
         <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
         <PackageReleaseNotes>$(PackageProjectUrl)/releases/tag/$(Version)</PackageReleaseNotes>
@@ -21,7 +18,7 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IncludeSource>true</IncludeSource>
         <IncludeSymbols>true</IncludeSymbols>
@@ -34,7 +31,7 @@
     <ItemGroup>
         <PackageReference Include="KoKo" Version="2.4.0-beta.1" NoWarn="NU5104" />
         <PackageReference Include="Melanchall.DryWetMidi" Version="8.0.3" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.401" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,7 +41,7 @@
         <InternalsVisibleTo Include="Tests;DynamicProxyGenAssembly2" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' != 'Debug'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
